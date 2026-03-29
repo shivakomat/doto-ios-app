@@ -1,0 +1,90 @@
+import Foundation
+
+enum AppState {
+    case unauthenticated
+    case noFamily
+    case ready
+}
+
+extension Notification.Name {
+    static let dotoUnauthorized = Notification.Name("DotoUnauthorized")
+}
+
+struct AuthResponse: Decodable  { let token: String; let profile: Profile }
+struct LoginRequest: Encodable    { let username: String; let password: String }
+struct RegisterRequest: Encodable { let username: String; let password: String; let displayName: String }
+
+@MainActor
+class AuthViewModel: ObservableObject {
+    @Published var state: AppState = .unauthenticated
+    @Published var currentProfile: Profile?
+    @Published var errorMessage: String?
+    @Published var isLoading = false
+
+    init() {
+        NotificationCenter.default.addObserver(
+            forName: .dotoUnauthorized, object: nil, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.logout() }
+        }
+    }
+
+    func restoreSession() async {
+        guard KeychainHelper.loadToken() != nil else { state = .unauthenticated; return }
+        do {
+            let profile: Profile = try await APIClient.shared.get("/auth/me")
+            currentProfile = profile
+            state = profile.familyId == nil ? .noFamily : .ready
+        } catch {
+            KeychainHelper.deleteToken()
+            state = .unauthenticated
+        }
+    }
+
+    func login(username: String, password: String) async {
+        isLoading = true; errorMessage = nil; defer { isLoading = false }
+        do {
+            let res: AuthResponse = try await APIClient.shared.post(
+                "/auth/login",
+                body: LoginRequest(username: username, password: password)
+            )
+            KeychainHelper.saveToken(res.token)
+            currentProfile = res.profile
+            state = res.profile.familyId == nil ? .noFamily : .ready
+        } catch { errorMessage = error.localizedDescription }
+    }
+
+    func register(username: String, password: String, displayName: String) async {
+        isLoading = true; errorMessage = nil; defer { isLoading = false }
+        do {
+            let res: AuthResponse = try await APIClient.shared.post(
+                "/auth/register",
+                body: RegisterRequest(username: username, password: password, displayName: displayName)
+            )
+            KeychainHelper.saveToken(res.token)
+            currentProfile = res.profile
+            state = .noFamily
+        } catch { errorMessage = error.localizedDescription }
+    }
+
+    func refreshProfile() async {
+        do {
+            let profile: Profile = try await APIClient.shared.get("/auth/me")
+            currentProfile = profile
+            if profile.familyId != nil { state = .ready }
+        } catch {}
+    }
+
+    func refreshCurrentProfileOnly() async {
+        do {
+            let profile: Profile = try await APIClient.shared.get("/auth/me")
+            currentProfile = profile
+        } catch {}
+    }
+
+    func logout() {
+        KeychainHelper.deleteToken()
+        currentProfile = nil
+        state = .unauthenticated
+    }
+}

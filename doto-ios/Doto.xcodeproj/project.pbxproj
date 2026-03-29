@@ -1,0 +1,598 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05A2540EA1D226D35098E2E9 /* MemberCardBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136C69EB63AC29BE4022A93E /* MemberCardBackground.swift */; };
+		0A7DDB00BDD592F4949B3059 /* ShoppingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B28A9A97A7A2B491FDB6486 /* ShoppingViewModel.swift */; };
+		12A0D246D2EF6CAD19E7293D /* Date+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500C4411B28989722268ADE4 /* Date+Formatting.swift */; };
+		1AA1C8776EE0814865BBC9FF /* ShoppingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C84AB35298FF8EB3E09E856 /* ShoppingView.swift */; };
+		2013270DD2A5712418683595 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E987EB9493C5E7CCB3617C7A /* MainTabView.swift */; };
+		234287DB3DDC89DA03342646 /* DotoEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDB7A67C27A3EB5FE6B7FC3 /* DotoEvent.swift */; };
+		2AF921B3D41228499DE53C4D /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC1D15D84DE661C53BF46A5 /* RootView.swift */; };
+		3F1FC919BDF9A7DC2180A25B /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39BB0F55C4F72C2E23618B8 /* APIConfig.swift */; };
+		420E5D8585F3E5A98769225D /* NotificationsOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557FCC42202AB75F42FDD3F9 /* NotificationsOnboardingView.swift */; };
+		43D8232D9EB7DA1E1DD2AA7B /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8840120519ABC280D1F89F62 /* SettingsViewModel.swift */; };
+		4B35065E18E6BBD569D8BDA5 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7200F9B8CDC7F18CE81B50 /* Profile.swift */; };
+		4B3E14274D5F283C4B9E9AE5 /* WeekStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5992D23B27DD08EA4CFC3B68 /* WeekStripView.swift */; };
+		4CF49B86A26B3962E3DD1352 /* DotoNavHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22D86511A241F23BA697D0B /* DotoNavHeader.swift */; };
+		4DD2676752325160FD3B5325 /* Family.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6052592984BC33B8484E09D /* Family.swift */; };
+		5F206BA825D48857BA21206F /* FamilyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9F2F21E197CD66FD3438F2 /* FamilyViewModel.swift */; };
+		6341C7532E709E03AEF787DF /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93474F1A9AEB6E686ADC5DE3 /* ScheduleView.swift */; };
+		6BD301766836222739ECFC43 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58495C465DF19C2D0AC6533 /* AuthViewModel.swift */; };
+		760C9B523F87804D9ED6246F /* Color+Doto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691992F493874A3B9873813F /* Color+Doto.swift */; };
+		78ED949502DC113A2AB25C6B /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24A9D45867A4DE26DD2B9CC1 /* APIError.swift */; };
+		88EDBFB811A581443A6B4AC9 /* EventDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22630676D3CA290B97AE1D3B /* EventDetailSheet.swift */; };
+		8C756BAD22C55580C70BB3EF /* TaskDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060F2815A51E5B74F1FDE32A /* TaskDetailSheet.swift */; };
+		9491B7B57CE235C8CF2B1D5D /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295F568CB151110FAB8E440F /* TasksView.swift */; };
+		968E34A4C98340CE8D987BE3 /* AddItemSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4361CD241FC2FFBEDAA8303B /* AddItemSheet.swift */; };
+		9873536BDC409A4067D401A6 /* ShoppingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F414C98D7C7CE0B2913F811 /* ShoppingItem.swift */; };
+		9A6DA8748723484EEDBE9F89 /* RewardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E02B2B007DD78804FBDE0 /* RewardsView.swift */; };
+		9E20E4112ABD8D57CB4FCEE3 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E39C188FF04E1ECDFD4E9A /* APIClient.swift */; };
+		A1C836DAA596E33A931D2A8A /* ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8409730E757785915C44B67C /* ScheduleViewModel.swift */; };
+		A5AD6204CDDFAF4A687D7111 /* AddEditTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FEB177012E5C9957DB90C7 /* AddEditTaskView.swift */; };
+		A94A9EB0644CA7EBEB1E8684 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486D2FFDB3ABB0266839A2BB /* DashboardViewModel.swift */; };
+		AA78FC9DF86AF26118943FD1 /* FABBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372CB14F581906F44CDE9232 /* FABBottomSheet.swift */; };
+		ABE7FC94D23B011A6518E791 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC6FF91600A870AAA4FC28C /* EmptyStateView.swift */; };
+		B45964C1DE1F5E02E374CCB2 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184832D73680237FA4505439 /* LoadingView.swift */; };
+		B73F6C5A39A5B0D345A551B2 /* DotoTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99BD867A035D41C0A3E4C80D /* DotoTask.swift */; };
+		B894A8DCDB125C091BB2C59A /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEDAF18A29F1FBD55FA3C05 /* ShoppingList.swift */; };
+		B8FE7C96313835337569AB25 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340B50E4E2E79553E7A9E094 /* KeychainHelper.swift */; };
+		BA0C47E71FBC0053EB2A5CD5 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B1C1DEBE77843E3179BA6E /* DashboardView.swift */; };
+		CBEEC20ED3D28A4491B81224 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD2427F1E39C0E808117FEE /* AuthView.swift */; };
+		D2AC60A4D0DD73E4CA824A0D /* RewardsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F79992653B440FCB14930D /* RewardsViewModel.swift */; };
+		D4EA87913115825FFF7507B7 /* AddEditEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95205D6EF8891BE72E73E6BD /* AddEditEventView.swift */; };
+		D5C422E2245EABA10516478C /* Reward.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA32D100E7AECD333F3122 /* Reward.swift */; };
+		D66ACE94D7F40708F17596E4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664762B4F7758B0364459BD6 /* SettingsView.swift */; };
+		D9C3F4B515D95125A43A1680 /* DotoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F739C51BBEA4F3898F781496 /* DotoApp.swift */; };
+		DC805C734EFCC6AD44AABA58 /* FamilySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A9429A5DA47F8766169452 /* FamilySetupView.swift */; };
+		DE4A304A809A076059296687 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B36D8819A92A6FB7A398322 /* AvatarView.swift */; };
+		E130CD62BE9452F84812C8B2 /* FamilyManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6903FB406FC19AAE2BD11A76 /* FamilyManageView.swift */; };
+		E3FEAA853DE755168AF61BF8 /* TasksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7922C1416C63E033B7060511 /* TasksViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		060F2815A51E5B74F1FDE32A /* TaskDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailSheet.swift; sourceTree = "<group>"; };
+		06F79992653B440FCB14930D /* RewardsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsViewModel.swift; sourceTree = "<group>"; };
+		0B28A9A97A7A2B491FDB6486 /* ShoppingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewModel.swift; sourceTree = "<group>"; };
+		136C69EB63AC29BE4022A93E /* MemberCardBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberCardBackground.swift; sourceTree = "<group>"; };
+		184832D73680237FA4505439 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		1B36D8819A92A6FB7A398322 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
+		22630676D3CA290B97AE1D3B /* EventDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailSheet.swift; sourceTree = "<group>"; };
+		24A9D45867A4DE26DD2B9CC1 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		295F568CB151110FAB8E440F /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
+		340B50E4E2E79553E7A9E094 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		372CB14F581906F44CDE9232 /* FABBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FABBottomSheet.swift; sourceTree = "<group>"; };
+		3A9F958E35EA3B04A8F35CE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3AC1D15D84DE661C53BF46A5 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		3BDB7A67C27A3EB5FE6B7FC3 /* DotoEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoEvent.swift; sourceTree = "<group>"; };
+		3EEDAF18A29F1FBD55FA3C05 /* ShoppingList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
+		3F414C98D7C7CE0B2913F811 /* ShoppingItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingItem.swift; sourceTree = "<group>"; };
+		4361CD241FC2FFBEDAA8303B /* AddItemSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemSheet.swift; sourceTree = "<group>"; };
+		45DA32D100E7AECD333F3122 /* Reward.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reward.swift; sourceTree = "<group>"; };
+		477F717D34A797701FA697B6 /* Doto.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Doto.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		486D2FFDB3ABB0266839A2BB /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		500C4411B28989722268ADE4 /* Date+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatting.swift"; sourceTree = "<group>"; };
+		557FCC42202AB75F42FDD3F9 /* NotificationsOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsOnboardingView.swift; sourceTree = "<group>"; };
+		57B1C1DEBE77843E3179BA6E /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		5992D23B27DD08EA4CFC3B68 /* WeekStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekStripView.swift; sourceTree = "<group>"; };
+		664762B4F7758B0364459BD6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		6903FB406FC19AAE2BD11A76 /* FamilyManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyManageView.swift; sourceTree = "<group>"; };
+		691992F493874A3B9873813F /* Color+Doto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Doto.swift"; sourceTree = "<group>"; };
+		7922C1416C63E033B7060511 /* TasksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksViewModel.swift; sourceTree = "<group>"; };
+		7C84AB35298FF8EB3E09E856 /* ShoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingView.swift; sourceTree = "<group>"; };
+		8409730E757785915C44B67C /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModel.swift; sourceTree = "<group>"; };
+		8840120519ABC280D1F89F62 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		93474F1A9AEB6E686ADC5DE3 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		94FEB177012E5C9957DB90C7 /* AddEditTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditTaskView.swift; sourceTree = "<group>"; };
+		95205D6EF8891BE72E73E6BD /* AddEditEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditEventView.swift; sourceTree = "<group>"; };
+		99A9429A5DA47F8766169452 /* FamilySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilySetupView.swift; sourceTree = "<group>"; };
+		99BD867A035D41C0A3E4C80D /* DotoTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoTask.swift; sourceTree = "<group>"; };
+		9E9F2F21E197CD66FD3438F2 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
+		A2E39C188FF04E1ECDFD4E9A /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		ACD2427F1E39C0E808117FEE /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		D6052592984BC33B8484E09D /* Family.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Family.swift; sourceTree = "<group>"; };
+		DA7200F9B8CDC7F18CE81B50 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		DE1E02B2B007DD78804FBDE0 /* RewardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsView.swift; sourceTree = "<group>"; };
+		E39BB0F55C4F72C2E23618B8 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		E987EB9493C5E7CCB3617C7A /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		EFC6FF91600A870AAA4FC28C /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		F22D86511A241F23BA697D0B /* DotoNavHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoNavHeader.swift; sourceTree = "<group>"; };
+		F58495C465DF19C2D0AC6533 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		F739C51BBEA4F3898F781496 /* DotoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0215D4DB71ECAE51994B82BE /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				94FEB177012E5C9957DB90C7 /* AddEditTaskView.swift */,
+				060F2815A51E5B74F1FDE32A /* TaskDetailSheet.swift */,
+				295F568CB151110FAB8E440F /* TasksView.swift */,
+				7922C1416C63E033B7060511 /* TasksViewModel.swift */,
+			);
+			path = Tasks;
+			sourceTree = "<group>";
+		};
+		0C3ACFA0D9467DE1338CD158 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				57B1C1DEBE77843E3179BA6E /* DashboardView.swift */,
+				486D2FFDB3ABB0266839A2BB /* DashboardViewModel.swift */,
+				372CB14F581906F44CDE9232 /* FABBottomSheet.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		0FFB7D1630CDD6558F656899 /* Rewards */ = {
+			isa = PBXGroup;
+			children = (
+				DE1E02B2B007DD78804FBDE0 /* RewardsView.swift */,
+				06F79992653B440FCB14930D /* RewardsViewModel.swift */,
+			);
+			path = Rewards;
+			sourceTree = "<group>";
+		};
+		26EC6D3773B593485708C528 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				A2E39C188FF04E1ECDFD4E9A /* APIClient.swift */,
+				24A9D45867A4DE26DD2B9CC1 /* APIError.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		283289C2490F86F606A825F0 /* Doto */ = {
+			isa = PBXGroup;
+			children = (
+				F739C51BBEA4F3898F781496 /* DotoApp.swift */,
+				3A9F958E35EA3B04A8F35CE1 /* Info.plist */,
+				E987EB9493C5E7CCB3617C7A /* MainTabView.swift */,
+				3AC1D15D84DE661C53BF46A5 /* RootView.swift */,
+				BAAA8013BD4F1DBECBA855D9 /* Auth */,
+				A4F08FDAE21CE8371A572170 /* Config */,
+				0C3ACFA0D9467DE1338CD158 /* Dashboard */,
+				4A762B8B1765F954FB8C0B2A /* Family */,
+				504C366B2E735F374F970F2B /* Models */,
+				26EC6D3773B593485708C528 /* Networking */,
+				D643A611745122A50889B2C8 /* Onboarding */,
+				0FFB7D1630CDD6558F656899 /* Rewards */,
+				D3FDF5E58B40406934797837 /* Schedule */,
+				D97E9B67C09D20BD73CF6DF2 /* Settings */,
+				6FCAD20077AE5DA956688057 /* Shared */,
+				50F586DD671A657B6678DB0D /* Shopping */,
+				0215D4DB71ECAE51994B82BE /* Tasks */,
+			);
+			path = Doto;
+			sourceTree = "<group>";
+		};
+		3E810F2C182660CB11BC4F41 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				1B36D8819A92A6FB7A398322 /* AvatarView.swift */,
+				F22D86511A241F23BA697D0B /* DotoNavHeader.swift */,
+				EFC6FF91600A870AAA4FC28C /* EmptyStateView.swift */,
+				184832D73680237FA4505439 /* LoadingView.swift */,
+				136C69EB63AC29BE4022A93E /* MemberCardBackground.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		4A762B8B1765F954FB8C0B2A /* Family */ = {
+			isa = PBXGroup;
+			children = (
+				6903FB406FC19AAE2BD11A76 /* FamilyManageView.swift */,
+				9E9F2F21E197CD66FD3438F2 /* FamilyViewModel.swift */,
+			);
+			path = Family;
+			sourceTree = "<group>";
+		};
+		504C366B2E735F374F970F2B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3BDB7A67C27A3EB5FE6B7FC3 /* DotoEvent.swift */,
+				99BD867A035D41C0A3E4C80D /* DotoTask.swift */,
+				D6052592984BC33B8484E09D /* Family.swift */,
+				DA7200F9B8CDC7F18CE81B50 /* Profile.swift */,
+				45DA32D100E7AECD333F3122 /* Reward.swift */,
+				3F414C98D7C7CE0B2913F811 /* ShoppingItem.swift */,
+				3EEDAF18A29F1FBD55FA3C05 /* ShoppingList.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		50F586DD671A657B6678DB0D /* Shopping */ = {
+			isa = PBXGroup;
+			children = (
+				4361CD241FC2FFBEDAA8303B /* AddItemSheet.swift */,
+				7C84AB35298FF8EB3E09E856 /* ShoppingView.swift */,
+				0B28A9A97A7A2B491FDB6486 /* ShoppingViewModel.swift */,
+			);
+			path = Shopping;
+			sourceTree = "<group>";
+		};
+		58D3B22F9B3E8D3E074495D4 = {
+			isa = PBXGroup;
+			children = (
+				283289C2490F86F606A825F0 /* Doto */,
+				AA068FB9460EC6A755C578B1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6FCAD20077AE5DA956688057 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				3E810F2C182660CB11BC4F41 /* Components */,
+				DC7D1836E919367752AC6D00 /* Extensions */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A4F08FDAE21CE8371A572170 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				E39BB0F55C4F72C2E23618B8 /* APIConfig.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		AA068FB9460EC6A755C578B1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				477F717D34A797701FA697B6 /* Doto.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BAAA8013BD4F1DBECBA855D9 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				ACD2427F1E39C0E808117FEE /* AuthView.swift */,
+				F58495C465DF19C2D0AC6533 /* AuthViewModel.swift */,
+				340B50E4E2E79553E7A9E094 /* KeychainHelper.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		D3FDF5E58B40406934797837 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				95205D6EF8891BE72E73E6BD /* AddEditEventView.swift */,
+				22630676D3CA290B97AE1D3B /* EventDetailSheet.swift */,
+				93474F1A9AEB6E686ADC5DE3 /* ScheduleView.swift */,
+				8409730E757785915C44B67C /* ScheduleViewModel.swift */,
+				5992D23B27DD08EA4CFC3B68 /* WeekStripView.swift */,
+			);
+			path = Schedule;
+			sourceTree = "<group>";
+		};
+		D643A611745122A50889B2C8 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				99A9429A5DA47F8766169452 /* FamilySetupView.swift */,
+				557FCC42202AB75F42FDD3F9 /* NotificationsOnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		D97E9B67C09D20BD73CF6DF2 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				664762B4F7758B0364459BD6 /* SettingsView.swift */,
+				8840120519ABC280D1F89F62 /* SettingsViewModel.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		DC7D1836E919367752AC6D00 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				691992F493874A3B9873813F /* Color+Doto.swift */,
+				500C4411B28989722268ADE4 /* Date+Formatting.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6998B7E0B8BCBFEA708DDFA1 /* Doto */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B59920FFD19F6C5EEB2312C9 /* Build configuration list for PBXNativeTarget "Doto" */;
+			buildPhases = (
+				5F02116F4D170FC4C45D9485 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Doto;
+			packageProductDependencies = (
+			);
+			productName = Doto;
+			productReference = 477F717D34A797701FA697B6 /* Doto.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C87016F8D1CAFFD00FBC51AF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					6998B7E0B8BCBFEA708DDFA1 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 6116E0F5F09872B124F955D2 /* Build configuration list for PBXProject "Doto" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 58D3B22F9B3E8D3E074495D4;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = AA068FB9460EC6A755C578B1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6998B7E0B8BCBFEA708DDFA1 /* Doto */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5F02116F4D170FC4C45D9485 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9E20E4112ABD8D57CB4FCEE3 /* APIClient.swift in Sources */,
+				3F1FC919BDF9A7DC2180A25B /* APIConfig.swift in Sources */,
+				78ED949502DC113A2AB25C6B /* APIError.swift in Sources */,
+				D4EA87913115825FFF7507B7 /* AddEditEventView.swift in Sources */,
+				A5AD6204CDDFAF4A687D7111 /* AddEditTaskView.swift in Sources */,
+				968E34A4C98340CE8D987BE3 /* AddItemSheet.swift in Sources */,
+				CBEEC20ED3D28A4491B81224 /* AuthView.swift in Sources */,
+				6BD301766836222739ECFC43 /* AuthViewModel.swift in Sources */,
+				DE4A304A809A076059296687 /* AvatarView.swift in Sources */,
+				760C9B523F87804D9ED6246F /* Color+Doto.swift in Sources */,
+				BA0C47E71FBC0053EB2A5CD5 /* DashboardView.swift in Sources */,
+				A94A9EB0644CA7EBEB1E8684 /* DashboardViewModel.swift in Sources */,
+				12A0D246D2EF6CAD19E7293D /* Date+Formatting.swift in Sources */,
+				D9C3F4B515D95125A43A1680 /* DotoApp.swift in Sources */,
+				234287DB3DDC89DA03342646 /* DotoEvent.swift in Sources */,
+				4CF49B86A26B3962E3DD1352 /* DotoNavHeader.swift in Sources */,
+				B73F6C5A39A5B0D345A551B2 /* DotoTask.swift in Sources */,
+				ABE7FC94D23B011A6518E791 /* EmptyStateView.swift in Sources */,
+				88EDBFB811A581443A6B4AC9 /* EventDetailSheet.swift in Sources */,
+				AA78FC9DF86AF26118943FD1 /* FABBottomSheet.swift in Sources */,
+				4DD2676752325160FD3B5325 /* Family.swift in Sources */,
+				E130CD62BE9452F84812C8B2 /* FamilyManageView.swift in Sources */,
+				DC805C734EFCC6AD44AABA58 /* FamilySetupView.swift in Sources */,
+				5F206BA825D48857BA21206F /* FamilyViewModel.swift in Sources */,
+				B8FE7C96313835337569AB25 /* KeychainHelper.swift in Sources */,
+				B45964C1DE1F5E02E374CCB2 /* LoadingView.swift in Sources */,
+				2013270DD2A5712418683595 /* MainTabView.swift in Sources */,
+				05A2540EA1D226D35098E2E9 /* MemberCardBackground.swift in Sources */,
+				420E5D8585F3E5A98769225D /* NotificationsOnboardingView.swift in Sources */,
+				4B35065E18E6BBD569D8BDA5 /* Profile.swift in Sources */,
+				D5C422E2245EABA10516478C /* Reward.swift in Sources */,
+				9A6DA8748723484EEDBE9F89 /* RewardsView.swift in Sources */,
+				D2AC60A4D0DD73E4CA824A0D /* RewardsViewModel.swift in Sources */,
+				2AF921B3D41228499DE53C4D /* RootView.swift in Sources */,
+				6341C7532E709E03AEF787DF /* ScheduleView.swift in Sources */,
+				A1C836DAA596E33A931D2A8A /* ScheduleViewModel.swift in Sources */,
+				D66ACE94D7F40708F17596E4 /* SettingsView.swift in Sources */,
+				43D8232D9EB7DA1E1DD2AA7B /* SettingsViewModel.swift in Sources */,
+				9873536BDC409A4067D401A6 /* ShoppingItem.swift in Sources */,
+				B894A8DCDB125C091BB2C59A /* ShoppingList.swift in Sources */,
+				1AA1C8776EE0814865BBC9FF /* ShoppingView.swift in Sources */,
+				0A7DDB00BDD592F4949B3059 /* ShoppingViewModel.swift in Sources */,
+				8C756BAD22C55580C70BB3EF /* TaskDetailSheet.swift in Sources */,
+				9491B7B57CE235C8CF2B1D5D /* TasksView.swift in Sources */,
+				E3FEAA853DE755168AF61BF8 /* TasksViewModel.swift in Sources */,
+				4B3E14274D5F283C4B9E9AE5 /* WeekStripView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		427E24E348C9EC5198FC61F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.doto.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		530860FEED0BBEB1888F1C93 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Doto/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.doto.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6A5438E42E622BA10C63AAB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.doto.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		C919906830C6D429E927AD35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = Doto/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.doto.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6116E0F5F09872B124F955D2 /* Build configuration list for PBXProject "Doto" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				427E24E348C9EC5198FC61F6 /* Debug */,
+				6A5438E42E622BA10C63AAB9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B59920FFD19F6C5EEB2312C9 /* Build configuration list for PBXNativeTarget "Doto" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C919906830C6D429E927AD35 /* Debug */,
+				530860FEED0BBEB1888F1C93 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C87016F8D1CAFFD00FBC51AF /* Project object */;
+}

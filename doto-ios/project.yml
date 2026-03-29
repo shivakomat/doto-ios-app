@@ -1,0 +1,33 @@
+name: Doto
+options:
+  bundleIdPrefix: com.doto
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    PRODUCT_BUNDLE_IDENTIFIER: com.doto.app
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+
+targets:
+  Doto:
+    type: application
+    platform: iOS
+    sources:
+      - path: Doto
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.doto.app
+        INFOPLIST_FILE: Doto/Info.plist
+        DEVELOPMENT_TEAM: ""
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGNING_ALLOWED: "NO"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    dependencies: []
+    scheme:
+      testTargets: []
