@@ -54,8 +54,11 @@ class AuthViewModel: ObservableObject {
             let profile: Profile = try await APIClient.shared.get("/auth/me")
             currentProfile = profile
             state = profile.familyId == nil ? .noFamily : .ready
-        } catch {
+        } catch APIError.unauthorized {
             KeychainHelper.deleteToken()
+            state = .unauthenticated
+        } catch {
+            // Network / decode error — keep token, let user retry from LandingView
             state = .unauthenticated
         }
     }

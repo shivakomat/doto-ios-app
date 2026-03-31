@@ -112,7 +112,7 @@ struct FamilySetupView: View {
                 body: FamilyCreateRequest(name: familyName.trimmingCharacters(in: .whitespaces))
             )
             createdFamily = family
-            await authVM.refreshProfile()
+            await authVM.refreshCurrentProfileOnly()
             showNotificationsOnboarding = true
         } catch {
             errorMessage = error.localizedDescription
