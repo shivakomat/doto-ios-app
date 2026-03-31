@@ -22,7 +22,11 @@ class ScheduleViewModel: ObservableObject {
     }
 
     var eventsForSelectedDate: [DotoEvent] {
-        let filtered = events.filter { Calendar.current.isDate($0.startAt, inSameDayAs: selectedDate) }
+        eventsForDate(selectedDate)
+    }
+
+    func eventsForDate(_ date: Date) -> [DotoEvent] {
+        let filtered = events.filter { Calendar.current.isDate($0.startAt, inSameDayAs: date) }
         if let id = selectedMemberId {
             return filtered.filter { $0.assignedTo.contains(id) }
         }

@@ -1,9 +1,15 @@
 import SwiftUI
 
+enum ScheduleViewMode: String, CaseIterable {
+    case daily  = "Daily"
+    case weekly = "Weekly"
+}
+
 struct ScheduleView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var vm = ScheduleViewModel()
 
+    @State private var viewMode: ScheduleViewMode = .daily
     @State private var showAddEvent = false
     @State private var selectedEvent: DotoEvent?
 
@@ -39,6 +45,15 @@ struct ScheduleView: View {
 
             WeekStripView(vm: vm)
 
+            Picker("", selection: $viewMode) {
+                ForEach(ScheduleViewMode.allCases, id: \.self) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 6)
+
             if !vm.members.isEmpty {
                 avatarFilterRow
                 Divider()
@@ -48,32 +63,10 @@ struct ScheduleView: View {
 
             if vm.isLoading && vm.events.isEmpty {
                 LoadingView()
+            } else if viewMode == .weekly {
+                weeklyContent
             } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(vm.selectedDate.fullDateString)
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundColor(.textPrimary)
-                            .padding(.horizontal)
-                            .padding(.top, 12)
-
-                        if vm.eventsForSelectedDate.isEmpty {
-                            EmptyStateView(
-                                message: "No events this day",
-                                systemImage: "calendar",
-                                cta: "Add one"
-                            ) { showAddEvent = true }
-                        } else {
-                            ForEach(vm.eventsForSelectedDate) { event in
-                                scheduleEventRow(event)
-                                    .padding(.horizontal)
-                                    .onTapGesture { selectedEvent = event }
-                            }
-                        }
-                    }
-                    .padding(.bottom, 80)
-                }
-                .refreshable { await vm.load() }
+                dailyContent
             }
         }
         .background(Color.screenBg.ignoresSafeArea())
@@ -92,6 +85,47 @@ struct ScheduleView: View {
         } message: {
             Text(vm.errorMessage ?? "")
         }
+    }
+
+    private var dailyContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(vm.selectedDate.fullDateString)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.textPrimary)
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+
+                if vm.eventsForSelectedDate.isEmpty {
+                    EmptyStateView(
+                        message: "No events this day",
+                        systemImage: "calendar",
+                        cta: "Add one"
+                    ) { showAddEvent = true }
+                } else {
+                    ForEach(vm.eventsForSelectedDate) { event in
+                        scheduleEventRow(event)
+                            .padding(.horizontal)
+                            .onTapGesture { selectedEvent = event }
+                    }
+                }
+            }
+            .padding(.bottom, 80)
+        }
+        .refreshable { await vm.load() }
+    }
+
+    private var weeklyContent: some View {
+        WeeklyColumnsView(
+            vm: vm,
+            onSelectDay: { date in
+                vm.selectedDate = date
+                viewMode = .daily
+            },
+            onSelectEvent: { event in
+                selectedEvent = event
+            }
+        )
     }
 
     private var avatarFilterRow: some View {
