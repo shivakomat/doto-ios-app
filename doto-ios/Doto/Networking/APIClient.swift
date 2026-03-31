@@ -88,8 +88,10 @@ class APIClient {
         case 400:
             let err = try? JSONDecoder.iso8601.decode(APIErrorResponse.self, from: data)
             throw APIError.validation(err?.message ?? "Validation error")
-        case 401, 403:
+        case 401:
             throw APIError.unauthorized
+        case 403:
+            throw APIError.serverError("You don't have permission to perform this action.")
         case 404:
             throw APIError.notFound
         case 409:

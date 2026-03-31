@@ -86,13 +86,19 @@ struct FamilySetupView: View {
                             .foregroundColor(.red)
                     }
 
-                    PrimaryButton(
-                        title: isLoading ? "Creating..." : "Continue →",
-                        isLoading: isLoading
-                    ) {
-                        Task { await submit() }
+                    if createdFamily == nil {
+                        PrimaryButton(
+                            title: isLoading ? "Creating..." : "Create family →",
+                            isLoading: isLoading
+                        ) {
+                            Task { await submit() }
+                        }
+                        .disabled(isLoading || familyName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    } else {
+                        PrimaryButton(title: "Continue →") {
+                            showNotificationsOnboarding = true
+                        }
                     }
-                    .disabled(isLoading || familyName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 .padding(.horizontal, 24)
                 .padding(.vertical, 24)
@@ -112,8 +118,6 @@ struct FamilySetupView: View {
                 body: FamilyCreateRequest(name: familyName.trimmingCharacters(in: .whitespaces))
             )
             createdFamily = family
-            await authVM.refreshCurrentProfileOnly()
-            showNotificationsOnboarding = true
         } catch {
             errorMessage = error.localizedDescription
         }
