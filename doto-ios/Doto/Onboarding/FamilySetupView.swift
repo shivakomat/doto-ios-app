@@ -113,11 +113,12 @@ struct FamilySetupView: View {
     private func submit() async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
         do {
-            let family: Family = try await APIClient.shared.post(
+            let res: FamilyTokenResponse = try await APIClient.shared.post(
                 "/families",
                 body: FamilyCreateRequest(name: familyName.trimmingCharacters(in: .whitespaces))
             )
-            createdFamily = family
+            KeychainHelper.saveToken(res.token)
+            createdFamily = res.family
         } catch {
             errorMessage = error.localizedDescription
         }

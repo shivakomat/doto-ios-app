@@ -10,8 +10,10 @@ extension Notification.Name {
     static let dotoUnauthorized = Notification.Name("DotoUnauthorized")
 }
 
-struct AuthResponse: Decodable  { let token: String; let profile: Profile }
-struct LoginRequest: Encodable    { let username: String; let password: String }
+struct AuthResponse: Decodable      { let token: String; let profile: Profile }
+struct FamilyTokenResponse: Decodable { let token: String; let family: Family }
+struct LoginRequest: Encodable        { let username: String; let password: String }
+struct JoinFamilyRequest: Encodable   { let inviteCode: String; let role: String }
 struct RegisterRequest: Encodable {
     let username: String
     let password: String
@@ -87,6 +89,7 @@ class AuthViewModel: ObservableObject {
     ) async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
         do {
+            // Step 1: create account (no inviteCode — family membership is a separate step)
             let res: AuthResponse = try await APIClient.shared.post(
                 "/auth/register",
                 body: RegisterRequest(
@@ -94,12 +97,23 @@ class AuthViewModel: ObservableObject {
                     password: password,
                     displayName: displayName,
                     role: role,
-                    inviteCode: inviteCode
+                    inviteCode: nil
                 )
             )
             KeychainHelper.saveToken(res.token)
             currentProfile = res.profile
-            state = res.profile.familyId == nil ? .noFamily : .ready
+
+            // Step 2: if joining a family, call /families/join to get the family-scoped token
+            if let code = inviteCode {
+                let joinRes: FamilyTokenResponse = try await APIClient.shared.post(
+                    "/families/join",
+                    body: JoinFamilyRequest(inviteCode: code, role: role)
+                )
+                KeychainHelper.saveToken(joinRes.token)
+                state = .ready
+            } else {
+                state = res.profile.familyId == nil ? .noFamily : .ready
+            }
         } catch APIError.conflict(_) {
             errorMessage = "That username is already taken. Try a different one."
         } catch APIError.notFound {
