@@ -5,6 +5,20 @@ struct DashboardResponse: Decodable {
     let todaysEvents: [EventSnapshot]
     let pendingTasks: [TaskSnapshot]
     let pendingApprovals: [ApprovalSnapshot]
+
+    private enum CodingKeys: String, CodingKey {
+        case family, todaysEvents, upcomingEvents, pendingTasks, pendingApprovals
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        family           = try c.decode(FamilySnapshot.self, forKey: .family)
+        todaysEvents     = (try? c.decode([EventSnapshot].self, forKey: .todaysEvents))
+                        ?? (try? c.decode([EventSnapshot].self, forKey: .upcomingEvents))
+                        ?? []
+        pendingTasks     = (try? c.decode([TaskSnapshot].self,    forKey: .pendingTasks))     ?? []
+        pendingApprovals = (try? c.decode([ApprovalSnapshot].self, forKey: .pendingApprovals)) ?? []
+    }
 }
 
 struct FamilySnapshot: Decodable {
