@@ -5,7 +5,7 @@ struct RootView: View {
     var body: some View {
         Group {
             switch authVM.state {
-            case .unauthenticated: AuthView()
+            case .unauthenticated: LandingView()
             case .noFamily:        FamilySetupView()
             case .ready:           MainTabView()
             }

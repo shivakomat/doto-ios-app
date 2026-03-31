@@ -119,7 +119,9 @@ struct AuthView: View {
                             await authVM.register(
                                 username: username,
                                 password: password,
-                                displayName: displayName
+                                displayName: displayName,
+                                role: "parent",
+                                inviteCode: nil
                             )
                         } else {
                             await authVM.login(username: username, password: password)
