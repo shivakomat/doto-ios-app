@@ -90,7 +90,7 @@ struct DashboardView: View {
 
     @ViewBuilder
     private var mainContent: some View {
-        if vm.isLoading && vm.upcomingEvents.isEmpty {
+        if vm.isLoading && vm.todaysEvents.isEmpty {
             LoadingView()
         } else {
             ScrollView {
@@ -210,7 +210,7 @@ struct DashboardView: View {
                 iconColor: Color(hex: "#185FA5")
             )
             statCard(
-                value: "\(vm.upcomingEvents.count)",
+                value: "\(vm.todaysEvents.count)",
                 label: "Upcoming Events",
                 icon: "calendar",
                 iconColor: Color(hex: "#10B981")

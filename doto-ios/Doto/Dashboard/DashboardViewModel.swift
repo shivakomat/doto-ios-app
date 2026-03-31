@@ -2,8 +2,7 @@ import Foundation
 
 struct DashboardResponse: Decodable {
     let family: FamilySnapshot
-    let upcomingEvents: [EventSnapshot]
-    let pendingTasksCount: Int
+    let todaysEvents: [EventSnapshot]
     let pendingTasks: [TaskSnapshot]
     let pendingApprovals: [ApprovalSnapshot]
 }
@@ -21,7 +20,7 @@ struct MemberSnapshot: Decodable, Identifiable {
     let role: String
     let color: String
     let points: Int
-    let streak: Int
+    let streak: Int?
 }
 
 struct EventSnapshot: Decodable, Identifiable {
@@ -61,29 +60,29 @@ extension EventSnapshot {
 
 @MainActor
 class DashboardViewModel: ObservableObject {
-    @Published var upcomingEvents: [EventSnapshot] = []
+    @Published var todaysEvents: [EventSnapshot] = []
     @Published var pendingTasks: [TaskSnapshot] = []
-    @Published var pendingTasksCount: Int = 0
     @Published var members: [MemberSnapshot] = []
     @Published var pendingApprovals: [ApprovalSnapshot] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var selectedMemberId: String? = nil
 
+    var pendingTasksCount: Int { pendingTasks.count }
+
     var filteredEvents: [EventSnapshot] {
-        guard let id = selectedMemberId else { return upcomingEvents }
-        return upcomingEvents.filter { $0.assignedTo.contains(id) }
+        guard let id = selectedMemberId else { return todaysEvents }
+        return todaysEvents.filter { $0.assignedTo.contains(id) }
     }
 
     func load() async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
         do {
             let res: DashboardResponse = try await APIClient.shared.get("/dashboard")
-            upcomingEvents    = res.upcomingEvents
-            pendingTasks      = res.pendingTasks
-            pendingTasksCount = res.pendingTasksCount
-            members           = res.family.members
-            pendingApprovals  = res.pendingApprovals
+            todaysEvents     = res.todaysEvents
+            pendingTasks     = res.pendingTasks
+            members          = res.family.members
+            pendingApprovals = res.pendingApprovals
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
         } catch {
