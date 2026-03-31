@@ -18,6 +18,19 @@ struct RegisterRequest: Encodable {
     let displayName: String
     let role: String
     let inviteCode: String?
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(username,    forKey: .username)
+        try c.encode(password,    forKey: .password)
+        try c.encode(displayName, forKey: .displayName)
+        try c.encode(role,        forKey: .role)
+        if let code = inviteCode { try c.encode(code, forKey: .inviteCode) }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case username, password, displayName, role, inviteCode
+    }
 }
 
 @MainActor

@@ -52,7 +52,7 @@ class SettingsViewModel: ObservableObject {
     func changePassword(current: String, new: String) async {
         struct ChangePasswordRequest: Encodable { let currentPassword: String; let newPassword: String }
         do {
-            let _: EmptyResponse = try await APIClient.shared.post(
+            let _: EmptyResponse = try await APIClient.shared.patch(
                 "/auth/change-password",
                 body: ChangePasswordRequest(currentPassword: current, newPassword: new)
             )

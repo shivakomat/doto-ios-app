@@ -16,10 +16,12 @@ struct FamilySnapshot: Decodable {
 
 struct MemberSnapshot: Decodable, Identifiable {
     let id: String
+    let username: String?
     let displayName: String
     let role: String
     let color: String
     let points: Int
+    let streak: Int
 }
 
 struct EventSnapshot: Decodable, Identifiable {
