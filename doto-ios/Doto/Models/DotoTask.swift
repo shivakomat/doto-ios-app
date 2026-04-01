@@ -4,7 +4,7 @@ struct DotoTask: Codable, Identifiable {
     let id: String
     let familyId: String?
     var title: String
-    var description: String?
+    var notes: String?
     var assignedTo: String?
     var priority: String?
     var status: String?
@@ -27,8 +27,8 @@ struct DotoTask: Codable, Identifiable {
     var isDone: Bool { status == "done" }
 
     private enum CodingKeys: String, CodingKey {
-        case id, familyId, title, description, assignedTo, priority, status
-        case points, dueAt, completedAt, createdBy, createdAt, updatedAt
+        case id, familyId, title, assignedTo, priority, status
+        case notes, points, dueAt, completedAt, createdBy, createdAt, updatedAt
         case repeat_ = "repeat"
     }
 }

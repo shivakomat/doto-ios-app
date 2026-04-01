@@ -16,8 +16,8 @@ struct TaskDetailSheet: View {
                     detailRow(label: "Due", value: task.dueAt?.relativeDue ?? "No due date")
                     detailRow(label: "Points", value: "\(task.points) pts")
                     detailRow(label: "Status", value: (task.status ?? "todo").replacingOccurrences(of: "_", with: " ").capitalized)
-                    if let desc = task.description, !desc.isEmpty {
-                        detailRow(label: "Notes", value: desc)
+                    if let notes = task.notes, !notes.isEmpty {
+                        detailRow(label: "Notes", value: notes)
                     }
                     if let rep = task.repeat_, rep != "none" {
                         detailRow(label: "Repeat", value: rep.capitalized)

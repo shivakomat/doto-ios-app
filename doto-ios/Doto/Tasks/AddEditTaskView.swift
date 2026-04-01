@@ -5,7 +5,7 @@ struct TaskCreateRequest: Encodable {
     let assignedTo: String?
     let dueAt: Date?
     let points: Int
-    let description: String?
+    let notes: String?
     let `repeat`: String?
 }
 
@@ -143,7 +143,7 @@ struct AddEditTaskView: View {
             assignedToId = t.assignedTo ?? ""
             dueDate = t.dueAt ?? Date()
             points = t.points
-            notes = t.description ?? ""
+            notes = t.notes ?? ""
             repeatOption = t.repeat_ ?? "none"
         } else {
             assignedToId = authVM.currentProfile?.id ?? ""
@@ -157,7 +157,7 @@ struct AddEditTaskView: View {
             assignedTo: assignedToId.isEmpty ? nil : assignedToId,
             dueAt: dueDate,
             points: points,
-            description: notes.isEmpty ? nil : notes,
+            notes: notes.isEmpty ? nil : notes,
             repeat: repeatOption == "none" ? nil : repeatOption
         )
         do {

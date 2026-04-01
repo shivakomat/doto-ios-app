@@ -12,10 +12,10 @@ struct SettingsView: View {
     @State private var showChangePassword = false
     @State private var isSavingProfile = false
     @State private var isSavingFamily = false
-    @State private var taskAssigned = true
-    @State private var conflictAlert = true
-    @State private var overdueAlert  = true
-    @State private var weeklyDigest  = true
+    @AppStorage("notif.taskAssigned") private var taskAssigned = true
+    @AppStorage("notif.conflictAlert") private var conflictAlert = true
+    @AppStorage("notif.overdueAlert")  private var overdueAlert = true
+    @AppStorage("notif.weeklyDigest")  private var weeklyDigest = true
 
     private let colorPalette = Color.memberHexPalette
 
