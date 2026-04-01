@@ -20,6 +20,7 @@ struct AddEditTaskView: View {
     @State private var points = 10
     @State private var notes = ""
     @State private var repeatOption = "none"
+    @State private var members: [Profile] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
 
@@ -34,22 +35,27 @@ struct AddEditTaskView: View {
                 }
 
                 Section(header: Text("Assign to")) {
-                    if let profile = authVM.currentProfile {
+                    ForEach(members) { member in
                         Button {
-                            assignedToId = profile.id
+                            assignedToId = member.id
                         } label: {
                             HStack(spacing: 10) {
                                 AvatarView(
-                                    name: profile.displayName,
-                                    color: profile.color,
+                                    name: member.displayName,
+                                    color: member.color,
                                     size: 28,
-                                    isActive: assignedToId == profile.id
+                                    isActive: assignedToId == member.id
                                 )
-                                .opacity(assignedToId == profile.id ? 1 : 0.3)
-                                Text(profile.displayName)
+                                .opacity(assignedToId == member.id ? 1 : 0.3)
+                                Text(member.displayName)
                                     .foregroundColor(.textPrimary)
+                                if member.id == authVM.currentProfile?.id {
+                                    Text("(you)")
+                                        .font(.system(size: 11))
+                                        .foregroundColor(.textMuted)
+                                }
                                 Spacer()
-                                if assignedToId == profile.id {
+                                if assignedToId == member.id {
                                     Image(systemName: "checkmark").foregroundColor(.memberBlue)
                                 }
                             }
@@ -134,7 +140,12 @@ struct AddEditTaskView: View {
                 }
             }
         }
-        .onAppear { prefill() }
+        .task {
+            prefill()
+            if let family: Family = try? await APIClient.shared.get("/families/mine") {
+                members = family.members
+            }
+        }
     }
 
     private func prefill() {
