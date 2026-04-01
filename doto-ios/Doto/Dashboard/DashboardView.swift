@@ -31,7 +31,7 @@ struct DashboardView: View {
             }
         }
         .navigationBarHidden(true)
-        .task { await vm.load() }
+        .onAppear { Task { await vm.load() } }
         .refreshable { await vm.load() }
         .sheet(isPresented: $showFAB) {
             FABBottomSheet(showAddEvent: $showAddEvent, showAddTask: $showAddTask, showAddItem: $showAddItem)

@@ -9,6 +9,7 @@ struct FamilyManageView: View {
     @State private var childName = ""
     @State private var memberToDelete: Profile?
     @State private var showDeleteAlert = false
+    @State private var claimStatuses: [String: ClaimStatus] = [:]
 
     var body: some View {
         NavigationView {
@@ -43,9 +44,25 @@ struct FamilyManageView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(member.displayName)
                                         .font(.system(size: 14, weight: .semibold))
-                                    Text(member.role.capitalized)
-                                        .font(.system(size: 11))
-                                        .foregroundColor(.textMuted)
+                                    if member.isChild, let status = claimStatuses[member.id] {
+                                        if status.isClaimed, let uname = status.username {
+                                            Text("@\(uname)")
+                                                .font(.system(size: 11))
+                                                .foregroundColor(.textMuted)
+                                        } else if !status.isClaimed {
+                                            Text("No account yet")
+                                                .font(.system(size: 11, weight: .semibold))
+                                                .foregroundColor(.memberAmber)
+                                                .padding(.horizontal, 6)
+                                                .padding(.vertical, 2)
+                                                .background(Color(hex: "#FEF3C7"))
+                                                .cornerRadius(4)
+                                        }
+                                    } else {
+                                        Text(member.role.capitalized)
+                                            .font(.system(size: 11))
+                                            .foregroundColor(.textMuted)
+                                    }
                                 }
                                 Spacer()
                                 Text("\(member.points) pts")
@@ -53,7 +70,9 @@ struct FamilyManageView: View {
                                     .foregroundColor(.textSecondary)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                if member.isChild {
+                                if authVM.currentProfile?.isParent == true
+                                    && member.isChild
+                                    && member.isAuthAccount != true {
                                     Button(role: .destructive) {
                                         memberToDelete = member
                                         showDeleteAlert = true
@@ -64,11 +83,13 @@ struct FamilyManageView: View {
                             }
                         }
 
-                        Button {
-                            showAddChild = true
-                        } label: {
-                            Label("Add child", systemImage: "person.badge.plus")
-                                .foregroundColor(.memberBlue)
+                        if authVM.currentProfile?.isParent == true {
+                            Button {
+                                showAddChild = true
+                            } label: {
+                                Label("Add child", systemImage: "person.badge.plus")
+                                    .foregroundColor(.memberBlue)
+                            }
                         }
                     }
                 }
@@ -99,6 +120,15 @@ struct FamilyManageView: View {
             }
         }
         .task { await vm.load() }
+        .task(id: vm.family?.id) {
+            guard authVM.currentProfile?.isParent == true,
+                  let members = vm.family?.members else { return }
+            for member in members where member.isChild {
+                if let status: ClaimStatus = try? await APIClient.shared.get("/members/\(member.id)/claim-status") {
+                    claimStatuses[member.id] = status
+                }
+            }
+        }
         .alert("Something went wrong",
                isPresented: Binding(get: { vm.errorMessage != nil }, set: { if !$0 { vm.errorMessage = nil } })
         ) {

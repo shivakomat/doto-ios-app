@@ -4,6 +4,8 @@ struct FamilyPreviewView: View {
     let preview: FamilyPreview
     @State private var selectedRole = "parent"
     @State private var navigateToRegister = false
+    @State private var navigateToClaim = false
+    @StateObject private var claimVM = ClaimProfileViewModel()
 
     var body: some View {
         VStack(spacing: 24) {
@@ -48,12 +50,32 @@ struct FamilyPreviewView: View {
             }
             .buttonStyle(PrimaryButtonStyle())
 
+            if selectedRole == "child" && !preview.unclaimedChildren.isEmpty {
+                Button {
+                    navigateToClaim = true
+                } label: {
+                    Text("I already have a profile →")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(.memberBlue)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.memberBlue.opacity(0.4), lineWidth: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+
             Spacer()
         }
         .padding(.horizontal, 24)
         .background(Color.white.ignoresSafeArea())
         .navigationTitle("You're joining...")
         .navigationBarTitleDisplayMode(.large)
+        .navigationDestination(isPresented: $navigateToClaim) {
+            ClaimStep2View(vm: claimVM, familyPreview: preview)
+        }
     }
 }
 

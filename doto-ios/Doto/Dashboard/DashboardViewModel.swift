@@ -99,6 +99,10 @@ class DashboardViewModel: ObservableObject {
             pendingApprovals = res.pendingApprovals
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch is CancellationError {
+            return
+        } catch let urlErr as URLError where urlErr.code == .cancelled {
+            return
         } catch {
             errorMessage = error.localizedDescription
         }

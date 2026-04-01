@@ -35,6 +35,13 @@ struct RegisterRequest: Encodable {
     }
 }
 
+struct ClaimProfileRequest: Encodable {
+    let profileId: String
+    let inviteCode: String
+    let username: String
+    let password: String
+}
+
 @MainActor
 class AuthViewModel: ObservableObject {
     @Published var state: AppState = .unauthenticated
@@ -89,7 +96,6 @@ class AuthViewModel: ObservableObject {
     ) async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
         do {
-            // Step 1: create account (no inviteCode — family membership is a separate step)
             let res: AuthResponse = try await APIClient.shared.post(
                 "/auth/register",
                 body: RegisterRequest(
@@ -97,14 +103,15 @@ class AuthViewModel: ObservableObject {
                     password: password,
                     displayName: displayName,
                     role: role,
-                    inviteCode: nil
+                    inviteCode: inviteCode
                 )
             )
             KeychainHelper.saveToken(res.token)
             currentProfile = res.profile
 
-            // Step 2: if joining a family, call /families/join to get the family-scoped token
-            if let code = inviteCode {
+            // If the register call already joined the family (inviteCode accepted server-side),
+            // skip the explicit join step; otherwise call /families/join to get the scoped token.
+            if let code = inviteCode, res.profile.familyId == nil {
                 let joinRes: FamilyTokenResponse = try await APIClient.shared.post(
                     "/families/join",
                     body: JoinFamilyRequest(inviteCode: code, role: role)

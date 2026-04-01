@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct LandingView: View {
+    @State private var showClaimSheet = false
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -30,6 +32,15 @@ struct LandingView: View {
                     }
                     .buttonStyle(SecondaryButtonStyle())
 
+                    Button {
+                        showClaimSheet = true
+                    } label: {
+                        Text("I was added as a child →")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.memberBlue)
+                    }
+                    .padding(.top, 2)
+
                     HStack(spacing: 4) {
                         Text("Already have an account?")
                             .font(.system(size: 14))
@@ -46,6 +57,9 @@ struct LandingView: View {
                 .padding(.bottom, 48)
             }
             .background(Color.white.ignoresSafeArea())
+            .sheet(isPresented: $showClaimSheet) {
+                ClaimStep1View()
+            }
         }
     }
 }
