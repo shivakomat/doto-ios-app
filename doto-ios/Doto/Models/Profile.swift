@@ -16,6 +16,50 @@ struct Profile: Codable, Identifiable {
     let isAuthAccount: Bool?
     let createdAt: Date?
 
+    private enum CodingKeys: String, CodingKey {
+        case id, username, displayName, role, color
+        case pointsTotal, pointsBalance, points
+        case streak, streakStatus, streakGraceUsed, lastStreakDate
+        case familyId, isAuthAccount, createdAt
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id              = try c.decode(String.self, forKey: .id)
+        username        = try c.decodeIfPresent(String.self, forKey: .username)
+        displayName     = try c.decode(String.self, forKey: .displayName)
+        role            = try c.decode(String.self, forKey: .role)
+        color           = try c.decode(String.self, forKey: .color)
+        let fallback    = try c.decodeIfPresent(Int.self, forKey: .points) ?? 0
+        pointsTotal     = try c.decodeIfPresent(Int.self, forKey: .pointsTotal) ?? fallback
+        pointsBalance   = try c.decodeIfPresent(Int.self, forKey: .pointsBalance) ?? fallback
+        streak          = try c.decodeIfPresent(Int.self, forKey: .streak)
+        streakStatus    = try c.decodeIfPresent(String.self, forKey: .streakStatus)
+        streakGraceUsed = try c.decodeIfPresent(Bool.self, forKey: .streakGraceUsed)
+        lastStreakDate  = try c.decodeIfPresent(String.self, forKey: .lastStreakDate)
+        familyId        = try c.decodeIfPresent(String.self, forKey: .familyId)
+        isAuthAccount   = try c.decodeIfPresent(Bool.self, forKey: .isAuthAccount)
+        createdAt       = try c.decodeIfPresent(Date.self, forKey: .createdAt)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encodeIfPresent(username, forKey: .username)
+        try c.encode(displayName, forKey: .displayName)
+        try c.encode(role, forKey: .role)
+        try c.encode(color, forKey: .color)
+        try c.encode(pointsTotal, forKey: .pointsTotal)
+        try c.encode(pointsBalance, forKey: .pointsBalance)
+        try c.encodeIfPresent(streak, forKey: .streak)
+        try c.encodeIfPresent(streakStatus, forKey: .streakStatus)
+        try c.encodeIfPresent(streakGraceUsed, forKey: .streakGraceUsed)
+        try c.encodeIfPresent(lastStreakDate, forKey: .lastStreakDate)
+        try c.encodeIfPresent(familyId, forKey: .familyId)
+        try c.encodeIfPresent(isAuthAccount, forKey: .isAuthAccount)
+        try c.encodeIfPresent(createdAt, forKey: .createdAt)
+    }
+
     var isParent: Bool { role == "parent" }
     var isChild: Bool  { role == "child"  }
 
