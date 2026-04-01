@@ -151,7 +151,7 @@ struct ClaimStep2View: View {
             }
 
             HStack(spacing: 24) {
-                statPill(value: "\(profile.points)", label: "Points", color: .memberBlue)
+                statPill(value: "\(profile.pointsTotal)", label: "Points", color: .memberBlue)
                 if let streak = profile.streak, streak > 0 {
                     statPill(value: "\(streak)", label: "Day streak 🔥", color: .memberAmber)
                 }

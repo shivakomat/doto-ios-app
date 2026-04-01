@@ -6,8 +6,11 @@ struct Profile: Codable, Identifiable {
     let displayName: String
     let role: String
     let color: String
-    var points: Int
+    var pointsTotal: Int
+    var pointsBalance: Int
     var streak: Int?
+    var streakStatus: String?
+    var streakGraceUsed: Bool?
     var lastStreakDate: String?
     let familyId: String?
     let isAuthAccount: Bool?
@@ -20,5 +23,21 @@ struct Profile: Codable, Identifiable {
         displayName.split(separator: " ").prefix(2)
             .compactMap { $0.first.map(String.init) }
             .joined().uppercased()
+    }
+
+    var streakEmoji: String {
+        switch streakStatus {
+        case "active": return "🔥"
+        case "grace":  return "🔸"
+        default:       return ""
+        }
+    }
+
+    var streakLabel: String {
+        switch streakStatus {
+        case "active": return "\(streak ?? 0) days"
+        case "grace":  return "\(streak ?? 0) grace"
+        default:       return "—"
+        }
     }
 }

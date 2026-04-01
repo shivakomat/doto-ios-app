@@ -65,7 +65,7 @@ struct FamilyManageView: View {
                                     }
                                 }
                                 Spacer()
-                                Text("\(member.points) pts")
+                                Text("\(member.pointsTotal) pts")
                                     .font(.system(size: 12))
                                     .foregroundColor(.textSecondary)
                             }

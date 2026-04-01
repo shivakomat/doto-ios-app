@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var selectedColor = "#185FA5"
     @State private var familyName = ""
     @State private var showFamilyManage = false
+    @State private var showRewardCatalog = false
     @State private var showChangePassword = false
     @State private var isSavingProfile = false
     @State private var isSavingFamily = false
@@ -60,6 +61,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showFamilyManage) {
             FamilyManageView()
+        }
+        .sheet(isPresented: $showRewardCatalog) {
+            RewardCatalogView()
         }
         .sheet(isPresented: $showChangePassword) {
             ChangePasswordView(vm: vm)
@@ -157,6 +161,7 @@ struct SettingsView: View {
             }
 
             Button("Manage members") { showFamilyManage = true }
+            Button("Reward catalog") { showRewardCatalog = true }
         }
     }
 
