@@ -33,8 +33,28 @@ struct MemberSnapshot: Decodable, Identifiable {
     let displayName: String
     let role: String
     let color: String
-    let points: Int
+    let pointsTotal: Int
+    let pointsBalance: Int
     let streak: Int?
+
+    private enum CodingKeys: String, CodingKey {
+        case id, username, displayName, role, color
+        case pointsTotal, pointsBalance, points
+        case streak
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id           = try c.decode(String.self, forKey: .id)
+        username     = try c.decodeIfPresent(String.self, forKey: .username)
+        displayName  = try c.decode(String.self, forKey: .displayName)
+        role         = try c.decode(String.self, forKey: .role)
+        color        = try c.decode(String.self, forKey: .color)
+        let fallback = try c.decodeIfPresent(Int.self, forKey: .points) ?? 0
+        pointsTotal  = try c.decodeIfPresent(Int.self, forKey: .pointsTotal) ?? fallback
+        pointsBalance = try c.decodeIfPresent(Int.self, forKey: .pointsBalance) ?? fallback
+        streak       = try c.decodeIfPresent(Int.self, forKey: .streak)
+    }
 }
 
 struct EventSnapshot: Decodable, Identifiable {
