@@ -73,7 +73,7 @@ class AuthViewModel: ObservableObject {
     }
 
     func login(username: String, password: String) async {
-        isLoading = true; errorMessage = nil; defer { isLoading = false }
+        isLoading = true; errorMessage = nil
         do {
             let res: AuthResponse = try await APIClient.shared.post(
                 "/auth/login",
@@ -81,8 +81,10 @@ class AuthViewModel: ObservableObject {
             )
             KeychainHelper.saveToken(res.token)
             currentProfile = res.profile
+            isLoading = false
             state = res.profile.familyId == nil ? .noFamily : .ready
         } catch {
+            isLoading = false
             errorMessage = "Incorrect username or password."
         }
     }
@@ -94,7 +96,7 @@ class AuthViewModel: ObservableObject {
         role: String,
         inviteCode: String?
     ) async {
-        isLoading = true; errorMessage = nil; defer { isLoading = false }
+        isLoading = true; errorMessage = nil
         do {
             let res: AuthResponse = try await APIClient.shared.post(
                 "/auth/register",
@@ -117,15 +119,20 @@ class AuthViewModel: ObservableObject {
                     body: JoinFamilyRequest(inviteCode: code, role: role)
                 )
                 KeychainHelper.saveToken(joinRes.token)
+                isLoading = false
                 state = .ready
             } else {
+                isLoading = false
                 state = res.profile.familyId == nil ? .noFamily : .ready
             }
         } catch APIError.conflict(_) {
+            isLoading = false
             errorMessage = "That username is already taken. Try a different one."
         } catch APIError.notFound {
+            isLoading = false
             errorMessage = "The invite code is no longer valid. Go back and try again."
         } catch {
+            isLoading = false
             errorMessage = error.localizedDescription
         }
     }
