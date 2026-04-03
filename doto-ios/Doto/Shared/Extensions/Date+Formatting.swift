@@ -36,6 +36,21 @@ extension Date {
 
     var isPast: Bool { self < Date() }
 
+    var greetingEmoji: String {
+        let h = Calendar.current.component(.hour, from: self)
+        switch h {
+        case 5..<12:  return "☀️"
+        case 12..<17: return "🌤"
+        default:      return "🌙"
+        }
+    }
+
+    var dashboardDateLabel: String {
+        let f = DateFormatter()
+        f.dateFormat = "EEEE, MMMM d"
+        return f.string(from: self)
+    }
+
     var fullDateString: String {
         let f = DateFormatter()
         f.dateFormat = "EEEE, MMMM d"

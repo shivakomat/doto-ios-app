@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doto — Dashboard Wireframes</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F8FAFC; color: #1E293B; }
+.top-bar { background: #1E2761; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.top-bar h1 { font-size: 18px; font-weight: 600; color: #fff; }
+.top-bar span { font-size: 12px; color: #CADCFC; }
+.layout { display: flex; min-height: 100vh; }
+.side-nav { width: 200px; background: #fff; border-right: 1px solid #E2E8F0; padding: 16px 0; flex-shrink: 0; position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto; }
+.nav-section { font-size: 10px; font-weight: 600; color: #94A3B8; letter-spacing: 0.08em; padding: 12px 16px 4px; }
+.nav-link { display: block; padding: 8px 16px; font-size: 12px; color: #64748B; cursor: pointer; border-left: 3px solid transparent; text-decoration: none; }
+.nav-link:hover { background: #F1F5F9; color: #185FA5; }
+.nav-link.active { background: #EFF6FF; color: #185FA5; border-left-color: #185FA5; font-weight: 500; }
+.main { flex: 1; padding: 0; overflow-x: hidden; }
+.section { padding: 32px; border-bottom: 1px solid #E2E8F0; scroll-margin-top: 60px; }
+.section-header { margin-bottom: 24px; }
+.section-number { font-size: 11px; font-weight: 600; color: #185FA5; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+.section-title { font-size: 22px; font-weight: 600; color: #1E293B; margin-bottom: 8px; }
+.section-desc { font-size: 14px; color: #64748B; line-height: 1.6; max-width: 700px; }
+.screen-row { display: flex; gap: 32px; margin-bottom: 40px; align-items: flex-start; flex-wrap: wrap; }
+.phone-col { flex-shrink: 0; }
+.spec-col { flex: 1; min-width: 280px; max-width: 560px; }
+.screen-caption { font-size: 12px; font-weight: 500; color: #64748B; text-align: center; margin-top: 10px; }
+.phone { width: 220px; background: #0F172A; border-radius: 32px; padding: 6px; border: 3px solid #1E293B; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+.phone-inner { background: #F8FAFC; border-radius: 24px; overflow: hidden; min-height: 480px; }
+.phone-notch { background: #0F172A; height: 24px; display: flex; align-items: center; justify-content: center; }
+.notch-dot { width: 8px; height: 8px; border-radius: 50%; background: #334155; }
+.s-header { background: #1E2761; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; }
+.s-header-title { font-size: 13px; font-weight: 600; color: #fff; }
+.s-header-sub { font-size: 9px; color: #CADCFC; margin-top: 1px; }
+.s-add-btn { font-size: 10px; color: #60A5FA; cursor: pointer; }
+.s-content { padding: 10px 12px; }
+.s-btn-primary { background: #185FA5; color: #fff; border-radius: 8px; padding: 7px; font-size: 9px; font-weight: 600; text-align: center; margin-bottom: 6px; width: 100%; }
+.s-label { font-size: 8px; color: #94A3B8; margin-bottom: 3px; font-weight: 500; }
+.s-section-title { font-size: 9px; font-weight: 600; color: #1E293B; margin: 8px 0 5px; }
+.s-divider { border: none; border-top: 1px solid #F1F5F9; margin: 6px 0; }
+.av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.avatar-row { display: flex; gap: 5px; margin-bottom: 8px; }
+.event-pill { border-radius: 5px; padding: 5px 8px; margin-bottom: 4px; }
+.event-title { font-size: 9px; font-weight: 600; }
+.event-time { font-size: 8px; opacity: 0.8; margin-top: 1px; }
+.task-row { display: flex; align-items: center; gap: 6px; padding: 4px 0; border-bottom: 1px solid #F8FAFC; }
+.task-check { width: 14px; height: 14px; border-radius: 3px; border: 2px solid #CBD5E1; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; }
+.task-check.done { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+.task-text { font-size: 9px; flex: 1; color: #1E293B; }
+.task-badge { font-size: 7px; padding: 2px 5px; border-radius: 4px; font-weight: 500; }
+.badge-pts { background: #EAF3DE; color: #27500A; }
+.badge-due { background: #FAEEDA; color: #633806; }
+.badge-over { background: #FCEBEB; color: #791F1F; }
+.progress-bg { height: 5px; border-radius: 3px; background: #E2E8F0; margin: 4px 0; }
+.progress-fill { height: 100%; border-radius: 3px; }
+.ai-card { background: #FAEEDA; border: 1px solid #F0C070; border-radius: 7px; padding: 8px 10px; margin-bottom: 8px; }
+.ai-label { font-size: 8px; font-weight: 600; color: #633806; margin-bottom: 3px; }
+.ai-text { font-size: 8px; color: #633806; line-height: 1.4; }
+.nav-bar { display: flex; justify-content: space-around; background: #fff; border-top: 1px solid #E2E8F0; padding: 6px 0 4px; margin: 8px -12px -10px; }
+.nav-item { font-size: 8px; text-align: center; color: #94A3B8; }
+.nav-item.active { color: #185FA5; font-weight: 600; }
+.nav-dot { width: 18px; height: 2px; border-radius: 2px; background: #E2E8F0; margin: 0 auto 2px; }
+.nav-dot.active { background: #185FA5; }
+.spec-title { font-size: 17px; font-weight: 600; color: #1E293B; margin-bottom: 4px; }
+.spec-route { font-size: 11px; color: #185FA5; font-family: monospace; background: #EFF6FF; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+.spec-desc { font-size: 13px; color: #64748B; line-height: 1.6; margin-bottom: 16px; }
+.spec-block { margin-bottom: 18px; }
+.spec-block-title { font-size: 12px; font-weight: 600; color: #1E293B; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #E2E8F0; }
+.spec-row { display: flex; gap: 8px; margin-bottom: 7px; align-items: flex-start; }
+.spec-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.spec-text { font-size: 12px; color: #475569; line-height: 1.6; flex: 1; }
+.spec-text strong { color: #1E293B; font-weight: 600; }
+.new-badge { display: inline-block; font-size: 9px; font-weight: 700; color: #fff; background: #1D9E75; padding: 1px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+.upd-badge { display: inline-block; font-size: 9px; font-weight: 700; color: #fff; background: #BA7517; padding: 1px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+.field-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+.field-table th { text-align: left; font-weight: 600; color: #64748B; padding: 5px 8px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; font-size: 11px; }
+.field-table td { padding: 6px 8px; border-bottom: 1px solid #F1F5F9; color: #475569; font-size: 11px; vertical-align: top; }
+.note-box { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #1E40AF; line-height: 1.6; margin-top: 12px; }
+.gap-box { background: #FCEBEB; border: 1px solid #FECACA; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #7F1D1D; line-height: 1.6; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>Doto — Dashboard Wireframes</h1>
+  <span>Parent + Child · All States</span>
+</div>
+
+<div class="layout">
+  <nav class="side-nav">
+    <div class="nav-section">Parent Dashboard</div>
+    <a class="nav-link active" href="#parent-populated">Populated State</a>
+    <a class="nav-link" href="#parent-empty">Empty State</a>
+    <div class="nav-section">Child Dashboard</div>
+    <a class="nav-link" href="#child-populated">Populated State</a>
+    <a class="nav-link" href="#child-empty">Empty State</a>
+    <div class="nav-section">Sections Detail</div>
+    <a class="nav-link" href="#five-day-strip">5-Day Strip</a>
+    <a class="nav-link" href="#recent-tasks">Recent Tasks</a>
+    <a class="nav-link" href="#overdue-alert">Overdue Alert</a>
+    <a class="nav-link" href="#family-progress">Family Progress</a>
+    <a class="nav-link" href="#shopping-nudge">Shopping Nudge</a>
+    <a class="nav-link" href="#child-stats">Child Stats Card</a>
+    <a class="nav-link" href="#family-members">Family Members Row</a>
+    <a class="nav-link" href="#child-goal">Goal Progress</a>
+  </nav>
+
+  <main class="main">
+
+    <!-- ══════════════════ PARENT POPULATED ══════════════════ -->
+    <section class="section" id="parent-populated">
+      <div class="section-header">
+        <div class="section-number">Screen 01</div>
+        <div class="section-title">Dashboard — Parent (Populated)</div>
+        <div class="section-desc">The full parent dashboard. Seven sections flow vertically. The 5-day strip replaces "today only" events, giving parents a week-at-a-glance view without leaving the home screen.</div>
+      </div>
+
+      <div class="screen-row">
+        <div class="phone-col">
+          <div class="phone">
+            <div class="phone-notch"><div class="notch-dot"></div></div>
+            <div class="phone-inner">
+
+              <!-- Header -->
+              <div class="s-header" style="justify-content:space-between;">
+                <div>
+                  <div class="s-header-title">Good morning, Sarah ☀</div>
+                  <div class="s-header-sub">Thursday, March 26</div>
+                </div>
+                <div class="av" style="background:#185FA5;width:28px;height:28px;font-size:10px;">SJ</div>
+              </div>
+
+              <div class="s-content" style="overflow-y:auto;max-height:456px;">
+
+                <!-- Avatar row -->
+                <div class="avatar-row">
+                  <div class="av" style="background:#185FA5;border:2px solid #0C447C;">S</div>
+                  <div class="av" style="background:#1D9E75;">M</div>
+                  <div class="av" style="background:#BA7517;">L</div>
+                  <div class="av" style="background:#993556;">E</div>
+                  <div class="av" style="background:#E2E8F0;color:#64748B;font-size:12px;">+</div>
+                </div>
+
+                <!-- AI card -->
+                <div class="ai-card">
+                  <div class="ai-label">⚡ Conflict detected</div>
+                  <div class="ai-text">Liam's soccer (4pm) overlaps Emma's dentist (3:30pm). <span style="text-decoration:underline;">Resolve →</span></div>
+                </div>
+
+                <!-- 5-day strip -->
+                <div class="s-section-title">This week</div>
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+                  <div style="display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid #F1F5F9;">
+                    <!-- Today -->
+                    <div style="text-align:center;padding:5px 2px;background:#EFF6FF;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#185FA5;font-weight:600;">THU</div>
+                      <div style="font-size:11px;font-weight:700;color:#fff;background:#185FA5;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;margin:2px auto;">26</div>
+                      <div style="display:flex;justify-content:center;gap:2px;margin-top:3px;">
+                        <div style="width:5px;height:5px;border-radius:50%;background:#185FA5;"></div>
+                        <div style="width:5px;height:5px;border-radius:50%;background:#BA7517;"></div>
+                        <div style="width:5px;height:5px;border-radius:50%;background:#F0C070;"></div>
+                      </div>
+                    </div>
+                    <!-- Fri -->
+                    <div style="text-align:center;padding:5px 2px;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#94A3B8;">FRI</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px 0;">27</div>
+                      <div style="display:flex;justify-content:center;gap:2px;margin-top:3px;">
+                        <div style="width:5px;height:5px;border-radius:50%;background:#1D9E75;"></div>
+                      </div>
+                    </div>
+                    <!-- Sat -->
+                    <div style="text-align:center;padding:5px 2px;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#94A3B8;">SAT</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px 0;">28</div>
+                      <div style="height:8px;"></div>
+                    </div>
+                    <!-- Sun -->
+                    <div style="text-align:center;padding:5px 2px;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#94A3B8;">SUN</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px 0;">29</div>
+                      <div style="height:8px;"></div>
+                    </div>
+                    <!-- Mon -->
+                    <div style="text-align:center;padding:5px 2px;">
+                      <div style="font-size:7px;color:#94A3B8;">MON</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px 0;">30</div>
+                      <div style="display:flex;justify-content:center;gap:2px;margin-top:3px;">
+                        <div style="width:5px;height:5px;border-radius:50%;background:#185FA5;"></div>
+                        <div style="width:5px;height:5px;border-radius:50%;background:#993556;"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Selected day events (today) -->
+                  <div style="padding:6px 8px;">
+                    <div class="event-pill" style="background:#E6F1FB;margin-bottom:3px;">
+                      <div class="event-title" style="color:#0C447C;">School run</div>
+                      <div class="event-time" style="color:#185FA5;">8:00 AM · Sarah</div>
+                    </div>
+                    <div class="event-pill" style="background:#FAEEDA;border:1px solid #F0C070;margin-bottom:3px;">
+                      <div class="event-title" style="color:#633806;">⚠ Soccer · Liam</div>
+                      <div class="event-time" style="color:#854F0B;">4:00 PM · CONFLICT</div>
+                    </div>
+                    <div style="text-align:right;font-size:8px;color:#185FA5;cursor:pointer;">+ 1 more → See all</div>
+                  </div>
+                </div>
+
+                <!-- Overdue alert -->
+                <div style="background:#FCEBEB;border:1px solid #FECACA;border-radius:7px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                  <div style="font-size:12px;">🔴</div>
+                  <div style="flex:1;font-size:8px;color:#791F1F;font-weight:500;">2 overdue tasks need attention</div>
+                  <div style="font-size:8px;color:#E24B4A;font-weight:600;cursor:pointer;">View →</div>
+                </div>
+
+                <!-- Recent tasks -->
+                <div class="s-section-title">Recently assigned</div>
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+                  <div class="task-row" style="padding:6px 10px;">
+                    <div class="task-check"></div>
+                    <div class="av" style="background:#BA7517;width:16px;height:16px;font-size:6px;">L</div>
+                    <div class="task-text">Take out trash</div>
+                    <div class="task-badge badge-over">Overdue</div>
+                  </div>
+                  <div class="task-row" style="padding:6px 10px;border-bottom:none;">
+                    <div class="task-check"></div>
+                    <div class="av" style="background:#993556;width:16px;height:16px;font-size:6px;">E</div>
+                    <div class="task-text">Homework — Ch.4</div>
+                    <div class="task-badge badge-due">Today</div>
+                  </div>
+                </div>
+
+                <!-- Family progress -->
+                <div class="s-section-title">Family this week</div>
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+                    <div class="av" style="background:#185FA5;width:18px;height:18px;font-size:7px;">S</div>
+                    <div style="flex:1;font-size:8px;color:#1E293B;">Sarah</div>
+                    <div style="font-size:8px;color:#185FA5;font-weight:600;">3/5</div>
+                  </div>
+                  <div class="progress-bg" style="margin-bottom:5px;"><div class="progress-fill" style="width:60%;background:#185FA5;"></div></div>
+                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+                    <div class="av" style="background:#BA7517;width:18px;height:18px;font-size:7px;">L</div>
+                    <div style="flex:1;font-size:8px;color:#1E293B;">Liam</div>
+                    <div style="font-size:8px;color:#BA7517;font-weight:600;">1/4</div>
+                  </div>
+                  <div class="progress-bg" style="margin-bottom:5px;"><div class="progress-fill" style="width:25%;background:#BA7517;"></div></div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div class="av" style="background:#993556;width:18px;height:18px;font-size:7px;">E</div>
+                    <div style="flex:1;font-size:8px;color:#1E293B;">Emma</div>
+                    <div style="font-size:8px;color:#993556;font-weight:600;">2/3</div>
+                  </div>
+                  <div class="progress-bg"><div class="progress-fill" style="width:66%;background:#993556;"></div></div>
+                </div>
+
+                <!-- Shopping nudge -->
+                <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:7px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+                  <div style="font-size:14px;">🛒</div>
+                  <div style="flex:1;">
+                    <div style="font-size:8px;font-weight:600;color:#14532D;">Groceries — 8 items to buy</div>
+                    <div style="font-size:7px;color:#166534;">Last updated 2 days ago</div>
+                  </div>
+                  <div style="font-size:8px;color:#1D9E75;font-weight:600;cursor:pointer;">Go →</div>
+                </div>
+
+                <!-- Pending approvals -->
+                <div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:7px;padding:7px 10px;margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+                  <div style="font-size:14px;">⏳</div>
+                  <div style="flex:1;">
+                    <div style="font-size:8px;font-weight:600;color:#78350F;">Liam wants to claim Movie night</div>
+                    <div style="font-size:7px;color:#92400E;">100 pts · balance: 82 pts</div>
+                  </div>
+                  <div style="font-size:8px;color:#BA7517;font-weight:600;cursor:pointer;">Review →</div>
+                </div>
+
+                <!-- FAB -->
+                <div style="position:relative;height:28px;margin-top:4px;">
+                  <div style="position:absolute;right:0;top:0;width:32px;height:32px;background:#185FA5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:300;box-shadow:0 2px 8px rgba(24,95,165,0.4);">+</div>
+                </div>
+
+                <div class="nav-bar">
+                  <div class="nav-item active"><div class="nav-dot active"></div>Home</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Schedule</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Tasks</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Shop</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Rewards</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-caption">Parent Dashboard (populated)</div>
+        </div>
+
+        <div class="spec-col">
+          <div class="spec-title">Parent Dashboard — Populated</div>
+          <div class="spec-route">/dashboard (parent session)</div>
+          <div class="spec-desc">Seven sections, scrollable. Each section is independently collapsible by the parent (optional future enhancement). Pull-to-refresh reloads all sections in parallel.</div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Section order (top to bottom)</div>
+            <table class="field-table">
+              <tr><th>#</th><th>Section</th><th>Status</th><th>Hidden when</th></tr>
+              <tr><td>1</td><td>Header + avatar row</td><td>Existing</td><td>Never</td></tr>
+              <tr><td>2</td><td>AI conflict card</td><td>Existing</td><td>No conflict today</td></tr>
+              <tr><td>3</td><td>5-day schedule strip</td><td>New</td><td>No events in next 5 days</td></tr>
+              <tr><td>4</td><td>Overdue alert</td><td>New</td><td>No overdue tasks</td></tr>
+              <tr><td>5</td><td>Recently assigned tasks</td><td>New</td><td>No tasks assigned in last 48h</td></tr>
+              <tr><td>6</td><td>Family weekly progress</td><td>New</td><td>No tasks assigned this week</td></tr>
+              <tr><td>7</td><td>Shopping nudge</td><td>New</td><td>List has fewer than 3 unchecked</td></tr>
+              <tr><td>8</td><td>Pending approvals nudge</td><td>New</td><td>No pending reward approvals</td></tr>
+            </table>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">5-day strip behaviour</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">5 columns: today through today+4. Today always highlighted in blue. Event dots below each date — one dot per member colour who has events that day. Max 3 dots shown; if more: "…" dot.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Tap a column → expands the event list below to show that day's events. Default: today is selected and expanded. Tap same day again → collapses.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#E24B4A;"></div><div class="spec-text">Conflict dot: amber `#F0C070` instead of member colour. Shows even if the conflicting member has only 1 event if that event conflicts.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">"+ N more → See all" if today has more than 2 events in the collapsed list. Tapping navigates to Schedule tab with that day selected.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Overdue alert</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#E24B4A;"></div><div class="spec-text">Red strip. Shows count: "2 overdue tasks". Tap "View →" navigates to Tasks tab with status filter set to "overdue". Only shown when count > 0.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Recently assigned tasks</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Tasks created or updated in the last <strong>48 hours</strong>, not yet completed. Max 3 shown. Each row: checkbox + member avatar + title + status badge. Tap checkbox → marks complete inline. "See all →" link goes to Tasks tab.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Family weekly progress</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">One row per family member with tasks this week. Avatar + name + "X/Y done" + progress bar in member colour. Only members who have at least 1 task this week are shown. Parents included.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Shopping nudge</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#1D9E75;"></div><div class="spec-text">Green card. Shows the list with the most unchecked items (usually Groceries). "Last updated X days ago" sub-label gives context. Only shown when the highest-count list has 3+ unchecked items. Tap "Go →" navigates to Shopping tab with that list selected.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Pending approvals nudge</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#BA7517;"></div><div class="spec-text">Amber card per pending reward. Shows child's name, reward title, points cost, and current balance. "Review →" navigates to Rewards tab. Only shown when at least 1 reward is pending approval.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ PARENT EMPTY ══════════════════ -->
+    <section class="section" id="parent-empty">
+      <div class="section-header">
+        <div class="section-number">Screen 02</div>
+        <div class="section-title">Dashboard — Parent (Empty State)</div>
+        <div class="section-desc">Brand new family with no events or tasks. Never show a blank screen. Three dashed CTAs guide activation.</div>
+      </div>
+
+      <div class="screen-row">
+        <div class="phone-col">
+          <div class="phone">
+            <div class="phone-notch"><div class="notch-dot"></div></div>
+            <div class="phone-inner">
+              <div class="s-header" style="justify-content:space-between;">
+                <div>
+                  <div class="s-header-title">Welcome, Sarah! 👋</div>
+                  <div class="s-header-sub">Let's get your family organised</div>
+                </div>
+                <div class="av" style="background:#185FA5;width:28px;height:28px;font-size:10px;">SJ</div>
+              </div>
+              <div class="s-content">
+                <!-- Welcome card -->
+                <div style="background:#EAF3DE;border:1px solid #A3D97F;border-radius:7px;padding:8px 10px;margin-bottom:10px;">
+                  <div style="font-size:8px;font-weight:600;color:#27500A;margin-bottom:2px;">👋 Welcome to Doto</div>
+                  <div style="font-size:8px;color:#3B6D11;line-height:1.4;">Add your first event and task to get started.</div>
+                </div>
+                <!-- CTAs -->
+                <div style="background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;">
+                  <div style="font-size:20px;">📅</div>
+                  <div style="flex:1;">
+                    <div style="font-size:9px;font-weight:600;color:#1E293B;">Add your first event</div>
+                    <div style="font-size:8px;color:#94A3B8;">Soccer practice, school pickup...</div>
+                  </div>
+                  <div style="font-size:12px;color:#185FA5;">→</div>
+                </div>
+                <div style="background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;">
+                  <div style="font-size:20px;">✅</div>
+                  <div style="flex:1;">
+                    <div style="font-size:9px;font-weight:600;color:#1E293B;">Assign a task</div>
+                    <div style="font-size:8px;color:#94A3B8;">Take out trash, do homework...</div>
+                  </div>
+                  <div style="font-size:12px;color:#185FA5;">→</div>
+                </div>
+                <div style="background:#F8FAFC;border:2px dashed #CBD5E1;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;">
+                  <div style="font-size:20px;">👥</div>
+                  <div style="flex:1;">
+                    <div style="font-size:9px;font-weight:600;color:#1E293B;">Invite your partner</div>
+                    <div style="font-size:8px;color:#94A3B8;">Share the mental load</div>
+                  </div>
+                  <div style="font-size:12px;color:#185FA5;">→</div>
+                </div>
+                <div style="position:relative;height:28px;margin-top:4px;">
+                  <div style="position:absolute;right:0;top:0;width:32px;height:32px;background:#185FA5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:300;box-shadow:0 2px 8px rgba(24,95,165,0.4);">+</div>
+                </div>
+                <div class="nav-bar">
+                  <div class="nav-item active"><div class="nav-dot active"></div>Home</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Schedule</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Tasks</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Shop</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Rewards</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-caption">Parent Dashboard (empty)</div>
+        </div>
+
+        <div class="spec-col">
+          <div class="spec-title">Parent Dashboard — Empty State</div>
+          <div class="spec-route">/dashboard (no events AND no tasks)</div>
+          <div class="spec-desc">Shown when family has zero events AND zero tasks. The greeting changes to "Welcome, Sarah! 👋" and the subtitle becomes "Let's get your family organised". Never a blank screen.</div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Trigger logic</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">If <code>upcomingEvents.isEmpty AND recentTasks.isEmpty</code> → show empty variant. As soon as either has data, switch to populated variant immediately (no reload needed).</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Three CTAs</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text"><strong>Add your first event</strong> → opens AddEditEventView sheet (same as FAB)</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#1D9E75;"></div><div class="spec-text"><strong>Assign a task</strong> → opens AddEditTaskView sheet</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#BA7517;"></div><div class="spec-text"><strong>Invite your partner</strong> → opens invite code share sheet</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ CHILD POPULATED ══════════════════ -->
+    <section class="section" id="child-populated">
+      <div class="section-header">
+        <div class="section-number">Screen 03</div>
+        <div class="section-title">Dashboard — Child (Populated)</div>
+        <div class="section-desc">The child dashboard is completely different from the parent's. It's personal, motivating, and gives the child their own identity in the app. They can see the whole family but interact only with their own data.</div>
+      </div>
+
+      <div class="screen-row">
+        <div class="phone-col">
+          <div class="phone">
+            <div class="phone-notch"><div class="notch-dot"></div></div>
+            <div class="phone-inner">
+              <!-- Child header -->
+              <div class="s-header" style="justify-content:space-between;">
+                <div>
+                  <div class="s-header-title">Good morning, Liam ☀</div>
+                  <div class="s-header-sub">Thursday, March 26</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:14px;font-weight:700;color:#fff;">82</div>
+                  <div style="font-size:7px;color:#CADCFC;">pts</div>
+                </div>
+              </div>
+
+              <div class="s-content" style="overflow-y:auto;max-height:456px;">
+
+                <!-- Stats card -->
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:8px;margin-bottom:8px;display:flex;gap:0;">
+                  <div style="flex:1;text-align:center;border-right:1px solid #F1F5F9;">
+                    <div style="font-size:16px;font-weight:700;color:#BA7517;">145</div>
+                    <div style="font-size:7px;color:#94A3B8;">all-time pts</div>
+                  </div>
+                  <div style="flex:1;text-align:center;border-right:1px solid #F1F5F9;">
+                    <div style="font-size:16px;font-weight:700;color:#BA7517;">🔥 5</div>
+                    <div style="font-size:7px;color:#94A3B8;">day streak</div>
+                  </div>
+                  <div style="flex:1;text-align:center;">
+                    <div style="font-size:16px;font-weight:700;color:#185FA5;">🥇 1st</div>
+                    <div style="font-size:7px;color:#94A3B8;">this week</div>
+                  </div>
+                </div>
+
+                <!-- Goal progress -->
+                <div style="background:#FAEEDA;border:1px solid #FAC775;border-radius:7px;padding:8px;margin-bottom:8px;">
+                  <div style="font-size:8px;font-weight:600;color:#412402;margin-bottom:4px;">🎬 Movie night — 100 pts</div>
+                  <div class="progress-bg"><div class="progress-fill" style="width:82%;background:#BA7517;"></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px;">
+                    <div style="font-size:7px;color:#633806;">82 / 100 pts · 18 to go</div>
+                    <div style="font-size:7px;color:#fff;background:#BA7517;padding:2px 6px;border-radius:8px;font-weight:600;">PENDING ⏳</div>
+                  </div>
+                </div>
+
+                <!-- My tasks today -->
+                <div class="s-section-title">My tasks today</div>
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+                  <div class="task-row" style="padding:6px 10px;">
+                    <div class="task-check done">✓</div>
+                    <div class="task-text" style="color:#94A3B8;text-decoration:line-through;">Make bed</div>
+                    <div class="task-badge badge-pts">5 pts ✓</div>
+                  </div>
+                  <div class="task-row" style="padding:6px 10px;">
+                    <div class="task-check"></div>
+                    <div class="task-text" style="color:#E24B4A;">Take out trash</div>
+                    <div class="task-badge badge-over">Overdue</div>
+                  </div>
+                  <div class="task-row" style="padding:6px 10px;border-bottom:none;">
+                    <div class="task-check"></div>
+                    <div class="task-text">Homework — Ch.4</div>
+                    <div class="task-badge badge-due">Today</div>
+                  </div>
+                </div>
+
+                <!-- My upcoming events -->
+                <div class="s-section-title">My upcoming events</div>
+                <div class="event-pill" style="background:#FAEEDA;border:1px solid #F0C070;margin-bottom:4px;">
+                  <div class="event-title" style="color:#633806;">⚠ Soccer practice</div>
+                  <div class="event-time" style="color:#854F0B;">Today 4:00 PM · CONFLICT</div>
+                </div>
+                <div class="event-pill" style="background:#EAF3DE;margin-bottom:4px;">
+                  <div class="event-title" style="color:#27500A;">Swimming lesson</div>
+                  <div class="event-time" style="color:#3B6D11;">Fri 10:00 AM · Riverside Pool</div>
+                </div>
+
+                <!-- Family members row -->
+                <div class="s-section-title">Our family</div>
+                <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:4px;">
+                  <!-- Liam (self) -->
+                  <div style="flex-shrink:0;text-align:center;min-width:44px;">
+                    <div class="av" style="background:#BA7517;border:2px solid #633806;width:32px;height:32px;margin:0 auto 3px;">L</div>
+                    <div style="font-size:7px;font-weight:600;color:#BA7517;">You</div>
+                    <div style="font-size:7px;color:#94A3B8;">🔥 5</div>
+                  </div>
+                  <!-- Mum -->
+                  <div style="flex-shrink:0;text-align:center;min-width:44px;">
+                    <div class="av" style="background:#185FA5;width:32px;height:32px;margin:0 auto 3px;">S</div>
+                    <div style="font-size:7px;color:#64748B;">Mum</div>
+                    <div style="font-size:7px;color:#94A3B8;">20 pts</div>
+                  </div>
+                  <!-- Dad -->
+                  <div style="flex-shrink:0;text-align:center;min-width:44px;">
+                    <div class="av" style="background:#1D9E75;width:32px;height:32px;margin:0 auto 3px;">M</div>
+                    <div style="font-size:7px;color:#64748B;">Dad</div>
+                    <div style="font-size:7px;color:#94A3B8;">18 pts</div>
+                  </div>
+                  <!-- Emma -->
+                  <div style="flex-shrink:0;text-align:center;min-width:44px;">
+                    <div class="av" style="background:#993556;width:32px;height:32px;margin:0 auto 3px;">E</div>
+                    <div style="font-size:7px;color:#64748B;">Emma</div>
+                    <div style="font-size:7px;color:#94A3B8;">🔸 2</div>
+                  </div>
+                </div>
+
+                <div class="nav-bar">
+                  <div class="nav-item active"><div class="nav-dot active"></div>Home</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Tasks</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Rewards</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-caption">Child Dashboard (populated)</div>
+        </div>
+
+        <div class="spec-col">
+          <div class="spec-title">Child Dashboard — Populated</div>
+          <div class="spec-route">/dashboard (child session)</div>
+          <div class="spec-desc">A completely separate experience from the parent dashboard. Personal, motivating, focused on the child's world. Five sections.</div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Header changes for child</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#BA7517;"></div><div class="spec-text">Points balance shown right-aligned in the header (82 pts) — always visible. Avatar tap → profile settings (change password only for children).</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#64748B;"></div><div class="spec-text">No avatar filter row. No "+" invite button. No FAB.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Section order</div>
+            <table class="field-table">
+              <tr><th>#</th><th>Section</th><th>Hidden when</th></tr>
+              <tr><td>1</td><td>Stats card (pts / streak / rank)</td><td>Never</td></tr>
+              <tr><td>2</td><td>Active goal progress</td><td>No active reward goal</td></tr>
+              <tr><td>3</td><td>My tasks today</td><td>No tasks due today</td></tr>
+              <tr><td>4</td><td>My upcoming events</td><td>No events in next 3 days</td></tr>
+              <tr><td>5</td><td>Our family member row</td><td>Never (always visible)</td></tr>
+            </table>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Stats card</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#BA7517;"></div><div class="spec-text">Three columns: <strong>all-time pts</strong> (from points_total), <strong>streak</strong> (with grace emoji if applicable), <strong>leaderboard rank this week</strong>. Tap the rank column → navigates to Rewards tab leaderboard.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Goal progress card</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#BA7517;"></div><div class="spec-text">Shows the child's active reward goal. Progress bar using points_balance ÷ cost. Status badge: nothing (active), "PENDING ⏳" (pending approval), "APPROVED ✓" (approved, parent to give reward). Tap → navigates to Rewards tab.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">My tasks today</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#1D9E75;"></div><div class="spec-text">Only tasks where assigned_to = child's profile ID AND due_at = today. Checkable inline — tap checkbox → PATCH .../complete, points update locally immediately (optimistic). Completed tasks shown strikethrough with green pts badge.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">My upcoming events</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Events where child's profile ID is in assignedTo, for today + next 2 days. Max 3 shown. Conflict events in amber. Read-only — tap shows event detail sheet but no edit button.</div></div>
+          </div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Our family member row <span class="new-badge">NEW</span></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Horizontal scroll of all family members. Child's own avatar shown first with dark ring border and "You" label. Each member shows: avatar (32px), display name, and their <strong>weekly points</strong> or streak emoji. This is read-only — tapping a member does nothing in MVP.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Weekly points are shown for other children. For parents, show their weekly points too. Streak state shown where relevant: 🔥 for active, 🔸 for grace.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ CHILD EMPTY ══════════════════ -->
+    <section class="section" id="child-empty">
+      <div class="section-header">
+        <div class="section-number">Screen 04</div>
+        <div class="section-title">Dashboard — Child (Empty State)</div>
+        <div class="section-desc">A child who has just joined and has no tasks yet. Encouraging, not blank.</div>
+      </div>
+
+      <div class="screen-row">
+        <div class="phone-col">
+          <div class="phone">
+            <div class="phone-notch"><div class="notch-dot"></div></div>
+            <div class="phone-inner">
+              <div class="s-header" style="justify-content:space-between;">
+                <div>
+                  <div class="s-header-title">Hey Liam! 👋</div>
+                  <div class="s-header-sub">Thursday, March 26</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:14px;font-weight:700;color:#fff;">0</div>
+                  <div style="font-size:7px;color:#CADCFC;">pts</div>
+                </div>
+              </div>
+              <div class="s-content">
+                <!-- Stats card zeroed -->
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:8px;margin-bottom:8px;display:flex;gap:0;">
+                  <div style="flex:1;text-align:center;border-right:1px solid #F1F5F9;">
+                    <div style="font-size:16px;font-weight:700;color:#94A3B8;">0</div>
+                    <div style="font-size:7px;color:#94A3B8;">all-time pts</div>
+                  </div>
+                  <div style="flex:1;text-align:center;border-right:1px solid #F1F5F9;">
+                    <div style="font-size:16px;font-weight:700;color:#94A3B8;">—</div>
+                    <div style="font-size:7px;color:#94A3B8;">streak</div>
+                  </div>
+                  <div style="flex:1;text-align:center;">
+                    <div style="font-size:16px;font-weight:700;color:#94A3B8;">—</div>
+                    <div style="font-size:7px;color:#94A3B8;">rank</div>
+                  </div>
+                </div>
+                <!-- Welcome message -->
+                <div style="background:#EAF3DE;border:1px solid #A3D97F;border-radius:7px;padding:10px;margin-bottom:8px;text-align:center;">
+                  <div style="font-size:20px;margin-bottom:4px;">🎉</div>
+                  <div style="font-size:9px;font-weight:600;color:#27500A;margin-bottom:2px;">You're in the family!</div>
+                  <div style="font-size:8px;color:#3B6D11;line-height:1.4;">Complete tasks to earn points and start your streak. Check back here when a parent assigns you a task.</div>
+                </div>
+                <!-- Family members always shown -->
+                <div class="s-section-title">Our family</div>
+                <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+                  <div style="flex-shrink:0;text-align:center;min-width:44px;">
+                    <div class="av" style="background:#BA7517;border:2px solid #633806;width:32px;height:32px;margin:0 auto 3px;">L</div>
+                    <div style="font-size:7px;font-weight:600;color:#BA7517;">You</div>
+                    <div style="font-size:7px;color:#94A3B8;">0 pts</div>
+                  </div>
+                  <div style="flex-shrink:0;text-align:center;min-width:44px;">
+                    <div class="av" style="background:#185FA5;width:32px;height:32px;margin:0 auto 3px;">S</div>
+                    <div style="font-size:7px;color:#64748B;">Mum</div>
+                    <div style="font-size:7px;color:#94A3B8;">20 pts</div>
+                  </div>
+                  <div style="flex-shrink:0;text-align:center;min-width:44px;">
+                    <div class="av" style="background:#993556;width:32px;height:32px;margin:0 auto 3px;">E</div>
+                    <div style="font-size:7px;color:#64748B;">Emma</div>
+                    <div style="font-size:7px;color:#94A3B8;">🔥 2</div>
+                  </div>
+                </div>
+                <div class="nav-bar">
+                  <div class="nav-item active"><div class="nav-dot active"></div>Home</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Tasks</div>
+                  <div class="nav-item"><div class="nav-dot"></div>Rewards</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-caption">Child Dashboard (empty)</div>
+        </div>
+
+        <div class="spec-col">
+          <div class="spec-title">Child Dashboard — Empty State</div>
+          <div class="spec-route">/dashboard (child, no tasks)</div>
+          <div class="spec-desc">Stats card is shown with zeroes — not hidden. Family members are always shown. A welcome message replaces the tasks and events sections.</div>
+
+          <div class="spec-block">
+            <div class="spec-block-title">Empty state rules</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Stats card always shown, even at 0. This anchors the child's identity in the app from day 1.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Family members row always shown — this gives the child something to look at even before they have tasks.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#1D9E75;"></div><div class="spec-text">Welcome card replaces tasks section: "You're in the family! Complete tasks to earn points and start your streak." Friendly, encouraging, not blank.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#64748B;"></div><div class="spec-text">Greeting changes to "Hey Liam! 👋" instead of "Good morning" — more casual for a child with no data yet.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ DETAIL SECTIONS ══════════════════ -->
+
+    <section class="section" id="five-day-strip">
+      <div class="section-header">
+        <div class="section-number">Detail — 5-Day Strip</div>
+        <div class="section-title">5-Day Schedule Strip</div>
+        <div class="section-desc">Replaces the flat "Today" event list. Shows a compact 5-column view of the next 5 days. Selecting a day expands the event list below it.</div>
+      </div>
+      <div class="screen-row">
+        <div class="phone-col">
+          <div class="phone">
+            <div class="phone-notch"><div class="notch-dot"></div></div>
+            <div class="phone-inner">
+              <div class="s-header"><div class="s-header-title">This week</div></div>
+              <div class="s-content">
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+                  <!-- Day header strip -->
+                  <div style="display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid #E2E8F0;">
+                    <div style="text-align:center;padding:6px 2px;background:#EFF6FF;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#185FA5;font-weight:700;">THU</div>
+                      <div style="font-size:11px;font-weight:700;color:#fff;background:#185FA5;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;margin:2px auto;">26</div>
+                      <div style="display:flex;justify-content:center;gap:2px;margin-top:3px;">
+                        <div style="width:5px;height:5px;border-radius:50%;background:#185FA5;"></div>
+                        <div style="width:5px;height:5px;border-radius:50%;background:#BA7517;"></div>
+                        <div style="width:5px;height:5px;border-radius:50%;background:#F0C070;"></div>
+                      </div>
+                    </div>
+                    <div style="text-align:center;padding:6px 2px;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#94A3B8;">FRI</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px auto;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">27</div>
+                      <div style="display:flex;justify-content:center;gap:2px;margin-top:3px;">
+                        <div style="width:5px;height:5px;border-radius:50%;background:#1D9E75;"></div>
+                      </div>
+                    </div>
+                    <div style="text-align:center;padding:6px 2px;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#94A3B8;">SAT</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px auto;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">28</div>
+                      <div style="height:8px;margin-top:3px;"></div>
+                    </div>
+                    <div style="text-align:center;padding:6px 2px;border-right:1px solid #F1F5F9;">
+                      <div style="font-size:7px;color:#94A3B8;">SUN</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px auto;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">29</div>
+                      <div style="height:8px;margin-top:3px;"></div>
+                    </div>
+                    <div style="text-align:center;padding:6px 2px;">
+                      <div style="font-size:7px;color:#94A3B8;">MON</div>
+                      <div style="font-size:11px;color:#64748B;margin:2px auto;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">30</div>
+                      <div style="display:flex;justify-content:center;gap:2px;margin-top:3px;">
+                        <div style="width:5px;height:5px;border-radius:50%;background:#185FA5;"></div>
+                        <div style="width:5px;height:5px;border-radius:50%;background:#993556;"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Expanded day events — Thursday selected -->
+                  <div style="padding:8px 10px;">
+                    <div style="font-size:8px;font-weight:600;color:#64748B;margin-bottom:5px;">Thursday, March 26</div>
+                    <div class="event-pill" style="background:#E6F1FB;margin-bottom:3px;">
+                      <div class="event-title" style="color:#0C447C;">School run</div>
+                      <div class="event-time" style="color:#185FA5;">8:00 AM · 30 min · Sarah</div>
+                    </div>
+                    <div class="event-pill" style="background:#FAEEDA;border:1px solid #F0C070;margin-bottom:3px;">
+                      <div class="event-title" style="color:#633806;">⚠ Soccer practice · Liam</div>
+                      <div class="event-time" style="color:#854F0B;">4:00 PM · CONFLICT · Riverside Park</div>
+                    </div>
+                    <div class="event-pill" style="background:#EAF3DE;margin-bottom:3px;">
+                      <div class="event-title" style="color:#27500A;">Team standup · Mike</div>
+                      <div class="event-time" style="color:#3B6D11;">9:30 AM · 30 min</div>
+                    </div>
+                    <div style="text-align:right;font-size:8px;color:#185FA5;cursor:pointer;margin-top:4px;">See all in Schedule →</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-caption">5-Day Strip</div>
+        </div>
+        <div class="spec-col">
+          <div class="spec-title">5-Day Schedule Strip</div>
+          <div class="spec-block">
+            <div class="spec-block-title">Dot legend</div>
+            <table class="field-table">
+              <tr><th>Dot colour</th><th>Meaning</th></tr>
+              <tr><td>Member colour</td><td>That member has an event on this day</td></tr>
+              <tr><td>Amber #F0C070</td><td>A conflict exists on this day</td></tr>
+              <tr><td>Max 3 dots</td><td>If 4+ members have events: show 3 dots + "…" indicator</td></tr>
+            </table>
+          </div>
+          <div class="spec-block">
+            <div class="spec-block-title">Interaction rules</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text"><strong>Default state:</strong> Today's column is selected. Events for today shown below.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text"><strong>Tap any column:</strong> Selects it. Events for that day load below. The selected column gets a light blue background.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text"><strong>Tap same column again:</strong> Deselects. Event list collapses.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text"><strong>"See all in Schedule →":</strong> Navigates to Schedule tab with the selected day pre-loaded.</div></div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text"><strong>Member filter:</strong> If parent has tapped a member in the avatar row, event dots and expanded list filter to that member.</div></div>
+          </div>
+          <div class="spec-block">
+            <div class="spec-block-title">Data fetched</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#64748B;"></div><div class="spec-text"><code>GET /api/events?from=today&to=today+4</code> — fetched once on load. Switching between days is client-side filtering of the already-fetched events. No additional API calls on day tap.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="family-members">
+      <div class="section-header">
+        <div class="section-number">Detail — Family Members Row</div>
+        <div class="section-title">Child Dashboard — Family Members Row</div>
+        <div class="section-desc">The child can always see all their family members on the home screen. Gives them a sense of belonging and mild competitive motivation without being in-your-face.</div>
+      </div>
+      <div class="screen-row">
+        <div class="phone-col">
+          <div class="phone">
+            <div class="phone-notch"><div class="notch-dot"></div></div>
+            <div class="phone-inner">
+              <div class="s-header"><div class="s-header-title">Our family</div></div>
+              <div class="s-content">
+                <div style="display:flex;gap:10px;overflow-x:auto;padding:6px 0;">
+                  <!-- Self -->
+                  <div style="flex-shrink:0;text-align:center;min-width:52px;">
+                    <div style="position:relative;margin:0 auto 4px;width:40px;height:40px;">
+                      <div class="av" style="background:#BA7517;border:2px solid #633806;width:40px;height:40px;font-size:12px;position:absolute;">L</div>
+                    </div>
+                    <div style="font-size:8px;font-weight:700;color:#BA7517;">You</div>
+                    <div style="font-size:8px;color:#94A3B8;">🔥 5 days</div>
+                    <div style="font-size:8px;font-weight:600;color:#BA7517;">62 pts</div>
+                  </div>
+                  <!-- Mum -->
+                  <div style="flex-shrink:0;text-align:center;min-width:52px;">
+                    <div class="av" style="background:#185FA5;width:40px;height:40px;font-size:12px;margin:0 auto 4px;">S</div>
+                    <div style="font-size:8px;color:#64748B;font-weight:600;">Mum</div>
+                    <div style="font-size:8px;color:#94A3B8;">20 pts</div>
+                    <div style="font-size:7px;color:#94A3B8;">Parent</div>
+                  </div>
+                  <!-- Dad -->
+                  <div style="flex-shrink:0;text-align:center;min-width:52px;">
+                    <div class="av" style="background:#1D9E75;width:40px;height:40px;font-size:12px;margin:0 auto 4px;">M</div>
+                    <div style="font-size:8px;color:#64748B;font-weight:600;">Dad</div>
+                    <div style="font-size:8px;color:#94A3B8;">18 pts</div>
+                    <div style="font-size:7px;color:#94A3B8;">Parent</div>
+                  </div>
+                  <!-- Emma -->
+                  <div style="flex-shrink:0;text-align:center;min-width:52px;">
+                    <div class="av" style="background:#993556;width:40px;height:40px;font-size:12px;margin:0 auto 4px;">E</div>
+                    <div style="font-size:8px;color:#64748B;font-weight:600;">Emma</div>
+                    <div style="font-size:8px;color:#94A3B8;">🔸 2 days</div>
+                    <div style="font-size:8px;color:#993556;font-weight:600;">38 pts</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-caption">Family Members Row (Child)</div>
+        </div>
+        <div class="spec-col">
+          <div class="spec-title">Family Members Row</div>
+          <div class="spec-block">
+            <div class="spec-block-title">What each member card shows</div>
+            <table class="field-table">
+              <tr><th>Row</th><th>Self</th><th>Other child</th><th>Parent</th></tr>
+              <tr><td>Label</td><td>"You" (bold, member colour)</td><td>Display name</td><td>Display name</td></tr>
+              <tr><td>Line 2</td><td>🔥/🔸 streak</td><td>🔥/🔸 streak</td><td>"Parent" muted</td></tr>
+              <tr><td>Line 3</td><td>Weekly pts (bold)</td><td>Weekly pts (bold, their colour)</td><td>Weekly pts (muted)</td></tr>
+            </table>
+          </div>
+          <div class="spec-block">
+            <div class="spec-block-title">Ordering</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#185FA5;"></div><div class="spec-text">Self always first. Then other children sorted by weekly points (DESC). Then parents sorted by created_at. This naturally puts competitive siblings next to each other.</div></div>
+          </div>
+          <div class="spec-block">
+            <div class="spec-block-title">Interaction</div>
+            <div class="spec-row"><div class="spec-dot" style="background:#64748B;"></div><div class="spec-text">Read-only in MVP. Tapping a member does nothing. In V2, tapping another child could show their profile card (public points/streak only — no tasks).</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const navLinks  = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.pageYOffset >= s.offsetTop - 80) current = s.id; });
+  navLinks.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+  });
+});
+navLinks.forEach(l => {
+  l.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(l.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

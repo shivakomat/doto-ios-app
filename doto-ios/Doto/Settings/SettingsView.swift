@@ -6,19 +6,15 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var displayName = ""
-    @State private var selectedColor = "#185FA5"
+    @State private var selectedColor = "#6C63FF"
     @State private var familyName = ""
     @State private var showFamilyManage = false
     @State private var showRewardCatalog = false
     @State private var showChangePassword = false
     @State private var isSavingProfile = false
     @State private var isSavingFamily = false
-    @AppStorage("notif.taskAssigned") private var taskAssigned = true
-    @AppStorage("notif.conflictAlert") private var conflictAlert = true
-    @AppStorage("notif.overdueAlert")  private var overdueAlert = true
-    @AppStorage("notif.weeklyDigest")  private var weeklyDigest = true
 
-    private let colorPalette = Color.memberHexPalette
+    private let colorPalette = Color.settingsColorPalette
 
     var body: some View {
         NavigationView {
@@ -52,9 +48,12 @@ struct SettingsView: View {
         }
         .onAppear {
             displayName = authVM.currentProfile?.displayName ?? ""
-            selectedColor = authVM.currentProfile?.color ?? "#185FA5"
+            selectedColor = authVM.currentProfile?.color ?? "#6C63FF"
             familyName = vm.family?.name ?? ""
-            Task { await vm.loadFamily() }
+            Task { 
+                await vm.loadFamily()
+                await vm.loadNotifications()
+            }
         }
         .onChange(of: vm.family?.id) { _ in
             familyName = vm.family?.name ?? ""
@@ -67,6 +66,30 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showChangePassword) {
             ChangePasswordView(vm: vm)
+        }
+        .confirmationDialog(
+            "Leave family?",
+            isPresented: $vm.showLeaveConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Leave family", role: .destructive) {
+                Task { await vm.leaveFamily(authVM: authVM) }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("You will lose access to all family data. This cannot be undone.")
+        }
+        .confirmationDialog(
+            "Delete account?",
+            isPresented: $vm.showDeleteConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Delete my account", role: .destructive) {
+                Task { await vm.deleteAccount(authVM: authVM) }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Your account and all your data will be permanently deleted. This cannot be undone.")
         }
     }
 
@@ -167,10 +190,42 @@ struct SettingsView: View {
 
     private var notificationsSection: some View {
         Section(header: Text("Notifications")) {
-            Toggle("Task assigned", isOn: $taskAssigned)
-            Toggle("Schedule conflict", isOn: $conflictAlert)
-            Toggle("Overdue reminder", isOn: $overdueAlert)
-            Toggle("Weekly digest", isOn: $weeklyDigest)
+            Toggle("Task assigned", isOn: $vm.notifications.taskAssigned)
+                .onChange(of: vm.notifications.taskAssigned) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Task overdue", isOn: $vm.notifications.taskOverdue)
+                .onChange(of: vm.notifications.taskOverdue) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Task completed", isOn: $vm.notifications.taskCompleted)
+                .onChange(of: vm.notifications.taskCompleted) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Schedule conflict", isOn: $vm.notifications.scheduleConflict)
+                .onChange(of: vm.notifications.scheduleConflict) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Reward pending", isOn: $vm.notifications.rewardPending)
+                .onChange(of: vm.notifications.rewardPending) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Reward approved", isOn: $vm.notifications.rewardApproved)
+                .onChange(of: vm.notifications.rewardApproved) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Streak at risk", isOn: $vm.notifications.streakAtRisk)
+                .onChange(of: vm.notifications.streakAtRisk) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Bonus points", isOn: $vm.notifications.bonusPoints)
+                .onChange(of: vm.notifications.bonusPoints) { _ in
+                    Task { await vm.saveNotifications() }
+                }
+            Toggle("Weekly digest", isOn: $vm.notifications.weeklyDigest)
+                .onChange(of: vm.notifications.weeklyDigest) { _ in
+                    Task { await vm.saveNotifications() }
+                }
         }
     }
 
@@ -184,9 +239,17 @@ struct SettingsView: View {
             }
 
             Button(role: .destructive) {
+                vm.showLeaveConfirm = true
             } label: {
                 Text("Leave family")
                     .foregroundColor(.orange)
+            }
+
+            Button(role: .destructive) {
+                vm.showDeleteConfirm = true
+            } label: {
+                Text("Delete account")
+                    .foregroundColor(.red)
             }
         }
     }

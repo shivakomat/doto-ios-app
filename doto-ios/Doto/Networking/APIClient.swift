@@ -12,6 +12,10 @@ class APIClient {
         try await request(method: "POST", path: path, params: [:], body: body)
     }
 
+    func post<T: Decodable>(_ path: String) async throws -> T {
+        try await request(method: "POST", path: path, params: [:], body: nil as EmptyBody?)
+    }
+
     func put<B: Encodable, T: Decodable>(_ path: String, body: B) async throws -> T {
         try await request(method: "PUT", path: path, params: [:], body: body)
     }

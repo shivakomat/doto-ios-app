@@ -15,12 +15,13 @@ struct Profile: Codable, Identifiable {
     let familyId: String?
     let isAuthAccount: Bool?
     let createdAt: Date?
+    let notificationPreferences: [String: String]?
 
     private enum CodingKeys: String, CodingKey {
         case id, username, displayName, role, color
         case pointsTotal, pointsBalance, points
         case streak, streakStatus, streakGraceUsed, lastStreakDate
-        case familyId, isAuthAccount, createdAt
+        case familyId, isAuthAccount, createdAt, notificationPreferences
     }
 
     init(from decoder: Decoder) throws {
@@ -40,6 +41,7 @@ struct Profile: Codable, Identifiable {
         familyId        = try c.decodeIfPresent(String.self, forKey: .familyId)
         isAuthAccount   = try c.decodeIfPresent(Bool.self, forKey: .isAuthAccount)
         createdAt       = try c.decodeIfPresent(Date.self, forKey: .createdAt)
+        notificationPreferences = try c.decodeIfPresent([String: String].self, forKey: .notificationPreferences)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -58,6 +60,7 @@ struct Profile: Codable, Identifiable {
         try c.encodeIfPresent(familyId, forKey: .familyId)
         try c.encodeIfPresent(isAuthAccount, forKey: .isAuthAccount)
         try c.encodeIfPresent(createdAt, forKey: .createdAt)
+        try c.encodeIfPresent(notificationPreferences, forKey: .notificationPreferences)
     }
 
     var isParent: Bool { role == "parent" }
