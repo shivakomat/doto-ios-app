@@ -69,14 +69,12 @@ struct AddEditTaskView: View {
 
                 Section(header: Text("Points")) {
                     HStack {
-                        Button {
-                            if points > 1 { points = max(1, points - 5) }
-                        } label: {
-                            Image(systemName: "minus.circle.fill")
-                                .foregroundColor(points > 1 ? .memberBlue : .textMuted)
-                                .font(.system(size: 22))
-                        }
-                        .disabled(points <= 1)
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundColor(points > 1 ? .memberBlue : .textMuted)
+                            .font(.system(size: 22))
+                            .onTapGesture {
+                                if points > 1 { points = max(1, points - 5) }
+                            }
 
                         Spacer()
                         Text("\(points) pts")
@@ -84,14 +82,12 @@ struct AddEditTaskView: View {
                             .foregroundColor(.textPrimary)
                         Spacer()
 
-                        Button {
-                            if points < 500 { points = min(500, points + 5) }
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(points < 500 ? .memberBlue : .textMuted)
-                                .font(.system(size: 22))
-                        }
-                        .disabled(points >= 500)
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(points < 500 ? .memberBlue : .textMuted)
+                            .font(.system(size: 22))
+                            .onTapGesture {
+                                if points < 500 { points = min(500, points + 5) }
+                            }
                     }
                     .padding(.vertical, 4)
                 }
