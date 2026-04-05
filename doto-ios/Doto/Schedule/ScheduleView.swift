@@ -1,8 +1,9 @@
 import SwiftUI
 
 enum ScheduleViewMode: String, CaseIterable {
-    case daily  = "Daily"
-    case weekly = "Weekly"
+    case daily   = "Daily"
+    case weekly  = "Weekly"
+    case monthly = "Monthly"
 }
 
 struct ScheduleView: View {
@@ -21,14 +22,26 @@ struct ScheduleView: View {
                 AnyView(
                     HStack(spacing: 16) {
                         Button {
-                            Task { await vm.previousWeek() }
+                            Task {
+                                if viewMode == .monthly {
+                                    await vm.previousMonth()
+                                } else {
+                                    await vm.previousWeek()
+                                }
+                            }
                         } label: {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.white)
                                 .font(.system(size: 14, weight: .semibold))
                         }
                         Button {
-                            Task { await vm.nextWeek() }
+                            Task {
+                                if viewMode == .monthly {
+                                    await vm.nextMonth()
+                                } else {
+                                    await vm.nextWeek()
+                                }
+                            }
                         } label: {
                             Image(systemName: "chevron.right")
                                 .foregroundColor(.white)
@@ -47,7 +60,14 @@ struct ScheduleView: View {
                 )
             })
 
-            WeekStripView(vm: vm)
+            if viewMode == .monthly {
+                Text(vm.currentMonthLabel)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.textPrimary)
+                    .padding(.vertical, 10)
+            } else {
+                WeekStripView(vm: vm)
+            }
 
             Picker("", selection: $viewMode) {
                 ForEach(ScheduleViewMode.allCases, id: \.self) { mode in
@@ -65,8 +85,10 @@ struct ScheduleView: View {
                 Divider()
             }
 
-            if vm.isLoading && vm.events.isEmpty {
+            if vm.isLoading && (viewMode == .monthly ? vm.monthEvents.isEmpty : vm.events.isEmpty) {
                 LoadingView()
+            } else if viewMode == .monthly {
+                monthlyContent
             } else if viewMode == .weekly {
                 weeklyContent
             } else {
@@ -76,6 +98,11 @@ struct ScheduleView: View {
         .background(Color.screenBg.ignoresSafeArea())
         .navigationBarHidden(true)
         .task { await vm.load() }
+        .onChange(of: viewMode) { newMode in
+            if newMode == .monthly && vm.monthEvents.isEmpty {
+                Task { await vm.loadMonth() }
+            }
+        }
         .sheet(isPresented: $showAddEvent, onDismiss: { Task { await vm.load() } }) {
             AddEditEventView(event: nil)
         }
@@ -150,6 +177,63 @@ struct ScheduleView: View {
             .padding(.bottom, 80)
         }
         .refreshable { await vm.load() }
+    }
+
+    private var monthlyContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                ForEach(Array(vm.currentMonthWeeks.enumerated()), id: \.offset) { _, week in
+                    VStack(alignment: .leading, spacing: 12) {
+                        let weekLabel = weekHeaderLabel(week)
+                        Text(weekLabel)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.textSecondary)
+                            .padding(.bottom, 2)
+
+                        ForEach(week, id: \.self) { date in
+                            let dayEvents = vm.eventsForDateInMonth(date)
+                            let isToday = Calendar.current.isDateInToday(date)
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(date.fullDateString)
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(isToday ? .memberBlue : .textPrimary)
+
+                                if dayEvents.isEmpty {
+                                    Text("No events")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.textMuted)
+                                        .padding(.vertical, 2)
+                                } else {
+                                    ForEach(dayEvents) { event in
+                                        scheduleEventRow(event)
+                                            .onTapGesture { selectedEvent = event }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(12)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(color: .black.opacity(0.04), radius: 3, x: 0, y: 1)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.top, 12)
+            .padding(.bottom, 80)
+        }
+        .refreshable { await vm.loadMonth() }
+    }
+
+    private func weekHeaderLabel(_ week: [Date]) -> String {
+        guard let first = week.first, let last = week.last else { return "" }
+        let fmt = DateFormatter()
+        fmt.dateFormat = "MMM d"
+        if first == last {
+            return "Week of \(fmt.string(from: first))"
+        }
+        return "\(fmt.string(from: first)) – \(fmt.string(from: last))"
     }
 
     private var avatarFilterRow: some View {
