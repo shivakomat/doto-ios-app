@@ -102,6 +102,7 @@
 		E568F01ECC99782CD70236CC /* RewardCatalogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325CBE8F2EDDEA6942ED6631 /* RewardCatalogViewModel.swift */; };
 		EEE08F4AFB9EDB34004CAD2F /* ClaimStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D51DF632B0781386C2673B /* ClaimStatus.swift */; };
 		FEB05705025FE56A65014F41 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D6D3EEF320720B6398F774 /* SignInView.swift */; };
+		AA11BB22CC33DD44EE55FF01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF02 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -158,6 +159,7 @@
 		691992F493874A3B9873813F /* Color+Doto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Doto.swift"; sourceTree = "<group>"; };
 		756E16C8F201A914C9B1CDED /* MilestoneCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneCelebrationView.swift; sourceTree = "<group>"; };
 		76E3407384B9D5C1CDDC3074 /* FamilyGoalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyGoalCard.swift; sourceTree = "<group>"; };
+		76C7D1836E919367752AC6D00 /* DotoLogoMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoLogoMark.swift; sourceTree = "<group>"; };
 		7922C1416C63E033B7060511 /* TasksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksViewModel.swift; sourceTree = "<group>"; };
 		7A6C1A99232A591734D8F859 /* FamilyCodeEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyCodeEntryView.swift; sourceTree = "<group>"; };
 		7C84AB35298FF8EB3E09E856 /* ShoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingView.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 		7EAB757EFD6247D4BB6AF558 /* RewardCatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardCatalogView.swift; sourceTree = "<group>"; };
 		82FB14A6BDF720B786043221 /* ChildDashboardHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildDashboardHeader.swift; sourceTree = "<group>"; };
 		8409730E757785915C44B67C /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModel.swift; sourceTree = "<group>"; };
+		86C7D1836E919367752AC6D01 /* DotoWordmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoWordmark.swift; sourceTree = "<group>"; };
 		863DD1A86A06F2A145263AE5 /* MilestoneProgressTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneProgressTrack.swift; sourceTree = "<group>"; };
 		8840120519ABC280D1F89F62 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		93474F1A9AEB6E686ADC5DE3 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
@@ -202,6 +205,7 @@
 		F739C51BBEA4F3898F781496 /* DotoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoApp.swift; sourceTree = "<group>"; };
 		F90B4A2D879DE1F63586B058 /* CatalogItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogItemRow.swift; sourceTree = "<group>"; };
 		FCE1CD4A122A54DD43893B83 /* ClaimStep2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimStep2View.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -274,6 +278,8 @@
 				B4D71B597533DF0A39998C0B /* ParentEmptyDashboard.swift */,
 				E3E21F7514B7B721B633BEE8 /* PendingApprovalNudge.swift */,
 				12EAC8B2C08946D030430140 /* RecentTasksSection.swift */,
+				76C7D1836E919367752AC6D00 /* DotoLogoMark.swift */,
+				86C7D1836E919367752AC6D01 /* DotoWordmark.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -285,6 +291,7 @@
 				3A9F958E35EA3B04A8F35CE1 /* Info.plist */,
 				E987EB9493C5E7CCB3617C7A /* MainTabView.swift */,
 				3AC1D15D84DE661C53BF46A5 /* RootView.swift */,
+				AA11BB22CC33DD44EE55FF02 /* Assets.xcassets */,
 				BAAA8013BD4F1DBECBA855D9 /* Auth */,
 				A4F08FDAE21CE8371A572170 /* Config */,
 				0C3ACFA0D9467DE1338CD158 /* Dashboard */,
@@ -468,6 +475,7 @@
 			buildConfigurationList = B59920FFD19F6C5EEB2312C9 /* Build configuration list for PBXNativeTarget "Doto" */;
 			buildPhases = (
 				5F02116F4D170FC4C45D9485 /* Sources */,
+				AA11BB22CC33DD44EE55FF03 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -612,6 +620,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA11BB22CC33DD44EE55FF03 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA11BB22CC33DD44EE55FF01 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		427E24E348C9EC5198FC61F6 /* Debug */ = {
