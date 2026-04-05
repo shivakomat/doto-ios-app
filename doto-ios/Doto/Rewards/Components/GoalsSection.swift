@@ -48,10 +48,11 @@ struct GoalCard: View {
     let isOwner: Bool
     let onRequest: () -> Void
 
+    private var effectiveProgress: Int { reward.currentProgress ?? balance }
     private var progress: Double {
-        min(1.0, Double(balance) / Double(max(1, reward.pointsCost)))
+        min(1.0, Double(effectiveProgress) / Double(max(1, reward.pointsCost)))
     }
-    private var toGo: Int { max(0, reward.pointsCost - balance) }
+    private var toGo: Int { max(0, reward.pointsCost - effectiveProgress) }
     private var canClaim: Bool { balance >= reward.pointsCost && reward.status == "active" }
     private var isPending: Bool { reward.status == "pending_approval" }
 
@@ -80,7 +81,7 @@ struct GoalCard: View {
             .frame(height: 8)
 
             HStack {
-                Text("\(balance) / \(reward.pointsCost) pts · \(toGo) to go")
+                Text("\(effectiveProgress) / \(reward.pointsCost) pts · \(toGo) to go")
                     .font(.system(size: 11))
                     .foregroundColor(.conflictText)
                 Spacer()

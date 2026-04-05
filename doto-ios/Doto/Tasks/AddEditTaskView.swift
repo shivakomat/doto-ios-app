@@ -7,6 +7,7 @@ struct TaskCreateRequest: Encodable {
     let points: Int
     let notes: String?
     let `repeat`: String?
+    let rewardGoalId: String?
 }
 
 struct AddEditTaskView: View {
@@ -20,12 +21,17 @@ struct AddEditTaskView: View {
     @State private var points = 10
     @State private var notes = ""
     @State private var repeatOption = "none"
+    @State private var rewardGoalId: String? = nil
+    @State private var availableGoals: [Reward] = []
     @State private var members: [Profile] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
 
     private let repeatOptions = ["none", "daily", "weekly"]
     private var isEdit: Bool { task != nil }
+    private var isParent: Bool { authVM.currentProfile?.isParent == true }
+    private var assignedMember: Profile? { members.first { $0.id == assignedToId } }
+    private var assignedIsChild: Bool { assignedMember?.role == "child" }
 
     var body: some View {
         NavigationView {
@@ -105,6 +111,40 @@ struct AddEditTaskView: View {
                     }
                 }
 
+                if isParent && assignedIsChild && !availableGoals.isEmpty {
+                    Section(header: Text("Reward Goal (optional)")) {
+                        Button {
+                            rewardGoalId = nil
+                        } label: {
+                            HStack {
+                                Text("None")
+                                    .foregroundColor(.textPrimary)
+                                Spacer()
+                                if rewardGoalId == nil {
+                                    Image(systemName: "checkmark").foregroundColor(.memberBlue)
+                                }
+                            }
+                        }
+                        ForEach(availableGoals) { goal in
+                            Button {
+                                rewardGoalId = goal.id
+                            } label: {
+                                HStack {
+                                    Text(goal.titleWithEmoji)
+                                        .foregroundColor(.textPrimary)
+                                    Spacer()
+                                    Text("\(goal.pointsCost) pts")
+                                        .font(.system(size: 11))
+                                        .foregroundColor(.textMuted)
+                                    if rewardGoalId == goal.id {
+                                        Image(systemName: "checkmark").foregroundColor(.memberBlue)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Section(header: Text("Repeat")) {
                     Picker("Repeat", selection: $repeatOption) {
                         ForEach(repeatOptions, id: \.self) { opt in
@@ -140,6 +180,16 @@ struct AddEditTaskView: View {
             prefill()
             if let family: Family = try? await APIClient.shared.get("/families/mine") {
                 members = family.members
+                if !assignedToId.isEmpty {
+                    await loadGoalsForAssignee(assignedToId)
+                }
+            }
+        }
+        .onChange(of: assignedToId) { newId in
+            rewardGoalId = nil
+            availableGoals = []
+            if !newId.isEmpty {
+                Task { await loadGoalsForAssignee(newId) }
             }
         }
     }
@@ -152,9 +202,19 @@ struct AddEditTaskView: View {
             points = t.points
             notes = t.notes ?? ""
             repeatOption = t.repeat_ ?? "none"
+            rewardGoalId = t.rewardGoalId
         } else {
             assignedToId = authVM.currentProfile?.id ?? ""
         }
+    }
+
+    private func loadGoalsForAssignee(_ memberId: String) async {
+        guard assignedIsChild else { availableGoals = []; return }
+        let goals: [Reward]? = try? await APIClient.shared.get(
+            "/rewards",
+            params: ["memberId": memberId, "status": "active"]
+        )
+        availableGoals = goals ?? []
     }
 
     private func save() async {
@@ -165,7 +225,8 @@ struct AddEditTaskView: View {
             dueAt: dueDate,
             points: points,
             notes: notes.isEmpty ? nil : notes,
-            repeat: repeatOption == "none" ? nil : repeatOption
+            repeat: repeatOption == "none" ? nil : repeatOption,
+            rewardGoalId: rewardGoalId
         )
         do {
             if let t = task {

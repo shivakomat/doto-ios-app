@@ -12,6 +12,7 @@ struct DotoTask: Codable, Identifiable {
     var dueAt: Date?
     var repeat_: String?
     var completedAt: Date?
+    var rewardGoalId: String?
     let createdBy: String?
     let createdAt: Date?
     let updatedAt: Date?
@@ -28,7 +29,7 @@ struct DotoTask: Codable, Identifiable {
 
     private enum CodingKeys: String, CodingKey {
         case id, familyId, title, assignedTo, priority, status
-        case notes, points, dueAt, completedAt, createdBy, createdAt, updatedAt
+        case notes, points, dueAt, completedAt, rewardGoalId, createdBy, createdAt, updatedAt
         case repeat_ = "repeat"
     }
 }

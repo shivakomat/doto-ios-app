@@ -9,6 +9,7 @@ struct Reward: Codable, Identifiable {
     var pointsCost: Int
     var catalogItemId: String?
     var status: String
+    var currentProgress: Int?
     var requestedAt: Date?
     var approvedBy: String?
     var approvedAt: Date?
