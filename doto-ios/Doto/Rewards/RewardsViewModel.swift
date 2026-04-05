@@ -34,6 +34,8 @@ class RewardsViewModel: ObservableObject {
             leaderboard = try await APIClient.shared.get("/rewards/leaderboard")
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch is CancellationError {
+            return
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -46,6 +48,8 @@ class RewardsViewModel: ObservableObject {
             pendingApprovals = all.filter { $0.status == "pending_approval" }
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch is CancellationError {
+            return
         } catch {
             errorMessage = error.localizedDescription
         }

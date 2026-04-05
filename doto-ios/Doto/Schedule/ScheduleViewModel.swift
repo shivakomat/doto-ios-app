@@ -50,6 +50,8 @@ class ScheduleViewModel: ObservableObject {
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
             return
+        } catch is CancellationError {
+            return
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -121,6 +123,8 @@ class ScheduleViewModel: ObservableObject {
             monthEvents = detectConflicts(fetched)
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+            return
+        } catch is CancellationError {
             return
         } catch {
             errorMessage = error.localizedDescription

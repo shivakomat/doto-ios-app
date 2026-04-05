@@ -17,6 +17,8 @@ class TasksViewModel: ObservableObject {
             members = fetchedFamily.members
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch is CancellationError {
+            return
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -33,6 +33,8 @@ class ShoppingViewModel: ObservableObject {
             }
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch is CancellationError {
+            return
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -45,6 +47,8 @@ class ShoppingViewModel: ObservableObject {
             items = try await APIClient.shared.get("/shopping/lists/\(listId)/items")
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch is CancellationError {
+            return
         } catch {
             errorMessage = error.localizedDescription
         }
