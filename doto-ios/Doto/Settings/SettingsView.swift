@@ -251,6 +251,7 @@ struct SettingsView: View {
                 Text("Delete account")
                     .foregroundColor(.red)
             }
+            .disabled(true)
         }
     }
 }
