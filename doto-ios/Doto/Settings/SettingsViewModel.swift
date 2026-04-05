@@ -76,7 +76,7 @@ class SettingsViewModel: ObservableObject {
         struct UpdateProfileRequest: Encodable { let displayName: String; let color: String }
         do {
             let _: Profile = try await APIClient.shared.patch(
-                "/api/profiles/me",
+                "/profiles/me",
                 body: UpdateProfileRequest(displayName: displayName, color: color)
             )
             successMessage = "Profile updated"
@@ -124,7 +124,7 @@ class SettingsViewModel: ObservableObject {
 
     func loadNotifications() async {
         do {
-            let response: NotificationPreferences = try await APIClient.shared.get("/api/profiles/me/notifications")
+            let response: NotificationPreferences = try await APIClient.shared.get("/profiles/me/notifications")
             notifications = response
         } catch {
             // Keep defaults if fetch fails
@@ -134,7 +134,7 @@ class SettingsViewModel: ObservableObject {
     func saveNotifications() async {
         do {
             let _: EmptyResponse = try await APIClient.shared.put(
-                "/api/profiles/me/notifications",
+                "/profiles/me/notifications",
                 body: notifications
             )
             successMessage = "Notification preferences saved"
@@ -148,7 +148,7 @@ class SettingsViewModel: ObservableObject {
     func deleteAccount(authVM: AuthViewModel) async {
         isLoading = true; defer { isLoading = false }
         do {
-            try await APIClient.shared.delete("/api/profiles/me")
+            try await APIClient.shared.delete("/profiles/me")
             await authVM.logout()
         } catch APIError.serverError(let msg) {
             errorMessage = msg
@@ -160,7 +160,7 @@ class SettingsViewModel: ObservableObject {
     func leaveFamily(authVM: AuthViewModel) async {
         isLoading = true; defer { isLoading = false }
         do {
-            let response: LeaveFamilyResponse = try await APIClient.shared.post("/api/families/leave")
+            let response: LeaveFamilyResponse = try await APIClient.shared.post("/families/leave")
             if response.left {
                 await authVM.logout()
             }

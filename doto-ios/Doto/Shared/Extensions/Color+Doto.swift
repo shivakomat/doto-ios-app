@@ -18,14 +18,14 @@ extension Color {
         "#993556", "#534AB7", "#E24B4A"
     ]
 
-    // Backend API color palette (6 colors)
+    // Backend API color palette (6 colors) - must match backend validation
     static let settingsColorPalette = [
-        "#6C63FF",  // Purple (default)
-        "#FF6B6B",  // Red/Coral
-        "#4ECDC4",  // Teal
-        "#FFE66D",  // Yellow
-        "#95E1D3",  // Mint
-        "#F38181"   // Pink
+        "#534AB7",  // Purple (memberPurple)
+        "#E24B4A",  // Red (memberRed)
+        "#1D9E75",  // Green (memberGreen)
+        "#BA7517",  // Amber/Orange (memberAmber)
+        "#185FA5",  // Blue (memberBlue)
+        "#993556"   // Maroon (memberMaroon)
     ]
 
     static let appNavy      = Color(hex: "#1E2761")
