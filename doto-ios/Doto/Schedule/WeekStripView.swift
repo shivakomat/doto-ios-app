@@ -22,7 +22,7 @@ struct WeekStripView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
-        .gesture(
+        .simultaneousGesture(
             DragGesture(minimumDistance: 40)
                 .onEnded { value in
                     if value.translation.width < 0 {
