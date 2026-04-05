@@ -8,6 +8,8 @@ struct MainTabView: View {
             TabView {
                 DashboardView()
                     .tabItem { Label("Home",    systemImage: "house.fill") }
+                ScheduleView()
+                    .tabItem { Label("Schedule", systemImage: "calendar") }
                 TasksView()
                     .tabItem { Label("Tasks",   systemImage: "checkmark.circle.fill") }
                 RewardsView()

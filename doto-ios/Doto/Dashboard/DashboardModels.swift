@@ -82,8 +82,10 @@ struct DashboardTask: Decodable, Identifiable {
     let priority:      String
     let points:        Int
     let dueAt:         Date
-    let status:        String
+    var status:        String
     let isOverdue:     Bool
+
+    var isDone: Bool { status == "done" }
 }
 
 struct MemberProgress: Decodable, Identifiable {

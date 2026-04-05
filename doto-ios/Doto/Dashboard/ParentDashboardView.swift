@@ -93,10 +93,17 @@ struct ParentDashboardView: View {
 
                                 // 3. Recently assigned tasks
                                 if !d.recentTasks.isEmpty {
-                                    RecentTasksSection(tasks: d.recentTasks) { task in
-                                        selectedTask = task
-                                        showEditTask = true
-                                    }
+                                    RecentTasksSection(
+                                        tasks: d.recentTasks,
+                                        onTaskTap: { task in
+                                            selectedTask = task
+                                            showEditTask = true
+                                        },
+                                        onComplete: { task in
+                                            Task { await vm.completeParentTask(task) }
+                                        },
+                                        completingIds: vm.completingParentTaskIds
+                                    )
                                 }
 
                                 // 4. Family weekly progress

@@ -17,6 +17,9 @@ class DashboardViewModel: ObservableObject {
     // Child task completion (optimistic)
     @Published var completingTaskIds: Set<String> = []
 
+    // Parent task completion (optimistic)
+    @Published var completingParentTaskIds: Set<String> = []
+
     func load(role: String) async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
         do {
@@ -76,6 +79,40 @@ class DashboardViewModel: ObservableObject {
         }
 
         completingTaskIds.remove(task.id)
+    }
+
+    // Parent completes a task from dashboard — optimistic UI
+    func completeParentTask(_ task: DashboardTask) async {
+        guard !completingParentTaskIds.contains(task.id) else { return }
+        completingParentTaskIds.insert(task.id)
+
+        // Optimistic: mark as done locally
+        if let data = parentData,
+           let idx = data.recentTasks.firstIndex(where: { $0.id == task.id }) {
+            var updatedTasks = data.recentTasks
+            updatedTasks[idx].status = "done"
+            parentData = ParentDashboardResponse(
+                profile: data.profile,
+                family: data.family,
+                upcomingEvents: data.upcomingEvents,
+                overdueCount: data.overdueCount,
+                recentTasks: updatedTasks,
+                familyProgress: data.familyProgress,
+                shoppingNudge: data.shoppingNudge,
+                pendingApprovals: data.pendingApprovals
+            )
+        }
+
+        do {
+            let _: DotoTask = try await APIClient.shared.patch(
+                "/tasks/\(task.id)/complete"
+            )
+        } catch {
+            // Revert on failure
+            await load(role: "parent")
+        }
+
+        completingParentTaskIds.remove(task.id)
     }
 
     var selectedDay: DashboardDay? {

@@ -13,6 +13,8 @@ struct ScheduleView: View {
     @State private var showAddEvent = false
     @State private var selectedEvent: DotoEvent?
 
+    private var isChild: Bool { authVM.currentProfile?.isChild == true }
+
     var body: some View {
         VStack(spacing: 0) {
             DotoNavHeader(title: "Schedule", trailing: {
@@ -32,12 +34,14 @@ struct ScheduleView: View {
                                 .foregroundColor(.white)
                                 .font(.system(size: 14, weight: .semibold))
                         }
-                        Button {
-                            showAddEvent = true
-                        } label: {
-                            Text("+ Add")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundColor(.memberBlue)
+                        if !isChild {
+                            Button {
+                                showAddEvent = true
+                            } label: {
+                                Text("+ Add")
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .foregroundColor(.memberBlue)
+                            }
                         }
                     }
                 )
@@ -100,7 +104,7 @@ struct ScheduleView: View {
                     EmptyStateView(
                         message: "No events this day",
                         systemImage: "calendar",
-                        cta: "Add one"
+                        cta: isChild ? nil : "Add one"
                     ) { showAddEvent = true }
                 } else {
                     ForEach(vm.eventsForSelectedDate) { event in
@@ -116,16 +120,36 @@ struct ScheduleView: View {
     }
 
     private var weeklyContent: some View {
-        WeeklyColumnsView(
-            vm: vm,
-            onSelectDay: { date in
-                vm.selectedDate = date
-                viewMode = .daily
-            },
-            onSelectEvent: { event in
-                selectedEvent = event
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                ForEach(vm.currentWeekDates, id: \.self) { date in
+                    let dayEvents = vm.eventsForDate(date)
+                    let isToday = Calendar.current.isDateInToday(date)
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(date.fullDateString)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(isToday ? .memberBlue : .textPrimary)
+
+                        if dayEvents.isEmpty {
+                            Text("No events")
+                                .font(.system(size: 12))
+                                .foregroundColor(.textMuted)
+                                .padding(.vertical, 4)
+                        } else {
+                            ForEach(dayEvents) { event in
+                                scheduleEventRow(event)
+                                    .onTapGesture { selectedEvent = event }
+                            }
+                        }
+                    }
+                }
             }
-        )
+            .padding(.horizontal)
+            .padding(.top, 12)
+            .padding(.bottom, 80)
+        }
+        .refreshable { await vm.load() }
     }
 
     private var avatarFilterRow: some View {
