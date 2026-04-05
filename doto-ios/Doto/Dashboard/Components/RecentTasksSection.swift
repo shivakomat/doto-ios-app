@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RecentTasksSection: View {
     let tasks: [DashboardTask]
+    let onTaskTap: ((DashboardTask) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -11,7 +12,7 @@ struct RecentTasksSection: View {
 
             VStack(spacing: 0) {
                 ForEach(tasks) { task in
-                    RecentTaskRow(task: task)
+                    RecentTaskRow(task: task, onTap: onTaskTap)
                 }
             }
             .background(Color.white)
@@ -23,6 +24,7 @@ struct RecentTasksSection: View {
 
 struct RecentTaskRow: View {
     let task: DashboardTask
+    let onTap: ((DashboardTask) -> Void)?
 
     var body: some View {
         HStack(spacing: 10) {
@@ -63,5 +65,9 @@ struct RecentTaskRow: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .overlay(Divider().frame(maxWidth: .infinity), alignment: .bottom)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap?(task)
+        }
     }
 }

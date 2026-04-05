@@ -51,8 +51,7 @@ struct WeeklyColumnsView: View {
                     Text("—")
                         .font(.system(size: 11))
                         .foregroundColor(.textMuted)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 12)
+                        .frame(maxWidth: .infinity, minHeight: 40)
                 } else {
                     ForEach(dayEvents) { event in
                         eventCard(event)
@@ -60,7 +59,7 @@ struct WeeklyColumnsView: View {
                     }
                 }
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 4)
             .padding(.horizontal, 4)
         }
         .background(

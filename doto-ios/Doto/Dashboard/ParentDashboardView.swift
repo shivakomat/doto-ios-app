@@ -43,6 +43,8 @@ struct ParentDashboardView: View {
     @State private var showAddTask = false
     @State private var showSettings = false
     @State private var selectedMemberId: String? = nil
+    @State private var selectedTask: DashboardTask? = nil
+    @State private var showEditTask = false
 
     var data: ParentDashboardResponse? { vm.parentData }
 
@@ -91,7 +93,10 @@ struct ParentDashboardView: View {
 
                                 // 3. Recently assigned tasks
                                 if !d.recentTasks.isEmpty {
-                                    RecentTasksSection(tasks: d.recentTasks)
+                                    RecentTasksSection(tasks: d.recentTasks) { task in
+                                        selectedTask = task
+                                        showEditTask = true
+                                    }
                                 }
 
                                 // 4. Family weekly progress
@@ -132,7 +137,27 @@ struct ParentDashboardView: View {
             Text("Add Event View") // Replace with actual AddEditEventView
         }
         .sheet(isPresented: $showAddTask) {
-            Text("Add Task View") // Replace with actual AddEditTaskView
+            AddEditTaskView(task: nil)
+        }
+        .sheet(isPresented: $showEditTask) {
+            if let task = selectedTask {
+                AddEditTaskView(task: DotoTask(
+                    id: task.id,
+                    familyId: nil,
+                    title: task.title,
+                    notes: nil,
+                    assignedTo: task.assignedTo,
+                    priority: task.priority,
+                    status: task.status,
+                    points: task.points,
+                    dueAt: task.dueAt,
+                    repeat_: nil,
+                    completedAt: nil,
+                    createdBy: nil,
+                    createdAt: nil,
+                    updatedAt: nil
+                ))
+            }
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()

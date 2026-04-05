@@ -28,6 +28,13 @@
 		<false/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>https://doto-api-5e3a07135be3.herokuapp.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -35,6 +42,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Doto notifies you when tasks are assigned, schedules conflict, or your weekly digest is ready.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -53,7 +62,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSUserNotificationsUsageDescription</key>
-	<string>Doto notifies you when tasks are assigned, schedules conflict, or your weekly digest is ready.</string>
 </dict>
 </plist>

@@ -85,13 +85,13 @@ struct AddEditTaskView: View {
                         Spacer()
 
                         Button {
-                            if points < 100 { points = min(100, points + 5) }
+                            if points < 500 { points = min(500, points + 5) }
                         } label: {
                             Image(systemName: "plus.circle.fill")
-                                .foregroundColor(points < 100 ? .memberBlue : .textMuted)
+                                .foregroundColor(points < 500 ? .memberBlue : .textMuted)
                                 .font(.system(size: 22))
                         }
-                        .disabled(points >= 100)
+                        .disabled(points >= 500)
                     }
                     .padding(.vertical, 4)
                 }
