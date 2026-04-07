@@ -22,6 +22,7 @@ struct DotoNavHeader: View {
 }
 
 struct NavAddButton: View {
+    var label: String = "Add"
     let action: () -> Void
 
     var body: some View {
@@ -29,7 +30,7 @@ struct NavAddButton: View {
             HStack(spacing: 4) {
                 Image(systemName: "plus")
                     .font(.system(size: 11, weight: .bold))
-                Text("Add")
+                Text(label)
                     .font(.system(size: 12, weight: .semibold))
             }
             .foregroundColor(Color.appNavy)

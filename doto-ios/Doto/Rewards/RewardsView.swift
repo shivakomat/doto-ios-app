@@ -13,7 +13,7 @@ struct RewardsView: View {
         VStack(spacing: 0) {
             if isParent {
                 DotoNavHeader(title: "Rewards", trailing: {
-                    AnyView(NavAddButton { showSetGoal = true })
+                    AnyView(NavAddButton(label: "Add Goal") { showSetGoal = true })
                 })
             } else {
                 DotoNavHeader(title: "Rewards", trailing: {
