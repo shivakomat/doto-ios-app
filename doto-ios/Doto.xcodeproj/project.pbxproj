@@ -35,6 +35,16 @@
 		4B215C3E9520B10870807070 /* RewardsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40368D14FBD46536636E0B06 /* RewardsModels.swift */; };
 		4B35065E18E6BBD569D8BDA5 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7200F9B8CDC7F18CE81B50 /* Profile.swift */; };
 		4B3E14274D5F283C4B9E9AE5 /* WeekStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5992D23B27DD08EA4CFC3B68 /* WeekStripView.swift */; };
+		AA0001AA0001AA0001AA0001 /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001BB0001BB0001BB0001 /* DayView.swift */; };
+		AA0002AA0002AA0002AA0002 /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002BB0002BB0002BB0002 /* WeekView.swift */; };
+		AA0003AA0003AA0003AA0003 /* MonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0003BB0003BB0003BB0003 /* MonthView.swift */; };
+		AA0004AA0004AA0004AA0004 /* ScheduleHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0004BB0004BB0004BB0004 /* ScheduleHeader.swift */; };
+		AA0005AA0005AA0005AA0005 /* TimeGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0005BB0005BB0005BB0005 /* TimeGridView.swift */; };
+		AA0006AA0006AA0006AA0006 /* EventBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0006BB0006BB0006BB0006 /* EventBlock.swift */; };
+		AA0007AA0007AA0007AA0007 /* EventListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0007BB0007BB0007BB0007 /* EventListRow.swift */; };
+		AA0008AA0008AA0008AA0008 /* NowLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0008BB0008BB0008BB0008 /* NowLine.swift */; };
+		AA0009AA0009AA0009AA0009 /* MonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0009BB0009BB0009BB0009 /* MonthGridView.swift */; };
+		AA0010AA0010AA0010AA0010 /* EventReadOnlySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0010BB0010BB0010BB0010 /* EventReadOnlySheet.swift */; };
 		4CF49B86A26B3962E3DD1352 /* DotoNavHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22D86511A241F23BA697D0B /* DotoNavHeader.swift */; };
 		4DD2676752325160FD3B5325 /* Family.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6052592984BC33B8484E09D /* Family.swift */; };
 		4E87D401597F8681EC407AE2 /* SetGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404D3707356878C22ECCB16F /* SetGoalView.swift */; };
@@ -151,6 +161,16 @@
 		557FCC42202AB75F42FDD3F9 /* NotificationsOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsOnboardingView.swift; sourceTree = "<group>"; };
 		57B1C1DEBE77843E3179BA6E /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		5992D23B27DD08EA4CFC3B68 /* WeekStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekStripView.swift; sourceTree = "<group>"; };
+		AA0001BB0001BB0001BB0001 /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
+		AA0002BB0002BB0002BB0002 /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
+		AA0003BB0003BB0003BB0003 /* MonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthView.swift; sourceTree = "<group>"; };
+		AA0004BB0004BB0004BB0004 /* ScheduleHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleHeader.swift; sourceTree = "<group>"; };
+		AA0005BB0005BB0005BB0005 /* TimeGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeGridView.swift; sourceTree = "<group>"; };
+		AA0006BB0006BB0006BB0006 /* EventBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBlock.swift; sourceTree = "<group>"; };
+		AA0007BB0007BB0007BB0007 /* EventListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListRow.swift; sourceTree = "<group>"; };
+		AA0008BB0008BB0008BB0008 /* NowLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowLine.swift; sourceTree = "<group>"; };
+		AA0009BB0009BB0009BB0009 /* MonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthGridView.swift; sourceTree = "<group>"; };
+		AA0010BB0010BB0010BB0010 /* EventReadOnlySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventReadOnlySheet.swift; sourceTree = "<group>"; };
 		656E6E96F05B12435964C104 /* FamilyPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyPreview.swift; sourceTree = "<group>"; };
 		664762B4F7758B0364459BD6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		67749C25C678C529D820FA8F /* ClaimProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimProfileViewModel.swift; sourceTree = "<group>"; };
@@ -421,6 +441,16 @@
 				8409730E757785915C44B67C /* ScheduleViewModel.swift */,
 				3502C334D16AE7E173B15BBF /* WeeklyColumnsView.swift */,
 				5992D23B27DD08EA4CFC3B68 /* WeekStripView.swift */,
+				AA0001BB0001BB0001BB0001 /* DayView.swift */,
+				AA0002BB0002BB0002BB0002 /* WeekView.swift */,
+				AA0003BB0003BB0003BB0003 /* MonthView.swift */,
+				AA0004BB0004BB0004BB0004 /* ScheduleHeader.swift */,
+				AA0005BB0005BB0005BB0005 /* TimeGridView.swift */,
+				AA0006BB0006BB0006BB0006 /* EventBlock.swift */,
+				AA0007BB0007BB0007BB0007 /* EventListRow.swift */,
+				AA0008BB0008BB0008BB0008 /* NowLine.swift */,
+				AA0009BB0009BB0009BB0009 /* MonthGridView.swift */,
+				AA0010BB0010BB0010BB0010 /* EventReadOnlySheet.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -616,6 +646,16 @@
 				CFCAEF995ABC0930BEB629E0 /* UnclaimedChild.swift in Sources */,
 				4B3E14274D5F283C4B9E9AE5 /* WeekStripView.swift in Sources */,
 				CEA5B3AE69C5F445F3084E99 /* WeeklyColumnsView.swift in Sources */,
+				AA0001AA0001AA0001AA0001 /* DayView.swift in Sources */,
+				AA0002AA0002AA0002AA0002 /* WeekView.swift in Sources */,
+				AA0003AA0003AA0003AA0003 /* MonthView.swift in Sources */,
+				AA0004AA0004AA0004AA0004 /* ScheduleHeader.swift in Sources */,
+				AA0005AA0005AA0005AA0005 /* TimeGridView.swift in Sources */,
+				AA0006AA0006AA0006AA0006 /* EventBlock.swift in Sources */,
+				AA0007AA0007AA0007AA0007 /* EventListRow.swift in Sources */,
+				AA0008AA0008AA0008AA0008 /* NowLine.swift in Sources */,
+				AA0009AA0009AA0009AA0009 /* MonthGridView.swift in Sources */,
+				AA0010AA0010AA0010AA0010 /* EventReadOnlySheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

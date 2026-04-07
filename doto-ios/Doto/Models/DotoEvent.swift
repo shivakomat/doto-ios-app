@@ -17,6 +17,25 @@ struct DotoEvent: Codable, Identifiable {
 
     var isConflicting: Bool = false
 
+    var durationMinutes: Int {
+        Int(endAt.timeIntervalSince(startAt) / 60)
+    }
+
+    var durationHours: Double {
+        Double(durationMinutes) / 60.0
+    }
+
+    var startHour: Double {
+        let c = Calendar.current.dateComponents([.hour, .minute], from: startAt)
+        return Double(c.hour ?? 0) + Double(c.minute ?? 0) / 60.0
+    }
+
+    var timeRangeLabel: String {
+        let f = DateFormatter()
+        f.dateFormat = "h:mm a"
+        return "\(f.string(from: startAt)) – \(f.string(from: endAt))"
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id, familyId, title, description, startAt, endAt
         case location, color, assignedTo, createdBy, createdAt, updatedAt

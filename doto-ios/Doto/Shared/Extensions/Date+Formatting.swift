@@ -67,4 +67,22 @@ extension Date {
         let h = mins / 60; let m = mins % 60
         return m == 0 ? "\(h) hr" : "\(h) hr \(m) min"
     }
+
+    var monthStart: Date {
+        Calendar.current.date(
+            from: Calendar.current.dateComponents([.year, .month], from: self)
+        )!
+    }
+
+    var fullDayLabel: String {
+        let f = DateFormatter()
+        f.dateFormat = "EEEE, MMMM d"
+        return f.string(from: self)
+    }
+
+    var shortWeekdayLabel: String {
+        let f = DateFormatter()
+        f.dateFormat = "EEE"
+        return String(f.string(from: self).prefix(1))
+    }
 }

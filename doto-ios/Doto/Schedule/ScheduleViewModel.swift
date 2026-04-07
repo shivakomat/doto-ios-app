@@ -1,52 +1,65 @@
 import Foundation
 
+enum ScheduleMode: String, CaseIterable {
+    case day   = "Day"
+    case week  = "Week"
+    case month = "Month"
+}
+
 @MainActor
 class ScheduleViewModel: ObservableObject {
+
+    @Published var selectedDate: Date = .now
+    @Published var viewMode: ScheduleMode = .day
     @Published var events: [DotoEvent] = []
     @Published var members: [Profile] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var selectedDate: Date = Date()
-    @Published var weekOffset: Int = 0
-    @Published var monthOffset: Int = 0
-    @Published var monthEvents: [DotoEvent] = []
-    @Published var selectedMemberId: String? = nil
+    @Published var activeFilterMemberId: String?
 
-    var currentWeekStart: Date {
-        let base = Calendar.current.date(from: Calendar.current.dateComponents(
-            [.yearForWeekOfYear, .weekOfYear], from: Date()
-        ))!
-        return Calendar.current.date(byAdding: .weekOfYear, value: weekOffset, to: base)!
-    }
+    private var loadedMonthStart: Date?
+    private let modeKey = "scheduleViewMode"
 
-    var currentWeekDates: [Date] {
-        (0..<7).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: currentWeekStart) }
-    }
-
-    var eventsForSelectedDate: [DotoEvent] {
-        eventsForDate(selectedDate)
-    }
-
-    func eventsForDate(_ date: Date) -> [DotoEvent] {
-        let filtered = events.filter { Calendar.current.isDate($0.startAt, inSameDayAs: date) }
-        if let id = selectedMemberId {
-            return filtered.filter { $0.assignedTo.contains(id) }
+    init() {
+        if let saved = UserDefaults.standard.string(forKey: modeKey),
+           let mode = ScheduleMode(rawValue: saved) {
+            viewMode = mode
         }
-        return filtered
     }
 
-    func load() async {
-        isLoading = true; errorMessage = nil; defer { isLoading = false }
-        let weekEnd = Calendar.current.date(byAdding: .day, value: 7, to: currentWeekStart)!
+    func setMode(_ mode: ScheduleMode) {
+        viewMode = mode
+        UserDefaults.standard.set(mode.rawValue, forKey: modeKey)
+    }
+
+    // MARK: - Data fetching
+
+    func loadIfNeeded(for date: Date) async {
+        let monthStart = date.monthStart
+        if loadedMonthStart == monthStart && !events.isEmpty { return }
+        await load(monthStart: monthStart)
+    }
+
+    func load(monthStart: Date) async {
+        isLoading = true; errorMessage = nil
+        defer { isLoading = false }
+
+        let monthEnd = Calendar.current.date(
+            byAdding: DateComponents(month: 1, day: -1), to: monthStart
+        )!
+
         let fmt = ISO8601DateFormatter()
-        fmt.timeZone = TimeZone(identifier: "UTC")
-        let params = [
-            "from": fmt.string(from: currentWeekStart),
-            "to":   fmt.string(from: weekEnd)
-        ]
+        fmt.timeZone = .current
+        let from = fmt.string(from: monthStart)
+        let to   = fmt.string(from: monthEnd)
+
         do {
-            let fetched: [DotoEvent] = try await APIClient.shared.get("/events", params: params)
-            events = detectConflicts(fetched)
+            var fetched: [DotoEvent] = try await APIClient.shared.get(
+                "/events", params: ["from": from, "to": to]
+            )
+            fetched = detectConflicts(fetched)
+            events = fetched
+            loadedMonthStart = monthStart
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
             return
@@ -55,80 +68,7 @@ class ScheduleViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
-        if let fam: Family = try? await APIClient.shared.get("/families/mine") {
-            members = fam.members
-        }
-    }
 
-    func previousWeek() async { weekOffset -= 1; await load() }
-    func nextWeek()     async { weekOffset += 1; await load() }
-
-    // MARK: - Monthly
-
-    var currentMonthStart: Date {
-        let cal = Calendar.current
-        let base = cal.date(from: cal.dateComponents([.year, .month], from: Date()))!
-        return cal.date(byAdding: .month, value: monthOffset, to: base)!
-    }
-
-    var currentMonthLabel: String {
-        let fmt = DateFormatter()
-        fmt.dateFormat = "MMMM yyyy"
-        return fmt.string(from: currentMonthStart)
-    }
-
-    var currentMonthWeeks: [[Date]] {
-        let cal = Calendar.current
-        let range = cal.range(of: .day, in: .month, for: currentMonthStart)!
-        let allDays = range.compactMap { day -> Date? in
-            cal.date(bySetting: .day, value: day, of: currentMonthStart)
-        }
-        var weeks: [[Date]] = []
-        var currentWeek: [Date] = []
-        var currentWeekOfYear: Int?
-        for day in allDays {
-            let woy = cal.component(.weekOfYear, from: day)
-            if currentWeekOfYear == nil { currentWeekOfYear = woy }
-            if woy != currentWeekOfYear {
-                weeks.append(currentWeek)
-                currentWeek = []
-                currentWeekOfYear = woy
-            }
-            currentWeek.append(day)
-        }
-        if !currentWeek.isEmpty { weeks.append(currentWeek) }
-        return weeks
-    }
-
-    func eventsForDateInMonth(_ date: Date) -> [DotoEvent] {
-        let filtered = monthEvents.filter { Calendar.current.isDate($0.startAt, inSameDayAs: date) }
-        if let id = selectedMemberId {
-            return filtered.filter { $0.assignedTo.contains(id) }
-        }
-        return filtered
-    }
-
-    func loadMonth() async {
-        isLoading = true; errorMessage = nil; defer { isLoading = false }
-        let cal = Calendar.current
-        let monthEnd = cal.date(byAdding: .month, value: 1, to: currentMonthStart)!
-        let fmt = ISO8601DateFormatter()
-        fmt.timeZone = TimeZone(identifier: "UTC")
-        let params = [
-            "from": fmt.string(from: currentMonthStart),
-            "to":   fmt.string(from: monthEnd)
-        ]
-        do {
-            let fetched: [DotoEvent] = try await APIClient.shared.get("/events", params: params)
-            monthEvents = detectConflicts(fetched)
-        } catch APIError.unauthorized {
-            NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
-            return
-        } catch is CancellationError {
-            return
-        } catch {
-            errorMessage = error.localizedDescription
-        }
         if members.isEmpty {
             if let fam: Family = try? await APIClient.shared.get("/families/mine") {
                 members = fam.members
@@ -136,19 +76,82 @@ class ScheduleViewModel: ObservableObject {
         }
     }
 
-    func previousMonth() async { monthOffset -= 1; await loadMonth() }
-    func nextMonth()     async { monthOffset += 1; await loadMonth() }
+    // MARK: - Events for ranges
 
-    func toggleMemberFilter(_ id: String) {
-        selectedMemberId = (selectedMemberId == id) ? nil : id
+    func eventsForDay(_ date: Date) -> [DotoEvent] {
+        let cal = Calendar.current
+        return events
+            .filter { cal.isDate($0.startAt, inSameDayAs: date) }
+            .filter { memberFilter($0) }
+            .sorted { $0.startAt < $1.startAt }
     }
 
-    private func detectConflicts(_ events: [DotoEvent]) -> [DotoEvent] {
+    func eventsForMonth(containing date: Date) -> [Date: [DotoEvent]] {
+        let days = daysInMonth(containing: date)
+        return Dictionary(uniqueKeysWithValues: days.map { day in
+            (day, eventsForDay(day))
+        })
+    }
+
+    // MARK: - Member filter
+
+    private func memberFilter(_ event: DotoEvent) -> Bool {
+        guard let filterId = activeFilterMemberId else { return true }
+        return event.assignedTo.contains(filterId)
+    }
+
+    func toggleMemberFilter(id: String) {
+        activeFilterMemberId = activeFilterMemberId == id ? nil : id
+    }
+
+    // MARK: - Navigation
+
+    func navigateForward() {
+        let cal = Calendar.current
+        switch viewMode {
+        case .day:   selectedDate = cal.date(byAdding: .day,   value:  1, to: selectedDate)!
+        case .week:  selectedDate = cal.date(byAdding: .day,   value:  7, to: selectedDate)!
+        case .month: selectedDate = cal.date(byAdding: .month, value:  1, to: selectedDate)!
+        }
+        Task { await loadIfNeeded(for: selectedDate) }
+    }
+
+    func navigateBack() {
+        let cal = Calendar.current
+        switch viewMode {
+        case .day:   selectedDate = cal.date(byAdding: .day,   value: -1, to: selectedDate)!
+        case .week:  selectedDate = cal.date(byAdding: .day,   value: -7, to: selectedDate)!
+        case .month: selectedDate = cal.date(byAdding: .month, value: -1, to: selectedDate)!
+        }
+        Task { await loadIfNeeded(for: selectedDate) }
+    }
+
+    // MARK: - Date helpers
+
+    func daysInWeek(containing date: Date) -> [Date] {
+        let cal = Calendar.current
+        let weekday = cal.component(.weekday, from: date)
+        let startOfWeek = cal.date(byAdding: .day, value: -(weekday - 1), to: date)!
+        return (0..<7).compactMap { cal.date(byAdding: .day, value: $0, to: startOfWeek) }
+    }
+
+    func daysInMonth(containing date: Date) -> [Date] {
+        let cal  = Calendar.current
+        var comps = cal.dateComponents([.year, .month], from: date)
+        comps.day = 1
+        let start = cal.date(from: comps)!
+        let range = cal.range(of: .day, in: .month, for: start)!
+        return range.compactMap { cal.date(byAdding: .day, value: $0 - 1, to: start) }
+    }
+
+    // MARK: - Conflict detection
+
+    func detectConflicts(_ events: [DotoEvent]) -> [DotoEvent] {
         return events.map { e1 in
             var e = e1
             e.isConflicting = events.contains { e2 in
                 e1.id != e2.id &&
-                e1.assignedTo.contains(where: e2.assignedTo.contains) &&
+                e1.assignedTo.contains(where: { e2.assignedTo.contains($0) }) &&
                 e1.startAt < e2.endAt &&
                 e1.endAt   > e2.startAt
             }
