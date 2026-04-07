@@ -25,43 +25,38 @@ struct ScheduleHeader: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                Color.appNavy
-
-                VStack(spacing: 8) {
-                    HStack {
-                        Text(headerTitle)
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundColor(.white)
-                            .animation(.none, value: headerTitle)
-                        Spacer()
-                        if !isReadOnly {
-                            Button("+ Add") { onAddTap() }
-                                .font(.system(size: 13))
-                                .foregroundColor(Color(hex: "#60A5FA"))
-                        }
-                    }
-
-                    ScheduleModeSwitcher(selected: vm.viewMode) { mode in
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            vm.setMode(mode)
-                        }
-                    }
-
-                    if !isReadOnly && !vm.members.isEmpty {
-                        MemberAvatarFilterRow(
-                            members:  vm.members,
-                            activeId: vm.activeFilterMemberId,
-                            onTap:    { vm.toggleMemberFilter(id: $0) }
-                        )
-                    }
+        VStack(spacing: 8) {
+            HStack {
+                Text(headerTitle)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.white)
+                    .animation(.none, value: headerTitle)
+                Spacer()
+                if !isReadOnly {
+                    Button("+ Add") { onAddTap() }
+                        .font(.system(size: 13))
+                        .foregroundColor(Color(hex: "#60A5FA"))
                 }
-                .padding(.horizontal, 14)
-                .padding(.top, 10)
-                .padding(.bottom, 10)
+            }
+
+            ScheduleModeSwitcher(selected: vm.viewMode) { mode in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    vm.setMode(mode)
+                }
+            }
+
+            if !isReadOnly && !vm.members.isEmpty {
+                MemberAvatarFilterRow(
+                    members:  vm.members,
+                    activeId: vm.activeFilterMemberId,
+                    onTap:    { vm.toggleMemberFilter(id: $0) }
+                )
             }
         }
+        .padding(.horizontal, 14)
+        .padding(.top, 10)
+        .padding(.bottom, 10)
+        .background(Color.appNavy)
     }
 }
 
