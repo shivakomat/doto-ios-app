@@ -26,12 +26,33 @@ struct ScheduleHeader: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            HStack {
+            HStack(spacing: 12) {
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
+                        vm.navigateBack()
+                    }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.white.opacity(0.85))
+                }
+
                 Text(headerTitle)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.white)
                     .animation(.none, value: headerTitle)
-                Spacer()
+                    .frame(maxWidth: .infinity)
+
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
+                        vm.navigateForward()
+                    }
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.white.opacity(0.85))
+                }
+
                 if !isReadOnly {
                     Button("+ Add") { onAddTap() }
                         .font(.system(size: 13))
