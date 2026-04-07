@@ -20,3 +20,23 @@ struct DotoNavHeader: View {
         .frame(height: 44)
     }
 }
+
+struct NavAddButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Image(systemName: "plus")
+                    .font(.system(size: 11, weight: .bold))
+                Text("Add")
+                    .font(.system(size: 12, weight: .semibold))
+            }
+            .foregroundColor(Color.appNavy)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color.white)
+            .clipShape(Capsule())
+        }
+    }
+}

@@ -26,9 +26,7 @@ struct TasksView: View {
         VStack(spacing: 0) {
             DotoNavHeader(title: "Tasks", trailing: {
                 AnyView(
-                    isParent ? Button("+ Add") { showAddTask = true }
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.memberBlue) : nil
+                    isParent ? AnyView(NavAddButton { showAddTask = true }) : AnyView(EmptyView())
                 )
             })
 

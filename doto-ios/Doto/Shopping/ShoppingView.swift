@@ -9,11 +9,7 @@ struct ShoppingView: View {
     var body: some View {
         VStack(spacing: 0) {
             DotoNavHeader(title: "Shopping", trailing: {
-                AnyView(
-                    Button("+ Add") { showAddItem = true }
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.memberBlue)
-                )
+                AnyView(NavAddButton { showAddItem = true })
             })
 
             listTabStrip
