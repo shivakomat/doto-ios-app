@@ -26,7 +26,7 @@ struct ScheduleHeader: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            HStack(spacing: 12) {
+            HStack(spacing: 10) {
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
                         vm.navigateBack()
@@ -35,13 +35,31 @@ struct ScheduleHeader: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(.white.opacity(0.85))
+                        .frame(width: 28, height: 28)
                 }
 
                 Text(headerTitle)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.white)
+                    .lineLimit(1)
                     .animation(.none, value: headerTitle)
                     .frame(maxWidth: .infinity)
+
+                if !isReadOnly {
+                    Button(action: onAddTap) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 11, weight: .bold))
+                            Text("Add")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                        .foregroundColor(Color.appNavy)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(Color.white)
+                        .clipShape(Capsule())
+                    }
+                }
 
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
@@ -51,12 +69,7 @@ struct ScheduleHeader: View {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(.white.opacity(0.85))
-                }
-
-                if !isReadOnly {
-                    Button("+ Add") { onAddTap() }
-                        .font(.system(size: 13))
-                        .foregroundColor(Color(hex: "#60A5FA"))
+                        .frame(width: 28, height: 28)
                 }
             }
 
