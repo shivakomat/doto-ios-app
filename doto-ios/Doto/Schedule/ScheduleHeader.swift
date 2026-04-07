@@ -26,6 +26,7 @@ struct ScheduleHeader: View {
 
     var body: some View {
         VStack(spacing: 8) {
+            // Title row: < title >
             HStack(spacing: 10) {
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
@@ -45,22 +46,6 @@ struct ScheduleHeader: View {
                     .animation(.none, value: headerTitle)
                     .frame(maxWidth: .infinity)
 
-                if !isReadOnly {
-                    Button(action: onAddTap) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "plus")
-                                .font(.system(size: 11, weight: .bold))
-                            Text("Add")
-                                .font(.system(size: 12, weight: .semibold))
-                        }
-                        .foregroundColor(Color.appNavy)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Color.white)
-                        .clipShape(Capsule())
-                    }
-                }
-
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
                         vm.navigateForward()
@@ -73,18 +58,40 @@ struct ScheduleHeader: View {
                 }
             }
 
+            // Mode switcher
             ScheduleModeSwitcher(selected: vm.viewMode) { mode in
                 withAnimation(.easeInOut(duration: 0.2)) {
                     vm.setMode(mode)
                 }
             }
 
-            if !isReadOnly && !vm.members.isEmpty {
-                MemberAvatarFilterRow(
-                    members:  vm.members,
-                    activeId: vm.activeFilterMemberId,
-                    onTap:    { vm.toggleMemberFilter(id: $0) }
-                )
+            // Avatars (left) + Add button (right)
+            HStack {
+                if !vm.members.isEmpty {
+                    MemberAvatarFilterRow(
+                        members:  vm.members,
+                        activeId: vm.activeFilterMemberId,
+                        onTap:    { vm.toggleMemberFilter(id: $0) }
+                    )
+                }
+
+                Spacer()
+
+                if !isReadOnly {
+                    Button(action: onAddTap) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 11, weight: .bold))
+                            Text("Add")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                        .foregroundColor(Color.appNavy)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.white)
+                        .clipShape(Capsule())
+                    }
+                }
             }
         }
         .padding(.horizontal, 14)
