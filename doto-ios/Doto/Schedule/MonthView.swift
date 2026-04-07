@@ -24,35 +24,37 @@ struct MonthView: View {
 
             Divider()
 
-            HStack {
-                Text(vm.selectedDate.fullDayLabel)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(Color.textPrimary)
-                Spacer()
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 6)
-            .background(Color.screenBg)
+            ScrollView {
+                VStack(spacing: 0) {
+                    HStack {
+                        Text(vm.selectedDate.fullDayLabel)
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(Calendar.current.isDateInToday(vm.selectedDate) ? Color.memberBlue : Color.textPrimary)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 6)
+                    .background(Color.screenBg)
 
-            let dayEvents = vm.eventsForDay(vm.selectedDate)
-            if dayEvents.isEmpty {
-                Text("No events")
-                    .font(.system(size: 13))
-                    .foregroundColor(Color.textMuted)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(20)
-            } else {
-                ScrollView {
-                    VStack(spacing: 0) {
+                    Divider()
+
+                    let dayEvents = vm.eventsForDay(vm.selectedDate)
+                    if dayEvents.isEmpty {
+                        Text("No events")
+                            .font(.system(size: 13))
+                            .foregroundColor(Color.textMuted)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.top, 20)
+                    } else {
                         ForEach(dayEvents) { event in
                             EventListRow(event: event)
                                 .onTapGesture { selectedEvent = event }
                         }
                     }
-                    .padding(.bottom, 80)
                 }
-                .refreshable { await vm.load(monthStart: vm.selectedDate.monthStart) }
+                .padding(.bottom, 80)
             }
+            .refreshable { await vm.load(monthStart: vm.selectedDate.monthStart) }
         }
         .sheet(item: $selectedEvent) { event in
             if isReadOnly {
