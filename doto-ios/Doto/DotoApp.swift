@@ -5,7 +5,9 @@ struct DotoApp: App {
     @StateObject private var authVM = AuthViewModel()
     var body: some Scene {
         WindowGroup {
-            RootView().environmentObject(authVM)
+            RootView()
+                .environmentObject(authVM)
+                .preferredColorScheme(.light)
         }
     }
 }
