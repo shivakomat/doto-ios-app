@@ -43,6 +43,7 @@ struct ParentDashboardView: View {
     @State private var showAddTask = false
     @State private var showAddItem = false
     @State private var showSettings = false
+    @State private var showFamilyManage = false
     @State private var selectedMemberId: String? = nil
     @State private var selectedTask: DashboardTask? = nil
     @State private var showEditTask = false
@@ -60,6 +61,7 @@ struct ParentDashboardView: View {
                     onMemberTap: { id in
                         selectedMemberId = selectedMemberId == id ? nil : id
                     },
+                    onAddMember: { showFamilyManage = true },
                     selectedMemberId: selectedMemberId
                 )
 
@@ -173,6 +175,9 @@ struct ParentDashboardView: View {
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
+        }
+        .sheet(isPresented: $showFamilyManage) {
+            FamilyManageView()
         }
     }
 

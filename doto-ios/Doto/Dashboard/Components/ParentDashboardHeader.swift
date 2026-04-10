@@ -5,6 +5,7 @@ struct ParentDashboardHeader: View {
     let members: [FamilyMemberSummary]
     let onAvatarTap: () -> Void
     let onMemberTap: (String) -> Void
+    let onAddMember: () -> Void
     let selectedMemberId: String?
 
     private var greeting: String {
@@ -60,7 +61,7 @@ struct ParentDashboardHeader: View {
                             }
                         }
                         // Invite "+" button
-                        Button(action: { /* Navigate to family management */ }) {
+                        Button(action: onAddMember) {
                             Circle()
                                 .fill(Color.cardBorder)
                                 .frame(width: 26, height: 26)
