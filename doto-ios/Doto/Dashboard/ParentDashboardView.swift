@@ -41,6 +41,7 @@ struct ParentDashboardView: View {
     @State private var showFABSheet = false
     @State private var showAddEvent = false
     @State private var showAddTask = false
+    @State private var showAddItem = false
     @State private var showSettings = false
     @State private var selectedMemberId: String? = nil
     @State private var selectedTask: DashboardTask? = nil
@@ -138,10 +139,14 @@ struct ParentDashboardView: View {
                 .padding(20)
         }
         .sheet(isPresented: $showFABSheet) {
-            FABBottomSheet(showAddEvent: $showAddEvent, showAddTask: $showAddTask, showAddItem: .constant(false))
+            FABBottomSheet(showAddEvent: $showAddEvent, showAddTask: $showAddTask, showAddItem: $showAddItem)
         }
         .sheet(isPresented: $showAddEvent) {
-            Text("Add Event View") // Replace with actual AddEditEventView
+            AddEditEventView(event: nil)
+                .onDisappear { Task { await vm.load(role: "parent") } }
+        }
+        .sheet(isPresented: $showAddItem) {
+            AddItemSheet(listId: nil, onAdded: {})
         }
         .sheet(isPresented: $showAddTask) {
             AddEditTaskView(task: nil)
