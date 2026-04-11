@@ -10,6 +10,7 @@ class RewardsViewModel: ObservableObject {
     @Published var pendingMilestone: String?
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var editingReward: Reward? = nil
 
     @Published var showBonusSheet = false
     @Published var bonusTargetMemberId: String?

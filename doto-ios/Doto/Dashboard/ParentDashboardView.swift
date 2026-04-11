@@ -148,7 +148,9 @@ struct ParentDashboardView: View {
                 .onDisappear { Task { await vm.load(role: "parent") } }
         }
         .sheet(isPresented: $showAddItem) {
-            AddItemSheet(listId: nil, onAdded: {})
+            // Dashboard FAB opens AddItemSheet with no pre-selected list
+            // AddItemSheet will handle loading lists or show empty state
+            AddItemSheet(availableLists: [], preselectedListId: nil, vm: ShoppingViewModel())
         }
         .sheet(isPresented: $showAddTask) {
             AddEditTaskView(task: nil)

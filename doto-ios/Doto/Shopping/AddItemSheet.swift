@@ -7,119 +7,162 @@ struct ItemCreateRequest: Encodable {
 }
 
 struct AddItemSheet: View {
-    var listId: String?
-    var onAdded: (() -> Void)? = nil
+    let availableLists: [ShoppingList]
+    let preselectedListId: String?
+    @ObservedObject var vm: ShoppingViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var resolvedListId: String? = nil
+    @State private var selectedListId: String = ""
     @State private var name = ""
     @State private var quantity = ""
     @State private var category: ShoppingCategory = .other
-    @State private var isLoading = false
-    @State private var errorMessage: String?
+    @State private var isSubmitting = false
+    @State private var isLoadingLists = false
+    @State private var loadedLists: [ShoppingList] = []
     @FocusState private var focusName: Bool
 
+    var effectiveLists: [ShoppingList] {
+        availableLists.isEmpty ? loadedLists : availableLists
+    }
+
+    var selectedList: ShoppingList? {
+        effectiveLists.first { $0.id == selectedListId }
+    }
+
     var body: some View {
-        NavigationView {
-            Group {
-                if isLoading && resolvedListId == nil {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if resolvedListId == nil {
-                    EmptyStateView(message: "No shopping list found.\nCreate one in the Shop tab first.", systemImage: "cart")
-                } else {
-                    Form {
-                        Section {
-                            TextField("Item name", text: $name)
-                                .focused($focusName)
-                                .onChange(of: name) { newValue in
-                                    if !newValue.isEmpty {
-                                        category = ShoppingCategory.detect(from: newValue)
-                                    }
+        NavigationStack {
+            Form {
+                // ── List picker — shown first ──────────────────────────
+                Section("Add to") {
+                    if isLoadingLists {
+                        ProgressView("Loading lists...")
+                            .frame(maxWidth: .infinity)
+                    } else if effectiveLists.isEmpty {
+                        Text("No lists yet — create a list first")
+                            .font(.system(size: 13))
+                            .foregroundColor(.textMuted)
+                    } else {
+                        Picker("List", selection: $selectedListId) {
+                            ForEach(effectiveLists) { list in
+                                HStack(spacing: 8) {
+                                    Text(list.storeTypeEmoji)
+                                    Text(list.name)
                                 }
-                            TextField("Quantity (optional)", text: $quantity)
+                                .tag(list.id)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    }
+                }
+
+                // ── Item details ───────────────────────────────────────
+                Section("Item") {
+                    TextField("Item name", text: $name)
+                        .focused($focusName)
+                        .onChange(of: name) { newValue in
+                            if !newValue.isEmpty {
+                                category = ShoppingCategory.detect(from: newValue)
+                            }
                         }
 
-                        Section(header: Text("Category")) {
-                            Picker("Category", selection: $category) {
-                                ForEach(ShoppingCategory.allCases, id: \.self) { cat in
-                                    HStack {
-                                        Text(cat.emoji)
-                                        Text(cat.displayName)
-                                    }.tag(cat)
-                                }
-                            }
-                            .pickerStyle(.menu)
-                        }
+                    TextField("Quantity (optional, e.g. × 2, 500g)", text: $quantity)
+                        .font(.system(size: 14))
 
-                        if let err = errorMessage {
-                            Section {
-                                Text(err).foregroundColor(.red).font(.caption)
+                    Picker("Category", selection: $category) {
+                        ForEach(ShoppingCategory.allCases, id: \.self) { cat in
+                            HStack {
+                                Text(cat.emoji)
+                                Text(cat.displayName)
                             }
+                            .tag(cat)
                         }
                     }
                 }
             }
             .navigationTitle("Add Item")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+            .navigationBarItems(
+                leading: Button("Cancel") { dismiss() }
+                    .foregroundColor(.textMuted)
+            )
+
+            // ── Buttons at the bottom ──────────────────────────────────
+            VStack(spacing: 10) {
+                // Add & Continue — adds item, keeps sheet open
+                Button {
+                    Task { await submitItem(andContinue: true) }
+                } label: {
+                    Text(isSubmitting ? "Adding..." : "Add & Continue")
+                        .frame(maxWidth: .infinity)
                 }
-                ToolbarItem(placement: .primaryAction) {
-                    HStack(spacing: 12) {
-                        if isLoading {
-                            ProgressView()
-                        } else if resolvedListId != nil {
-                            Button("Add & Continue") { Task { await addItem(andContinue: true) } }
-                                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                                .font(.system(size: 13))
-                            Button("Add Item") { Task { await addItem(andContinue: false) } }
-                                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                                .font(.system(size: 13, weight: .semibold))
-                        }
+                .buttonStyle(SecondaryButtonStyle())
+                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty
+                          || selectedListId.isEmpty
+                          || isSubmitting)
+
+                // Add Item — adds and dismisses
+                Button {
+                    Task { await submitItem(andContinue: false) }
+                } label: {
+                    Text(isSubmitting ? "Adding..." : "Add Item")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty
+                          || selectedListId.isEmpty
+                          || isSubmitting)
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 24)
+        }
+        .onAppear {
+            Task {
+                // Load lists if not provided
+                if availableLists.isEmpty {
+                    isLoadingLists = true
+                    if let lists: [ShoppingList] = try? await APIClient.shared.get("/shopping/lists") {
+                        loadedLists = lists
                     }
+                    isLoadingLists = false
                 }
-            }
-            .onAppear {
-                Task { await resolveListId() }
+                // Pre-select the active list, fall back to first list
+                selectedListId = preselectedListId ?? effectiveLists.first?.id ?? ""
+                focusName = true
             }
         }
     }
 
-    private func resolveListId() async {
-        if let lid = listId {
-            resolvedListId = lid
-            focusName = true
-            return
-        }
-        isLoading = true; defer { isLoading = false }
-        if let lists: [ShoppingList] = try? await APIClient.shared.get("/shopping/lists"),
-           let first = lists.first {
-            resolvedListId = first.id
-            focusName = true
-        }
-    }
+    private func submitItem(andContinue: Bool) async {
+        guard !selectedListId.isEmpty,
+              !name.trimmingCharacters(in: .whitespaces).isEmpty else { return }
 
-    private func addItem(andContinue: Bool) async {
-        guard let lid = resolvedListId else { return }
-        isLoading = true; errorMessage = nil; defer { isLoading = false }
-        let body = ItemCreateRequest(
-            name: name.trimmingCharacters(in: .whitespaces),
-            quantity: quantity.isEmpty ? nil : quantity,
-            category: category.rawValue
-        )
+        isSubmitting = true
+        defer { isSubmitting = false }
+
         do {
-            let _: ShoppingItem = try await APIClient.shared.post("/shopping/lists/\(lid)/items", body: body)
-            onAdded?()
+            let _: ShoppingItem = try await APIClient.shared.post(
+                "/shopping/lists/\(selectedListId)/items",
+                body: ItemCreateRequest(
+                    name: name.trimmingCharacters(in: .whitespaces),
+                    quantity: quantity.isEmpty ? nil : quantity,
+                    category: category.rawValue
+                )
+            )
+
             if andContinue {
-                name = ""; quantity = ""; category = .other
+                // Clear name and quantity, keep sheet open
+                name = ""
+                quantity = ""
+                category = .other
                 focusName = true
             } else {
                 dismiss()
             }
+
+            // Notify the shopping view to refresh
+            await vm.loadItems(for: selectedListId)
         } catch {
-            errorMessage = error.localizedDescription
+            // Show error — keep sheet open
         }
     }
 }

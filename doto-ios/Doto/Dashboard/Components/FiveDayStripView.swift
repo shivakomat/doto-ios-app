@@ -86,7 +86,7 @@ struct DayColumn: View {
     var body: some View {
         Button(action: onTap) {
             VStack(spacing: 3) {
-                Text(day.dayLabel)
+                Text(day.isToday ? "Today" : day.dayLabel)
                     .font(.system(size: 8, weight: isSelected ? .bold : .regular))
                     .foregroundColor(day.isToday ? .memberBlue : .textMuted)
 

@@ -6,6 +6,7 @@ struct FamilyManageView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var showAddChild = false
+    @State private var showInviteParent = false
     @State private var childName = ""
     @State private var memberToDelete: Profile?
     @State private var showDeleteAlert = false
@@ -85,9 +86,16 @@ struct FamilyManageView: View {
 
                         if authVM.currentProfile?.isParent == true {
                             Button {
+                                showInviteParent = true
+                            } label: {
+                                Label("Add a co-parent", systemImage: "person.2.badge.plus")
+                                    .foregroundColor(.memberBlue)
+                            }
+
+                            Button {
                                 showAddChild = true
                             } label: {
-                                Label("Add child", systemImage: "person.badge.plus")
+                                Label("Add a child", systemImage: "person.badge.plus")
                                     .foregroundColor(.memberBlue)
                             }
                         }
@@ -135,6 +143,11 @@ struct FamilyManageView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(vm.errorMessage ?? "")
+        }
+        .sheet(isPresented: $showInviteParent) {
+            if let family = vm.family {
+                InviteCoParentSheet(inviteCode: family.inviteCode, familyName: family.name)
+            }
         }
         .sheet(isPresented: $showAddChild) {
             NavigationView {

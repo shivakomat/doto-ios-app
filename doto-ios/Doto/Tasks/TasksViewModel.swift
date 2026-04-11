@@ -7,6 +7,10 @@ class TasksViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
+    var hasCompletedTasks: Bool {
+        tasks.contains { $0.isDone }
+    }
+
     func load() async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
         do {
@@ -53,5 +57,25 @@ class TasksViewModel: ObservableObject {
 
     func tasksForMember(_ id: String) -> [DotoTask] {
         tasks.filter { $0.assignedTo == id }
+    }
+
+    func clearCompleted(memberId: String? = nil) async {
+        do {
+            var path = "/tasks/completed"
+            if let id = memberId {
+                path += "?memberId=\(id)"
+            }
+            try await APIClient.shared.delete(path)
+            // Remove completed tasks from local array
+            if let id = memberId {
+                tasks.removeAll { $0.isDone && $0.assignedTo == id }
+            } else {
+                tasks.removeAll { $0.isDone }
+            }
+        } catch APIError.unauthorized {
+            NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

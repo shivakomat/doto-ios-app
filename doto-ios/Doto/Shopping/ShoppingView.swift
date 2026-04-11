@@ -8,7 +8,7 @@ struct ShoppingView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            DotoNavHeader(title: "Shopping", trailing: {
+            DotoNavHeader(title: "Shopping Lists", trailing: {
                 AnyView(NavAddButton { showAddItem = true })
             })
 
@@ -44,8 +44,17 @@ struct ShoppingView: View {
         .background(Color.screenBg.ignoresSafeArea())
         .navigationBarHidden(true)
         .task { await vm.loadLists() }
-        .sheet(isPresented: $showAddItem, onDismiss: { Task { await vm.loadItems() } }) {
-            AddItemSheet(listId: vm.selectedListId, onAdded: { Task { await vm.loadItems() } })
+        .sheet(isPresented: $showAddItem) {
+            AddItemSheet(
+                availableLists: vm.lists,
+                preselectedListId: vm.selectedListId,
+                vm: vm
+            )
+        }
+        .sheet(item: $vm.editingItem) { item in
+            if let listId = vm.selectedListId {
+                EditItemSheet(item: item, listId: listId, vm: vm)
+            }
         }
         .alert("Something went wrong",
                isPresented: Binding(get: { vm.errorMessage != nil }, set: { if !$0 { vm.errorMessage = nil } })
@@ -92,8 +101,8 @@ struct ShoppingView: View {
                     Button {
                         showNewListInput = true
                     } label: {
-                        Text("+ New")
-                            .font(.system(size: 13, weight: .medium))
+                        Text("+ New List")
+                            .font(.system(size: 12, weight: .medium))
                             .foregroundColor(.textSecondary)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
@@ -182,11 +191,32 @@ struct ShoppingView: View {
         .padding(.horizontal, 10)
         .background(Color.white)
         .cornerRadius(6)
+        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            // Edit — swipe from left reveals edit action
+            Button {
+                vm.editingItem = item
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            .tint(Color.memberBlue)
+        }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
                 Task { await vm.deleteItem(item) }
             } label: {
                 Label("Delete", systemImage: "trash")
+            }
+        }
+        .contextMenu {
+            Button {
+                vm.editingItem = item
+            } label: {
+                Label("Edit item", systemImage: "pencil")
+            }
+            Button(role: .destructive) {
+                Task { await vm.deleteItem(item) }
+            } label: {
+                Label("Delete item", systemImage: "trash")
             }
         }
     }

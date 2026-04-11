@@ -5,6 +5,7 @@ struct TasksView: View {
     @StateObject private var vm = TasksViewModel()
 
     @State private var showAddTask = false
+    @State private var showClearConfirm = false
     @State private var selectedTask: DotoTask?
 
     private var isParent: Bool { authVM.currentProfile?.isParent == true }
@@ -25,9 +26,22 @@ struct TasksView: View {
     var body: some View {
         VStack(spacing: 0) {
             DotoNavHeader(title: "Tasks", trailing: {
-                AnyView(
-                    isParent ? AnyView(NavAddButton { showAddTask = true }) : AnyView(EmptyView())
-                )
+                AnyView(HStack(spacing: 12) {
+                    // Clear completed — parent only, only when completed tasks exist
+                    if isParent && vm.hasCompletedTasks {
+                        Button {
+                            showClearConfirm = true
+                        } label: {
+                            Text("Clear done")
+                                .font(.system(size: 13))
+                                .foregroundColor(.textMuted)
+                        }
+                    }
+                    // Add button — parent only
+                    if isParent {
+                        NavAddButton { showAddTask = true }
+                    }
+                })
             })
 
             if vm.isLoading && vm.tasks.isEmpty {
@@ -59,6 +73,18 @@ struct TasksView: View {
         }
         .sheet(item: $selectedTask) { task in
             TaskDetailSheet(task: task, onUpdate: { Task { await vm.load() } })
+        }
+        .confirmationDialog(
+            "Clear completed tasks?",
+            isPresented: $showClearConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Clear all completed", role: .destructive) {
+                Task { await vm.clearCompleted() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently removes all completed tasks for the whole family. This cannot be undone.")
         }
         .alert("Something went wrong",
                isPresented: Binding(get: { vm.errorMessage != nil }, set: { if !$0 { vm.errorMessage = nil } })

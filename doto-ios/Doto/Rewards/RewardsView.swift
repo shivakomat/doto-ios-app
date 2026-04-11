@@ -81,6 +81,9 @@ struct RewardsView: View {
                 PointsHistoryView(memberId: profile.id, displayName: profile.displayName)
             }
         }
+        .sheet(item: $vm.editingReward) { reward in
+            EditRewardSheet(reward: reward, vm: vm)
+        }
         .alert("Something went wrong",
                isPresented: Binding(get: { vm.errorMessage != nil }, set: { if !$0 { vm.errorMessage = nil } })
         ) {
@@ -121,7 +124,9 @@ struct RewardsView: View {
             leaderboard: vm.leaderboard,
             isParent: true,
             currentProfileId: currentId,
-            onRequest: { r in Task { await vm.requestReward(r) } }
+            onRequest: { r in Task { await vm.requestReward(r) } },
+            onEdit: { r in vm.editingReward = r },
+            onDelete: { r in Task { await vm.deleteReward(r) } }
         )
 
         streaksSection
@@ -222,7 +227,10 @@ struct RewardsView: View {
                         balance: balance,
                         memberColor: color,
                         isOwner: true,
-                        onRequest: { Task { await vm.requestReward(reward) } }
+                        isParent: false,
+                        onRequest: { Task { await vm.requestReward(reward) } },
+                        onEdit: nil,
+                        onDelete: nil
                     )
                 }
             }

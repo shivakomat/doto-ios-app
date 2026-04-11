@@ -8,6 +8,7 @@ class ShoppingViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var isLoadingItems = false
     @Published var errorMessage: String?
+    @Published var editingItem: ShoppingItem? = nil
 
     var selectedList: ShoppingList? { lists.first { $0.id == selectedListId } }
     var checkedCount: Int { items.filter { $0.isChecked }.count }
@@ -40,11 +41,12 @@ class ShoppingViewModel: ObservableObject {
         }
     }
 
-    func loadItems() async {
-        guard let listId = selectedListId else { return }
+    func loadItems(for listId: String? = nil) async {
+        let targetListId = listId ?? selectedListId
+        guard let lid = targetListId else { return }
         isLoadingItems = true; defer { isLoadingItems = false }
         do {
-            items = try await APIClient.shared.get("/shopping/lists/\(listId)/items")
+            items = try await APIClient.shared.get("/shopping/lists/\(lid)/items")
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
         } catch is CancellationError {

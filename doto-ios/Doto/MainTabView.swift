@@ -25,7 +25,7 @@ struct MainTabView: View {
                 TasksView()
                     .tabItem { Label("Tasks",    systemImage: "checkmark.circle.fill") }
                 ShoppingView()
-                    .tabItem { Label("Shop",     systemImage: "cart.fill") }
+                    .tabItem { Label("Shopping Lists", systemImage: "cart.fill") }
                 RewardsView()
                     .tabItem { Label("Rewards",  systemImage: "star.fill") }
             }

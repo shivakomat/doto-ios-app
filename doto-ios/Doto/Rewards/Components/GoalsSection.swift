@@ -6,6 +6,8 @@ struct GoalsSection: View {
     let isParent: Bool
     let currentProfileId: String?
     let onRequest: (Reward) -> Void
+    var onEdit: ((Reward) -> Void)? = nil
+    var onDelete: ((Reward) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -31,7 +33,10 @@ struct GoalsSection: View {
                                 balance: entry.totalPoints,
                                 memberColor: entry.color,
                                 isOwner: reward.memberId == currentProfileId,
-                                onRequest: { onRequest(reward) }
+                                isParent: isParent,
+                                onRequest: { onRequest(reward) },
+                                onEdit: onEdit != nil ? { onEdit?(reward) } : nil,
+                                onDelete: onDelete != nil ? { onDelete?(reward) } : nil
                             )
                         }
                     }
@@ -46,7 +51,10 @@ struct GoalCard: View {
     let balance: Int
     let memberColor: String
     let isOwner: Bool
+    let isParent: Bool
     let onRequest: () -> Void
+    let onEdit: (() -> Void)?
+    let onDelete: (() -> Void)?
 
     private var effectiveProgress: Int { reward.currentProgress ?? balance }
     private var progress: Double {
@@ -107,5 +115,44 @@ struct GoalCard: View {
         .background(Color(hex: "#FAEEDA"))
         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#FAC775"), lineWidth: 1))
         .cornerRadius(8)
+        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            // Edit (parent only)
+            if isParent, let onEdit = onEdit {
+                Button {
+                    onEdit()
+                } label: {
+                    Label("Edit", systemImage: "pencil")
+                }
+                .tint(Color.memberBlue)
+            }
+        }
+        .swipeActions(edge: .trailing) {
+            // Delete (parent only)
+            if isParent, let onDelete = onDelete {
+                Button(role: .destructive) {
+                    onDelete()
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
+        }
+        .contextMenu {
+            if isParent {
+                if let onEdit = onEdit {
+                    Button {
+                        onEdit()
+                    } label: {
+                        Label("Edit goal", systemImage: "pencil")
+                    }
+                }
+                if let onDelete = onDelete {
+                    Button(role: .destructive) {
+                        onDelete()
+                    } label: {
+                        Label("Delete goal", systemImage: "trash")
+                    }
+                }
+            }
+        }
     }
 }

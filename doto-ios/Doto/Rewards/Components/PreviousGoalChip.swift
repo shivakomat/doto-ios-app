@@ -1,3 +1,4 @@
+// PreviousGoalChip.swift - Doto Rewards Component
 import SwiftUI
 
 struct PreviousGoalChip: View {
