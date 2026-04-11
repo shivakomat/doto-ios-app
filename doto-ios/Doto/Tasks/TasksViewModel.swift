@@ -65,13 +65,15 @@ class TasksViewModel: ObservableObject {
             if let id = memberId {
                 path += "?memberId=\(id)"
             }
-            try await APIClient.shared.delete(path)
+            struct BulkDeleteResponse: Decodable { let deletedCount: Int }
+            let res: BulkDeleteResponse = try await APIClient.shared.delete(path)
             // Remove completed tasks from local array
             if let id = memberId {
                 tasks.removeAll { $0.isDone && $0.assignedTo == id }
             } else {
                 tasks.removeAll { $0.isDone }
             }
+            NSLog("[DOTO] Cleared %d completed tasks", res.deletedCount)
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
         } catch {

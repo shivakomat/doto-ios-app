@@ -2,12 +2,26 @@ import SwiftUI
 
 struct TaskCreateRequest: Encodable {
     let title: String
+    let description: String?
     let assignedTo: String?
+    let priority: String?
+    let points: Int?
+    let rewardGoalId: String?
     let dueAt: Date?
-    let points: Int
     let notes: String?
     let `repeat`: String?
-    let rewardGoalId: String?
+}
+
+struct TaskUpdateRequest: Encodable {
+    let title: String?
+    let description: String?
+    let assignedTo: String?
+    let priority: String?
+    let points: Int?
+    let rewardGoalId: String??   // nil = not set, .some(nil) = clear
+    let dueAt: Date?
+    let notes: String?
+    let `repeat`: String?
 }
 
 struct AddEditTaskView: View {
@@ -20,6 +34,7 @@ struct AddEditTaskView: View {
     @State private var dueDate = Date()
     @State private var points = 10
     @State private var notes = ""
+    @State private var priority = "medium"
     @State private var repeatOption = "none"
     @State private var rewardGoalId: String? = nil
     @State private var availableGoals: [Reward] = []
@@ -27,6 +42,7 @@ struct AddEditTaskView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
 
+    private let priorityOptions = ["low", "medium", "high"]
     private let repeatOptions = ["none", "daily", "weekly"]
     private var isEdit: Bool { task != nil }
     private var isParent: Bool { authVM.currentProfile?.isParent == true }
@@ -71,6 +87,15 @@ struct AddEditTaskView: View {
 
                 Section {
                     DatePicker("Due date", selection: $dueDate, displayedComponents: .date)
+                }
+
+                Section(header: Text("Priority")) {
+                    Picker("Priority", selection: $priority) {
+                        ForEach(priorityOptions, id: \.self) { opt in
+                            Text(opt.capitalized).tag(opt)
+                        }
+                    }
+                    .pickerStyle(.segmented)
                 }
 
                 Section(header: Text("Points")) {
@@ -200,6 +225,7 @@ struct AddEditTaskView: View {
             assignedToId = t.assignedTo ?? ""
             dueDate = t.dueAt ?? Date()
             points = t.points
+            priority = t.priority ?? "medium"
             notes = t.notes ?? ""
             repeatOption = t.repeat_ ?? "none"
             rewardGoalId = t.rewardGoalId
@@ -219,19 +245,33 @@ struct AddEditTaskView: View {
 
     private func save() async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
-        let body = TaskCreateRequest(
-            title: title,
-            assignedTo: assignedToId.isEmpty ? nil : assignedToId,
-            dueAt: dueDate,
-            points: points,
-            notes: notes.isEmpty ? nil : notes,
-            repeat: repeatOption == "none" ? nil : repeatOption,
-            rewardGoalId: rewardGoalId
-        )
         do {
             if let t = task {
+                // Partial update — only send changed fields
+                let body = TaskUpdateRequest(
+                    title: title,
+                    description: notes.isEmpty ? nil : notes,
+                    assignedTo: assignedToId.isEmpty ? nil : assignedToId,
+                    priority: priority,
+                    points: points,
+                    rewardGoalId: rewardGoalId.map { .some($0) } ?? .some(nil),
+                    dueAt: dueDate,
+                    notes: notes.isEmpty ? nil : notes,
+                    repeat: repeatOption == "none" ? nil : repeatOption
+                )
                 let _: DotoTask = try await APIClient.shared.put("/tasks/\(t.id)", body: body)
             } else {
+                let body = TaskCreateRequest(
+                    title: title,
+                    description: notes.isEmpty ? nil : notes,
+                    assignedTo: assignedToId.isEmpty ? nil : assignedToId,
+                    priority: priority,
+                    points: points,
+                    rewardGoalId: rewardGoalId,
+                    dueAt: dueDate,
+                    notes: notes.isEmpty ? nil : notes,
+                    repeat: repeatOption == "none" ? nil : repeatOption
+                )
                 let _: DotoTask = try await APIClient.shared.post("/tasks", body: body)
             }
             dismiss()

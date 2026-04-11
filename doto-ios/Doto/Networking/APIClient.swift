@@ -37,6 +37,10 @@ class APIClient {
         let _: EmptyResponse = try await request(method: "DELETE", path: path, params: [:], body: nil as EmptyBody?)
     }
 
+    func delete<T: Decodable>(_ path: String) async throws -> T {
+        try await request(method: "DELETE", path: path, params: [:], body: nil as EmptyBody?)
+    }
+
     private func request<B: Encodable, T: Decodable>(
         method: String, path: String, params: [String: String], body: B?
     ) async throws -> T {

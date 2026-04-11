@@ -26,8 +26,9 @@ enum ShoppingCategory: String, CaseIterable {
     case grains     = "grains"
     case canned     = "canned"
     case condiments = "condiments"
-    case household  = "household"
-    case frozen     = "frozen"
+    case household   = "household"
+    case personalCare = "personal_care"
+    case frozen      = "frozen"
     case beverages  = "beverages"
     case snacks     = "snacks"
     case other      = "other"
@@ -44,15 +45,21 @@ enum ShoppingCategory: String, CaseIterable {
         case .grains:     return "🌾"
         case .canned:     return "🥫"
         case .condiments: return "🧂"
-        case .household:  return "🧹"
-        case .frozen:     return "❄️"
+        case .household:    return "🧹"
+        case .personalCare: return "🧴"
+        case .frozen:       return "❄️"
         case .beverages:  return "🧃"
         case .snacks:     return "🍿"
         case .other:      return "📦"
         }
     }
 
-    var displayName: String { rawValue.capitalized }
+    var displayName: String {
+        switch self {
+        case .personalCare: return "Personal Care"
+        default: return rawValue.capitalized
+        }
+    }
 
     static func detect(from name: String) -> ShoppingCategory {
         let n = name.lowercased()
@@ -67,6 +74,7 @@ enum ShoppingCategory: String, CaseIterable {
         if ["canned","soup","tomato sauce","broth","stock"].contains(where: n.contains)                                                     { return .canned     }
         if ["salt","ketchup","mustard","mayo","sauce","vinegar","oil","spice","seasoning","dressing","soy","sriracha","honey","syrup","jam","jelly"].contains(where: n.contains) { return .condiments }
         if ["soap","bags","bleach","detergent","sponge","toilet","paper towel","trash","wrap","foil","napkin"].contains(where: n.contains)   { return .household  }
+        if ["shampoo","toothpaste","lotion","deodorant","razor","tissue","diaper","diapers","floss","mouthwash"].contains(where: n.contains) { return .personalCare }
         if ["frozen","ice cream","pizza"].contains(where: n.contains)                                                                       { return .frozen     }
         if ["water","juice","soda","coffee","tea","beer","wine","drink"].contains(where: n.contains)                                        { return .beverages  }
         if ["chips","cookie","cracker","candy","popcorn","chocolate","granola","bar","pretzel"].contains(where: n.contains)                  { return .snacks     }
