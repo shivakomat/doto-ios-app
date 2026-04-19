@@ -11,10 +11,19 @@ struct RegisterView: View {
 
     @State private var displayName  = ""
     @State private var username     = ""
+    @State private var email        = ""
     @State private var password     = ""
     @State private var confirmPw    = ""
     @State private var showPassword = false
     @State private var usernameError: String?
+    @State private var emailError: String?
+
+    private var isParent: Bool {
+        if case .joinFamily(_, let role) = path {
+            return role == "parent"
+        }
+        return true // createFamily defaults to parent
+    }
 
     private var confirmMismatch: Bool {
         !confirmPw.isEmpty && confirmPw != password
@@ -26,7 +35,19 @@ struct RegisterView: View {
         password.count >= 8 &&
         !confirmMismatch &&
         !confirmPw.isEmpty &&
+        (!isParent || isValidEmail(email)) &&
         !authVM.isLoading
+    }
+
+    private var disabledReason: String? {
+        if authVM.isLoading { return nil }
+        if displayName.trimmingCharacters(in: .whitespaces).isEmpty { return "Enter a display name" }
+        if !isValidUsername(username) { return "Username must be 3-50 characters, letters, numbers, underscores only" }
+        if isParent && !isValidEmail(email) { return "Enter a valid email address" }
+        if password.count < 8 { return "Password must be at least 8 characters" }
+        if confirmMismatch { return "Passwords don't match" }
+        if confirmPw.isEmpty { return "Confirm your password" }
+        return nil
     }
 
     var body: some View {
@@ -46,9 +67,7 @@ struct RegisterView: View {
                             get: { username },
                             set: {
                                 username = $0.lowercased()
-                                usernameError = isValidUsername($0.lowercased()) || $0.isEmpty
-                                    ? nil
-                                    : "Letters, numbers, underscores only. No spaces."
+                                usernameError = nil // Clear API error on edit
                             }
                         ),
                         autocapitalization: .never
@@ -64,11 +83,51 @@ struct RegisterView: View {
                     }
                 }
 
-                AuthSecureField(
-                    label: "Password (min. 8 characters)",
-                    text: $password,
-                    showPassword: $showPassword
-                )
+                // Email field - only for parents
+                if isParent {
+                    VStack(alignment: .leading, spacing: 4) {
+                        AuthTextField(
+                            label: "Email",
+                            text: Binding(
+                                get: { email },
+                                set: {
+                                    email = $0.lowercased()
+                                    emailError = nil
+                                }
+                            ),
+                            autocapitalization: .never,
+                            keyboardType: .emailAddress
+                        )
+                        if let err = emailError {
+                            Text(err)
+                                .font(.system(size: 11))
+                                .foregroundColor(Color(hex: "#E24B4A"))
+                        } else {
+                            Text("Used for password recovery")
+                                .font(.system(size: 11))
+                                .foregroundColor(.textMuted)
+                        }
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    AuthSecureField(
+                        label: "Password (min. 8 characters)",
+                        text: $password,
+                        showPassword: $showPassword
+                    )
+                    HStack {
+                        Text("\(password.count) characters")
+                            .font(.system(size: 11))
+                            .foregroundColor(password.count >= 8 ? Color(hex: "#1D9E75") : Color(hex: "#D97706"))
+                        Spacer()
+                        if password.count >= 8 {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(Color(hex: "#1D9E75"))
+                                .font(.system(size: 11))
+                        }
+                    }
+                }
 
                 AuthSecureField(
                     label: "Confirm password",
@@ -77,10 +136,17 @@ struct RegisterView: View {
                     error: confirmMismatch ? "Passwords don't match." : nil
                 )
 
-                if let err = authVM.errorMessage {
+                if let err = authVM.errorMessage, usernameError == nil && emailError == nil {
                     Text(err)
                         .font(.system(size: 13))
                         .foregroundColor(Color(hex: "#E24B4A"))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                if let reason = disabledReason, !authVM.isLoading {
+                    Text(reason)
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(hex: "#D97706"))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
@@ -91,6 +157,7 @@ struct RegisterView: View {
                     Task { await submit() }
                 }
                 .disabled(!canSubmit)
+                .opacity(canSubmit ? 1.0 : 0.6)
                 .padding(.top, 4)
             }
             .padding(.horizontal, 24)
@@ -113,12 +180,26 @@ struct RegisterView: View {
             password: password,
             displayName: displayName,
             role: role,
-            inviteCode: inviteCode
+            inviteCode: inviteCode,
+            email: isParent ? email : nil
         )
+        // Check for specific errors to show inline
+        if let err = authVM.errorMessage {
+            if err.lowercased().contains("username") && err.lowercased().contains("taken") {
+                usernameError = "This username is already taken. Try a different one."
+            } else if err.lowercased().contains("email") {
+                emailError = err
+            }
+        }
     }
 
     private func isValidUsername(_ value: String) -> Bool {
         let regex = "^[a-z0-9_]{3,50}$"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: value)
+    }
+
+    private func isValidEmail(_ value: String) -> Bool {
+        let regex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: value)
     }
 }

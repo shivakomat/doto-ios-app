@@ -114,6 +114,11 @@
 		EEE08F4AFB9EDB34004CAD2F /* ClaimStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D51DF632B0781386C2673B /* ClaimStatus.swift */; };
 		FEB05705025FE56A65014F41 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D6D3EEF320720B6398F774 /* SignInView.swift */; };
 		AA11BB22CC33DD44EE55FF01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF02 /* Assets.xcassets */; };
+		F001A1B1C1D1E1F2021222401 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F2021222402 /* ForgotPasswordView.swift */; };
+		F001A1B1C1D1E1F2021222403 /* VerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F2021222404 /* VerifyCodeView.swift */; };
+		F001A1B1C1D1E1F2021222405 /* NewPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F2021222406 /* NewPasswordView.swift */; };
+		F001A1B1C1D1E1F2021222407 /* PasswordResetSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F2021222408 /* PasswordResetSuccessView.swift */; };
+		F001A1B1C1D1E1F2021222409 /* ResetChildPasswordSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F202122240A /* ResetChildPasswordSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -205,6 +210,11 @@
 		A47FC6227E93515DFF62E991 /* BonusPointsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonusPointsSheet.swift; sourceTree = "<group>"; };
 		ACD2427F1E39C0E808117FEE /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B2D51DF632B0781386C2673B /* ClaimStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimStatus.swift; sourceTree = "<group>"; };
+		F001A1B1C1D1E1F2021222402 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		F001A1B1C1D1E1F2021222404 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
+		F001A1B1C1D1E1F2021222406 /* NewPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPasswordView.swift; sourceTree = "<group>"; };
+		F001A1B1C1D1E1F2021222408 /* PasswordResetSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetSuccessView.swift; sourceTree = "<group>"; };
+		F001A1B1C1D1E1F202122240A /* ResetChildPasswordSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetChildPasswordSheet.swift; sourceTree = "<group>"; };
 		B362843170550091AFD6FDC8 /* ChildStatsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildStatsCard.swift; sourceTree = "<group>"; };
 		B4D71B597533DF0A39998C0B /* ParentEmptyDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentEmptyDashboard.swift; sourceTree = "<group>"; };
 		B8946515BD10632C3CD445B2 /* InviteCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeView.swift; sourceTree = "<group>"; };
@@ -353,6 +363,7 @@
 				6903FB406FC19AAE2BD11A76 /* FamilyManageView.swift */,
 				FF001A1B1C1D1E1F2021222401 /* InviteCoParentSheet.swift */,
 				9E9F2F21E197CD66FD3438F2 /* FamilyViewModel.swift */,
+				F001A1B1C1D1E1F202122240A /* ResetChildPasswordSheet.swift */,
 			);
 			path = Family;
 			sourceTree = "<group>";
@@ -433,6 +444,10 @@
 				9F97CCACF1B60253105CC1F9 /* LandingView.swift */,
 				430018965FC7A04CAEC07304 /* RegisterView.swift */,
 				03D6D3EEF320720B6398F774 /* SignInView.swift */,
+				F001A1B1C1D1E1F2021222402 /* ForgotPasswordView.swift */,
+				F001A1B1C1D1E1F2021222404 /* VerifyCodeView.swift */,
+				F001A1B1C1D1E1F2021222406 /* NewPasswordView.swift */,
+				F001A1B1C1D1E1F2021222408 /* PasswordResetSuccessView.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -607,6 +622,11 @@
 				02B6438807C44F6DEE9BDB6A /* FiveDayStripView.swift in Sources */,
 				73552CEF0B4EEF5CC0FFBCC2 /* GoalsSection.swift in Sources */,
 				BEA4DD3AA9CF7998223674B7 /* InviteCodeView.swift in Sources */,
+				F001A1B1C1D1E1F2021222401 /* ForgotPasswordView.swift in Sources */,
+				F001A1B1C1D1E1F2021222403 /* VerifyCodeView.swift in Sources */,
+				F001A1B1C1D1E1F2021222405 /* NewPasswordView.swift in Sources */,
+				F001A1B1C1D1E1F2021222407 /* PasswordResetSuccessView.swift in Sources */,
+				F001A1B1C1D1E1F2021222409 /* ResetChildPasswordSheet.swift in Sources */,
 				B8FE7C96313835337569AB25 /* KeychainHelper.swift in Sources */,
 				5D6583E7AF2A7C4114E2088D /* LandingView.swift in Sources */,
 				9A9EABC18FF327134A1D4A11 /* LeaderboardCard.swift in Sources */,

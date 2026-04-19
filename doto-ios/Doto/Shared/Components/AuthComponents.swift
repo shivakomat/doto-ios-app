@@ -4,6 +4,7 @@ struct AuthTextField: View {
     let label: String
     @Binding var text: String
     var autocapitalization: TextInputAutocapitalization = .sentences
+    var keyboardType: UIKeyboardType = .default
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -12,6 +13,7 @@ struct AuthTextField: View {
                 .foregroundColor(.textSecondary)
             TextField("", text: $text)
                 .textInputAutocapitalization(autocapitalization)
+                .keyboardType(keyboardType)
                 .autocorrectionDisabled()
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)

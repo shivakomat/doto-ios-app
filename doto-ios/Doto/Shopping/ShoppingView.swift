@@ -5,11 +5,20 @@ struct ShoppingView: View {
     @State private var showAddItem = false
     @State private var showNewListInput = false
     @State private var newListName = ""
+    let canManageLists: Bool
+
+    init(canManageLists: Bool = true) {
+        self.canManageLists = canManageLists
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             DotoNavHeader(title: "Shopping Lists", trailing: {
-                AnyView(NavAddButton { showAddItem = true })
+                AnyView(Group {
+                    if canManageLists {
+                        NavAddButton { showAddItem = true }
+                    }
+                })
             })
 
             listTabStrip
@@ -37,7 +46,7 @@ struct ShoppingView: View {
                 .refreshable { await vm.loadItems() }
             }
 
-            if vm.checkedCount > 0 {
+            if canManageLists && vm.checkedCount > 0 {
                 clearCheckedButton
             }
         }
@@ -72,42 +81,44 @@ struct ShoppingView: View {
                     listTab(list)
                 }
 
-                if showNewListInput {
-                    HStack(spacing: 4) {
-                        TextField("List name", text: $newListName)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: 120)
-                            .font(.system(size: 13))
-                            .submitLabel(.done)
-                            .onSubmit {
-                                if !newListName.isEmpty {
-                                    Task {
-                                        await vm.createList(name: newListName)
-                                        newListName = ""
-                                        showNewListInput = false
+                if canManageLists {
+                    if showNewListInput {
+                        HStack(spacing: 4) {
+                            TextField("List name", text: $newListName)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 120)
+                                .font(.system(size: 13))
+                                .submitLabel(.done)
+                                .onSubmit {
+                                    if !newListName.isEmpty {
+                                        Task {
+                                            await vm.createList(name: newListName)
+                                            newListName = ""
+                                            showNewListInput = false
+                                        }
                                     }
                                 }
+                            Button {
+                                showNewListInput = false
+                                newListName = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.textMuted)
                             }
-                        Button {
-                            showNewListInput = false
-                            newListName = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.textMuted)
                         }
-                    }
-                    .padding(.horizontal, 8)
-                } else {
-                    Button {
-                        showNewListInput = true
-                    } label: {
-                        Text("+ New List")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.textSecondary)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color(hex: "#E2E8F0"))
-                            .cornerRadius(12)
+                        .padding(.horizontal, 8)
+                    } else {
+                        Button {
+                            showNewListInput = true
+                        } label: {
+                            Text("+ New List")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.textSecondary)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color(hex: "#E2E8F0"))
+                                .cornerRadius(12)
+                        }
                     }
                 }
             }
@@ -130,10 +141,12 @@ struct ShoppingView: View {
                 .cornerRadius(12)
         }
         .contextMenu {
-            Button(role: .destructive) {
-                Task { await vm.deleteList(list.id) }
-            } label: {
-                Label("Delete list", systemImage: "trash")
+            if canManageLists {
+                Button(role: .destructive) {
+                    Task { await vm.deleteList(list.id) }
+                } label: {
+                    Label("Delete list", systemImage: "trash")
+                }
             }
         }
     }

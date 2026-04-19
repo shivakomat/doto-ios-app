@@ -12,6 +12,8 @@ struct MainTabView: View {
                     .tabItem { Label("Schedule", systemImage: "calendar") }
                 TasksView()
                     .tabItem { Label("Tasks",   systemImage: "checkmark.circle.fill") }
+                ShoppingView(canManageLists: false)
+                    .tabItem { Label("Shopping", systemImage: "cart.fill") }
                 RewardsView()
                     .tabItem { Label("Rewards", systemImage: "star.fill") }
             }

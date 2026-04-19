@@ -130,20 +130,25 @@ class RewardsViewModel: ObservableObject {
         }
     }
 
-    func createReward(memberId: String, title: String, emoji: String?,
+    func createReward(memberId: String? = nil, title: String, emoji: String?,
                       pointsCost: Int, catalogItemId: String?) async {
         struct CreateRewardRequest: Encodable {
-            let memberId: String; let title: String; let emoji: String?
+            let memberId: String?; let title: String; let emoji: String?
             let pointsCost: Int; let catalogItemId: String?
         }
+        isLoading = true
+        defer { isLoading = false }
         do {
             let r: Reward = try await APIClient.shared.post("/rewards",
                 body: CreateRewardRequest(memberId: memberId, title: title,
                                           emoji: emoji, pointsCost: pointsCost,
                                           catalogItemId: catalogItemId))
             rewards.append(r)
+            errorMessage = nil
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch APIError.conflict(let msg) {
+            errorMessage = msg
         } catch {
             errorMessage = error.localizedDescription
         }

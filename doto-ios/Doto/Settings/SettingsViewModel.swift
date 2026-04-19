@@ -72,15 +72,22 @@ class SettingsViewModel: ObservableObject {
         }
     }
 
-    func updateProfile(displayName: String, color: String) async {
-        struct UpdateProfileRequest: Encodable { let displayName: String; let color: String }
+    func updateProfile(displayName: String, color: String, email: String? = nil) async {
+        struct UpdateProfileRequest: Encodable {
+            let displayName: String
+            let color: String
+            let email: String?
+        }
         do {
             let _: Profile = try await APIClient.shared.patch(
                 "/profiles/me",
-                body: UpdateProfileRequest(displayName: displayName, color: color)
+                body: UpdateProfileRequest(displayName: displayName, color: color, email: email)
             )
             successMessage = "Profile updated"
+            errorMessage = nil
         } catch APIError.validation(let msg) {
+            errorMessage = msg
+        } catch APIError.conflict(let msg) {
             errorMessage = msg
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)

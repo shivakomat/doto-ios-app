@@ -9,7 +9,9 @@ struct FamilyManageView: View {
     @State private var showInviteParent = false
     @State private var childName = ""
     @State private var memberToDelete: Profile?
+    @State private var memberToReset: Profile?
     @State private var showDeleteAlert = false
+    @State private var showResetPasswordSheet = false
     @State private var claimStatuses: [String: ClaimStatus] = [:]
 
     var body: some View {
@@ -71,15 +73,28 @@ struct FamilyManageView: View {
                                     .foregroundColor(.textSecondary)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                if authVM.currentProfile?.isParent == true
-                                    && member.isChild
-                                    && member.isAuthAccount != true {
+                                let isParent = authVM.currentProfile?.isParent == true
+                                let isChildMember = member.isChild
+                                let canDelete = isParent && isChildMember && member.isAuthAccount != true
+                                let canResetPassword = isParent && isChildMember
+
+                                if canDelete {
                                     Button(role: .destructive) {
                                         memberToDelete = member
                                         showDeleteAlert = true
                                     } label: {
                                         Label("Delete", systemImage: "trash")
                                     }
+                                }
+
+                                if canResetPassword {
+                                    Button {
+                                        memberToReset = member
+                                        showResetPasswordSheet = true
+                                    } label: {
+                                        Label("Reset Password", systemImage: "key.fill")
+                                    }
+                                    .tint(.memberBlue)
                                 }
                             }
                         }
@@ -148,6 +163,12 @@ struct FamilyManageView: View {
             if let family = vm.family {
                 InviteCoParentSheet(inviteCode: family.inviteCode, familyName: family.name)
             }
+        }
+        .sheet(item: $memberToReset) { member in
+            ResetChildPasswordSheet(
+                memberId: member.id,
+                memberName: member.displayName
+            )
         }
         .sheet(isPresented: $showAddChild) {
             NavigationView {

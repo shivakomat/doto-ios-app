@@ -101,6 +101,14 @@ struct SetGoalView: View {
                                 memberPicker
                             }
 
+                            if let error = vm.errorMessage {
+                                Text(error)
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(hex: "#E24B4A"))
+                                    .multilineTextAlignment(.center)
+                                    .frame(maxWidth: .infinity)
+                            }
+
                             Button {
                                 guard !customTitle.isEmpty else { return }
                                 isSubmitting = true
@@ -113,7 +121,9 @@ struct SetGoalView: View {
                                         catalogItemId: nil
                                     )
                                     isSubmitting = false
-                                    dismiss()
+                                    if vm.errorMessage == nil {
+                                        dismiss()
+                                    }
                                 }
                             } label: {
                                 Text(isSubmitting ? "Setting goal..." : "Set this as my goal")
@@ -124,7 +134,7 @@ struct SetGoalView: View {
                                     .background(Color.memberBlue)
                                     .cornerRadius(10)
                             }
-                            .disabled(customTitle.isEmpty || isSubmitting)
+                            .disabled(customTitle.isEmpty || isSubmitting || vm.isLoading)
                         }
                     }
                     .padding(.horizontal, 16)

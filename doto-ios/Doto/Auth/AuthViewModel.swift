@@ -20,6 +20,7 @@ struct RegisterRequest: Encodable {
     let displayName: String
     let role: String
     let inviteCode: String?
+    let email: String?
 
     func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
@@ -28,10 +29,11 @@ struct RegisterRequest: Encodable {
         try c.encode(displayName, forKey: .displayName)
         try c.encode(role,        forKey: .role)
         if let code = inviteCode { try c.encode(code, forKey: .inviteCode) }
+        if let e = email { try c.encode(e, forKey: .email) }
     }
 
     private enum CodingKeys: String, CodingKey {
-        case username, password, displayName, role, inviteCode
+        case username, password, displayName, role, inviteCode, email
     }
 }
 
@@ -94,7 +96,8 @@ class AuthViewModel: ObservableObject {
         password: String,
         displayName: String,
         role: String,
-        inviteCode: String?
+        inviteCode: String?,
+        email: String? = nil
     ) async {
         isLoading = true; errorMessage = nil
         do {
@@ -105,7 +108,8 @@ class AuthViewModel: ObservableObject {
                     password: password,
                     displayName: displayName,
                     role: role,
-                    inviteCode: inviteCode
+                    inviteCode: inviteCode,
+                    email: email
                 )
             )
             KeychainHelper.saveToken(res.token)
@@ -125,9 +129,13 @@ class AuthViewModel: ObservableObject {
                 isLoading = false
                 state = res.profile.familyId == nil ? .noFamily : .ready
             }
-        } catch APIError.conflict(_) {
+        } catch APIError.conflict(let msg) {
             isLoading = false
-            errorMessage = "That username is already taken. Try a different one."
+            if msg.lowercased().contains("email") {
+                errorMessage = "This email is already in use. Try a different one."
+            } else {
+                errorMessage = "That username is already taken. Try a different one."
+            }
         } catch APIError.notFound {
             isLoading = false
             errorMessage = "The invite code is no longer valid. Go back and try again."

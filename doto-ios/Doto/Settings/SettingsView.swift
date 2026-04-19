@@ -13,8 +13,14 @@ struct SettingsView: View {
     @State private var showChangePassword = false
     @State private var isSavingProfile = false
     @State private var isSavingFamily = false
+    @State private var email = ""
+    @State private var emailError: String?
 
     private let colorPalette = Color.settingsColorPalette
+
+    private var isCurrentUserParent: Bool {
+        authVM.currentProfile?.isParent == true
+    }
 
     var body: some View {
         NavigationView {
@@ -49,8 +55,9 @@ struct SettingsView: View {
         .onAppear {
             displayName = authVM.currentProfile?.displayName ?? ""
             selectedColor = authVM.currentProfile?.color ?? "#6C63FF"
+            email = authVM.currentProfile?.email ?? ""
             familyName = vm.family?.name ?? ""
-            Task { 
+            Task {
                 await vm.loadFamily()
                 await vm.loadNotifications()
             }
@@ -123,11 +130,40 @@ struct SettingsView: View {
                 }
             }
 
+            // Email field - only for parents
+            if isCurrentUserParent {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("Email")
+                        Spacer()
+                        TextField("Recovery email", text: $email)
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
+                            .autocorrectionDisabled()
+                            .multilineTextAlignment(.trailing)
+                    }
+                    Text("Used for password recovery")
+                        .font(.system(size: 11))
+                        .foregroundColor(.textMuted)
+                    if let error = emailError {
+                        Text(error)
+                            .font(.system(size: 11))
+                            .foregroundColor(Color(hex: "#E24B4A"))
+                    }
+                }
+            }
+
             Button {
                 Task {
                     isSavingProfile = true
-                    await vm.updateProfile(displayName: displayName, color: selectedColor)
+                    await vm.updateProfile(displayName: displayName, color: selectedColor, email: isCurrentUserParent ? email : nil)
                     await authVM.refreshCurrentProfileOnly()
+                    // Check for email error
+                    if let err = vm.errorMessage, isCurrentUserParent, err.lowercased().contains("email") {
+                        emailError = err
+                    } else {
+                        emailError = nil
+                    }
                     isSavingProfile = false
                 }
             } label: {

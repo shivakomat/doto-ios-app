@@ -3,6 +3,7 @@ import Foundation
 enum APIError: Error, LocalizedError {
     case unauthorized
     case notFound
+    case forbidden
     case validation(String)
     case conflict(String)
     case serverError(String)
@@ -14,6 +15,7 @@ enum APIError: Error, LocalizedError {
         switch self {
         case .unauthorized:          return "Please log in again."
         case .notFound:              return "Not found."
+        case .forbidden:             return "You don't have permission to perform this action."
         case .validation(let msg):   return msg
         case .conflict(let msg):     return msg
         case .serverError(let msg):  return "Server error: \(msg)"

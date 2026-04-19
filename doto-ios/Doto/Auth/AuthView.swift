@@ -149,6 +149,18 @@ struct AuthView: View {
                 .padding(.horizontal)
                 .disabled(authVM.isLoading)
 
+                // Forgot password link - only show in sign in mode
+                if !isSignUp {
+                    Button {
+                        // Show forgot password sheet
+                    } label: {
+                        Text("Forgot password?")
+                            .font(.system(size: 14))
+                            .foregroundColor(.memberBlue)
+                    }
+                    .padding(.top, 8)
+                }
+
                 Spacer()
             }
         }
