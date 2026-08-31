@@ -38,6 +38,7 @@ struct ShoppingNudgeCard: View {
 struct ParentDashboardView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @ObservedObject var vm: DashboardViewModel
+    @Binding var selectedTab: DotoTab
     @State private var showFABSheet = false
     @State private var showAddEvent = false
     @State private var showAddTask = false
@@ -91,7 +92,9 @@ struct ParentDashboardView: View {
 
                                 // 2. Overdue alert
                                 if d.overdueCount > 0 {
-                                    OverdueAlertBanner(count: d.overdueCount)
+                                    OverdueAlertBanner(count: d.overdueCount) {
+                                        selectedTab = .tasks
+                                    }
                                 }
 
                                 // 3. Recently assigned tasks

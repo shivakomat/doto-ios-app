@@ -12,42 +12,60 @@ struct ShoppingView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            DotoNavHeader(title: "Shopping Lists", trailing: {
-                AnyView(Group {
-                    if canManageLists {
-                        NavAddButton { showAddItem = true }
-                    }
-                })
-            })
-
-            listTabStrip
-
-            Divider()
-
-            if vm.isLoadingItems && vm.items.isEmpty {
-                LoadingView()
-            } else if vm.items.isEmpty && !vm.lists.isEmpty {
-                EmptyStateView(
-                    message: "No items in this list",
-                    systemImage: "cart",
-                    cta: "Add one"
-                ) { showAddItem = true }
-            } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        ForEach(vm.groupedItems, id: \.category) { group in
-                            categorySection(group)
+        ZStack(alignment: .bottomTrailing) {
+            VStack(spacing: 0) {
+                DotoNavHeader(title: "Shopping Lists", trailing: {
+                    AnyView(Group {
+                        if canManageLists {
+                            NavAddButton { showAddItem = true }
                         }
+                    })
+                })
+
+                listTabStrip
+
+                Divider()
+
+                if vm.isLoadingItems && vm.items.isEmpty {
+                    LoadingView()
+                } else if vm.items.isEmpty && !vm.lists.isEmpty {
+                    EmptyStateView(
+                        message: "No items in this list",
+                        systemImage: "cart",
+                        cta: "Add one"
+                    ) { showAddItem = true }
+                } else {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 16) {
+                            ForEach(vm.groupedItems, id: \.category) { group in
+                                categorySection(group)
+                            }
+                        }
+                        .padding(.vertical, 12)
+                        .padding(.bottom, 80)
                     }
-                    .padding(.vertical, 12)
-                    .padding(.bottom, 80)
+                    .refreshable { await vm.loadItems() }
                 }
-                .refreshable { await vm.loadItems() }
+
+                if canManageLists && vm.checkedCount > 0 {
+                    clearCheckedButton
+                }
             }
 
-            if canManageLists && vm.checkedCount > 0 {
-                clearCheckedButton
+            // FAB for adding items (parent only)
+            if canManageLists {
+                Button {
+                    showAddItem = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Color.memberBlue)
+                        .clipShape(Circle())
+                        .shadow(radius: 4)
+                }
+                .padding(20)
             }
         }
         .background(Color.screenBg.ignoresSafeArea())

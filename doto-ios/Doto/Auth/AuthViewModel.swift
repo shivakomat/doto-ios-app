@@ -64,6 +64,7 @@ class AuthViewModel: ObservableObject {
         do {
             let profile: Profile = try await APIClient.shared.get("/auth/me")
             currentProfile = profile
+            syncSubscription(for: profile)
             state = profile.familyId == nil ? .noFamily : .ready
         } catch APIError.unauthorized {
             KeychainHelper.deleteToken()
@@ -83,11 +84,21 @@ class AuthViewModel: ObservableObject {
             )
             KeychainHelper.saveToken(res.token)
             currentProfile = res.profile
+            syncSubscription(for: res.profile)
             isLoading = false
             state = res.profile.familyId == nil ? .noFamily : .ready
-        } catch {
+        } catch APIError.unauthorized {
             isLoading = false
             errorMessage = "Incorrect username or password."
+        } catch APIError.validation(let msg) {
+            isLoading = false
+            errorMessage = msg
+        } catch APIError.networkError {
+            isLoading = false
+            errorMessage = "Unable to connect. Check your internet and try again."
+        } catch {
+            isLoading = false
+            errorMessage = error.localizedDescription
         }
     }
 
@@ -114,6 +125,7 @@ class AuthViewModel: ObservableObject {
             )
             KeychainHelper.saveToken(res.token)
             currentProfile = res.profile
+            syncSubscription(for: res.profile)
 
             // If the register call already joined the family (inviteCode accepted server-side),
             // skip the explicit join step; otherwise call /families/join to get the scoped token.
@@ -123,12 +135,16 @@ class AuthViewModel: ObservableObject {
                     body: JoinFamilyRequest(inviteCode: code, role: role)
                 )
                 KeychainHelper.saveToken(joinRes.token)
+                syncSubscription(for: res.profile)
                 isLoading = false
                 state = .ready
             } else {
                 isLoading = false
                 state = res.profile.familyId == nil ? .noFamily : .ready
             }
+        } catch APIError.validation(let msg) {
+            isLoading = false
+            errorMessage = msg
         } catch APIError.conflict(let msg) {
             isLoading = false
             if msg.lowercased().contains("email") {
@@ -139,6 +155,9 @@ class AuthViewModel: ObservableObject {
         } catch APIError.notFound {
             isLoading = false
             errorMessage = "The invite code is no longer valid. Go back and try again."
+        } catch APIError.networkError {
+            isLoading = false
+            errorMessage = "Unable to connect. Check your internet and try again."
         } catch {
             isLoading = false
             errorMessage = error.localizedDescription
@@ -164,5 +183,10 @@ class AuthViewModel: ObservableObject {
         KeychainHelper.deleteToken()
         currentProfile = nil
         state = .unauthenticated
+    }
+
+    private func syncSubscription(for profile: Profile) {
+        SubscriptionManager.shared.setUserID(profile.id)
+        SubscriptionManager.shared.beginTrialIfNeeded()
     }
 }

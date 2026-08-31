@@ -24,45 +24,63 @@ struct TasksView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            DotoNavHeader(title: "Tasks", trailing: {
-                AnyView(HStack(spacing: 12) {
-                    // Clear completed — parent only, only when completed tasks exist
-                    if isParent && vm.hasCompletedTasks {
-                        Button {
-                            showClearConfirm = true
-                        } label: {
-                            Text("Clear done")
-                                .font(.system(size: 13))
-                                .foregroundColor(.textMuted)
+        ZStack(alignment: .bottomTrailing) {
+            VStack(spacing: 0) {
+                DotoNavHeader(title: "Tasks", trailing: {
+                    AnyView(HStack(spacing: 12) {
+                        // Clear completed — parent only, only when completed tasks exist
+                        if isParent && vm.hasCompletedTasks {
+                            Button {
+                                showClearConfirm = true
+                            } label: {
+                                Text("Clear done")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.textMuted)
+                            }
                         }
-                    }
-                    // Add button — parent only
-                    if isParent {
-                        NavAddButton { showAddTask = true }
-                    }
+                        // Add button — parent only
+                        if isParent {
+                            NavAddButton { showAddTask = true }
+                        }
+                    })
                 })
-            })
 
-            if vm.isLoading && vm.tasks.isEmpty {
-                LoadingView()
-            } else if vm.tasks.isEmpty {
-                EmptyStateView(
-                    message: "No tasks yet",
-                    systemImage: "checkmark.circle",
-                    cta: isParent ? "Add one" : nil
-                ) { showAddTask = true }
-            } else {
-                ScrollView {
-                    VStack(spacing: 12) {
-                        ForEach(memberGroups, id: \.profile.id) { group in
-                            memberTaskCard(profile: group.profile, tasks: group.tasks)
+                if vm.isLoading && vm.tasks.isEmpty {
+                    LoadingView()
+                } else if vm.tasks.isEmpty {
+                    EmptyStateView(
+                        message: "No tasks yet",
+                        systemImage: "checkmark.circle",
+                        cta: isParent ? "Add one" : nil
+                    ) { showAddTask = true }
+                } else {
+                    ScrollView {
+                        VStack(spacing: 12) {
+                            ForEach(memberGroups, id: \.profile.id) { group in
+                                memberTaskCard(profile: group.profile, tasks: group.tasks)
+                            }
                         }
+                        .padding()
+                        .padding(.bottom, 40)
                     }
-                    .padding()
-                    .padding(.bottom, 40)
+                    .refreshable { await vm.load() }
                 }
-                .refreshable { await vm.load() }
+            }
+
+            // FAB for adding tasks (parent only)
+            if isParent {
+                Button {
+                    showAddTask = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Color.memberBlue)
+                        .clipShape(Circle())
+                        .shadow(radius: 4)
+                }
+                .padding(20)
             }
         }
         .background(Color.screenBg.ignoresSafeArea())

@@ -119,6 +119,9 @@
 		F001A1B1C1D1E1F2021222405 /* NewPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F2021222406 /* NewPasswordView.swift */; };
 		F001A1B1C1D1E1F2021222407 /* PasswordResetSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F2021222408 /* PasswordResetSuccessView.swift */; };
 		F001A1B1C1D1E1F2021222409 /* ResetChildPasswordSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001A1B1C1D1E1F202122240A /* ResetChildPasswordSheet.swift */; };
+		E1E2E3E4E5E6E7E8E9E0E1E2 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = B1B2B3B4B5B6B7B8B9B0B1B2 /* RevenueCat */; };
+		F1F2F3F4F5F6F7F8F9F0F1F3 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D2D3D4D5D6D7D8D9D0D1D2 /* SubscriptionManager.swift */; };
+		A1A2A3A4A5A6A7A8A9A0A1A3 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2E3E4E5E6E7E8E9E0E1E3 /* PaywallView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -238,9 +241,21 @@
 		FCE1CD4A122A54DD43893B83 /* ClaimStep2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimStep2View.swift; sourceTree = "<group>"; };
 		DD001E1F1A1B1C1D1E1F2022 /* EditRewardSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRewardSheet.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE55FF02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D1D2D3D4D5D6D7D8D9D0D1D2 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		E1E2E3E4E5E6E7E8E9E0E1E3 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		C1C2C3C4C5C6C7C8C9C0C1C2 /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				D1D2D3D4D5D6D7D8D9D0D1D2 /* SubscriptionManager.swift */,
+				E1E2E3E4E5E6E7E8E9E0E1E3 /* PaywallView.swift */,
+			);
+			path = Subscription;
+			sourceTree = "<group>";
+		};
+
 		0215D4DB71ECAE51994B82BE /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
@@ -337,6 +352,7 @@
 				D97E9B67C09D20BD73CF6DF2 /* Settings */,
 				6FCAD20077AE5DA956688057 /* Shared */,
 				50F586DD671A657B6678DB0D /* Shopping */,
+				C1C2C3C4C5C6C7C8C9C0C1C2 /* Subscription */,
 				0215D4DB71ECAE51994B82BE /* Tasks */,
 			);
 			path = Doto;
@@ -517,12 +533,24 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		F1F2F3F4F5F6F7F8F9F0F1F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1E2E3E4E5E6E7E8E9E0E1E2 /* RevenueCat in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		6998B7E0B8BCBFEA708DDFA1 /* Doto */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B59920FFD19F6C5EEB2312C9 /* Build configuration list for PBXNativeTarget "Doto" */;
 			buildPhases = (
 				5F02116F4D170FC4C45D9485 /* Sources */,
+				F1F2F3F4F5F6F7F8F9F0F1F2 /* Frameworks */,
 				AA11BB22CC33DD44EE55FF03 /* Resources */,
 			);
 			buildRules = (
@@ -531,12 +559,32 @@
 			);
 			name = Doto;
 			packageProductDependencies = (
+				B1B2B3B4B5B6B7B8B9B0B1B2 /* RevenueCat */,
 			);
 			productName = Doto;
 			productReference = 477F717D34A797701FA697B6 /* Doto.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A1A2A3A4A5A6A7A8A9A0A1A2 /* RevenueCat */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B1B2B3B4B5B6B7B8B9B0B1B2 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1A2A3A4A5A6A7A8A9A0A1A2 /* RevenueCat */;
+			productName = RevenueCat;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXProject section */
 		C87016F8D1CAFFD00FBC51AF /* Project object */ = {
@@ -545,6 +593,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1620;
 			};
+			packageReferences = (
+				A1A2A3A4A5A6A7A8A9A0A1A2 /* RevenueCat */,
+			);
 			buildConfigurationList = 6116E0F5F09872B124F955D2 /* Build configuration list for PBXProject "Doto" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -645,7 +696,6 @@
 				4214CC40556F45ADDE305E2B /* PointsHistoryView.swift in Sources */,
 				D3870BB69EE3191B0C4A78CE /* PointsHistoryViewModel.swift in Sources */,
 				DD001E1F1A1B1C1D1E1F2021 /* EditRewardSheet.swift in Sources */,
-				D4EA87913115825FFF7507B7 /* AddEditEventView.swift in Sources */,
 				4B35065E18E6BBD569D8BDA5 /* Profile.swift in Sources */,
 				C8A9DC5616F55AEA6E5FD72B /* RecentTasksSection.swift in Sources */,
 				3526B67125F77AADC64D9625 /* RegisterView.swift in Sources */,
@@ -680,6 +730,8 @@
 				AA0008AA0008AA0008AA0008 /* NowLine.swift in Sources */,
 				AA0009AA0009AA0009AA0009 /* MonthGridView.swift in Sources */,
 				AA0010AA0010AA0010AA0010 /* EventReadOnlySheet.swift in Sources */,
+			F1F2F3F4F5F6F7F8F9F0F1F3 /* SubscriptionManager.swift in Sources */,
+			A1A2A3A4A5A6A7A8A9A0A1A3 /* PaywallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,147 +2,124 @@ import SwiftUI
 
 struct VerifyCodeView: View {
     let email: String
-    @Environment(\.dismiss) private var dismiss
+    let onResetComplete: () -> Void
 
     @State private var code = ""
-    @State private var isLoading = false
-    @State private var errorMessage: String?
-    @State private var codeVerified = false
+    @State private var isResending = false
+    @State private var resendMessage: String?
+    @State private var showNewPassword = false
+    @FocusState private var codeFieldFocused: Bool
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text("Enter verification code")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.textPrimary)
-                    .padding(.top, 40)
+        VStack(spacing: 20) {
+            Image(systemName: "envelope.open.fill")
+                .font(.system(size: 50))
+                .foregroundColor(.memberBlue)
+                .padding(.top, 40)
 
-                Text("Enter the 6-digit code we sent to\n\(email)")
-                    .font(.system(size: 14))
-                    .foregroundColor(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
+            Text("Check your email")
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(.textPrimary)
 
-                // 6-digit code input
-                HStack(spacing: 12) {
+            Text("We sent a 6-digit code to\n**\(email)**")
+                .font(.system(size: 14))
+                .foregroundColor(.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+
+            // Hidden text field + visible digit boxes
+            ZStack {
+                TextField("", text: $code)
+                    .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .focused($codeFieldFocused)
+                    .frame(width: 1, height: 1)
+                    .opacity(0.01)
+                    .onChange(of: code) { newValue in
+                        // Only allow digits, max 6
+                        let filtered = String(newValue.filter(\.isNumber).prefix(6))
+                        if filtered != newValue { code = filtered }
+                    }
+
+                HStack(spacing: 10) {
                     ForEach(0..<6, id: \.self) { index in
-                        CodeDigitBox(
-                            index: index,
-                            code: $code,
-                            onComplete: { verifyCode() }
-                        )
+                        let digit = index < code.count
+                            ? String(code[code.index(code.startIndex, offsetBy: index)])
+                            : ""
+                        Text(digit)
+                            .font(.system(size: 24, weight: .bold, design: .monospaced))
+                            .foregroundColor(.textPrimary)
+                            .frame(width: 46, height: 56)
+                            .background(Color.white)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(
+                                        index < code.count ? Color.memberBlue : Color(hex: "#D1D5DB"),
+                                        lineWidth: index == code.count ? 2 : 1.5
+                                    )
+                            )
+                            .cornerRadius(8)
                     }
                 }
-                .padding(.top, 30)
+                .onTapGesture { codeFieldFocused = true }
+            }
+            .padding(.top, 20)
 
-                if let error = errorMessage {
-                    Text(error)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color(hex: "#E24B4A"))
-                        .padding(.top, 16)
-                }
+            if let msg = resendMessage {
+                Text(msg)
+                    .font(.system(size: 13))
+                    .foregroundColor(Color(hex: "#1D9E75"))
+            }
 
-                Spacer()
+            Spacer()
 
-                Button {
-                    resendCode()
-                } label: {
-                    Text("Didn't receive it? Resend")
+            Button {
+                resendCode()
+            } label: {
+                HStack(spacing: 4) {
+                    if isResending {
+                        ProgressView().scaleEffect(0.7)
+                    }
+                    Text("Didn't get it? Resend code")
                         .font(.system(size: 14))
                         .foregroundColor(.memberBlue)
                 }
-                .padding(.bottom, 20)
-
-                Button {
-                    verifyCode()
-                } label: {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                    } else {
-                        Text("Continue")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(code.count == 6 ? Color.memberBlue : Color.gray.opacity(0.3))
-                .cornerRadius(12)
-                .disabled(code.count != 6 || isLoading)
-                .padding(.horizontal)
-
-                Spacer()
             }
+            .disabled(isResending)
+
+            PrimaryButton(title: "Continue") {
+                showNewPassword = true
+            }
+            .disabled(code.count != 6)
+            .opacity(code.count == 6 ? 1.0 : 0.6)
+            .padding(.horizontal, 24)
             .padding(.bottom, 32)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-            }
         }
-    }
-
-    private func verifyCode() {
-        guard code.count == 6 else { return }
-
-        isLoading = true
-        errorMessage = nil
-
-        // This will trigger navigation to NewPasswordView
-        // For now, just simulate success
-        Task {
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            await MainActor.run {
-                isLoading = false
-                codeVerified = true
-            }
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear { codeFieldFocused = true }
+        .navigationDestination(isPresented: $showNewPassword) {
+            NewPasswordView(email: email, code: code, onSuccess: onResetComplete)
         }
     }
 
     private func resendCode() {
-        code = ""
-        errorMessage = nil
+        isResending = true
+        resendMessage = nil
 
         Task {
             do {
                 let _: ResetRequestResponse = try await APIClient.shared.post(
-                    "/api/auth/request-reset",
+                    "/auth/request-reset",
                     body: ResetRequestDTO(email: email)
                 )
             } catch {
-                // Always show success
+                // Always show success to prevent enumeration
+            }
+            await MainActor.run {
+                isResending = false
+                resendMessage = "Code resent!"
+                code = ""
             }
         }
-    }
-}
-
-struct CodeDigitBox: View {
-    let index: Int
-    @Binding var code: String
-    let onComplete: () -> Void
-
-    private var digit: String {
-        if index < code.count {
-            let idx = code.index(code.startIndex, offsetBy: index)
-            return String(code[idx])
-        }
-        return ""
-    }
-
-    var body: some View {
-        Text(digit)
-            .font(.system(size: 24, weight: .bold))
-            .foregroundColor(.textPrimary)
-            .frame(width: 44, height: 56)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.white)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(index < code.count ? Color.memberBlue : Color(hex: "#E2E8F0"), lineWidth: 2)
-                    )
-            )
     }
 }

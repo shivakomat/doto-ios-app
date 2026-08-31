@@ -10,35 +10,53 @@ struct RewardsView: View {
     private var currentId: String? { authVM.currentProfile?.id }
 
     var body: some View {
-        VStack(spacing: 0) {
-            if isParent {
-                DotoNavHeader(title: "Rewards", trailing: {
-                    AnyView(NavAddButton(label: "Add Goal") { showSetGoal = true })
-                })
-            } else {
-                DotoNavHeader(title: "Rewards", trailing: {
-                    AnyView(
-                        Text("\(authVM.currentProfile?.pointsBalance ?? 0)")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(.white)
-                        + Text("\npts to spend")
-                            .font(.system(size: 9))
-                            .foregroundColor(.appNavySub)
-                    )
-                })
+        ZStack(alignment: .bottomTrailing) {
+            VStack(spacing: 0) {
+                if isParent {
+                    DotoNavHeader(title: "Rewards", trailing: {
+                        AnyView(NavAddButton(label: "Add Goal") { showSetGoal = true })
+                    })
+                } else {
+                    DotoNavHeader(title: "Rewards", trailing: {
+                        AnyView(
+                            Text("\(authVM.currentProfile?.pointsBalance ?? 0)")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundColor(.white)
+                            + Text("\npts to spend")
+                                .font(.system(size: 9))
+                                .foregroundColor(.appNavySub)
+                        )
+                    })
+                }
+
+                if vm.isLoading && vm.leaderboard == nil {
+                    LoadingView()
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 16) {
+                            if isParent { parentContent } else { childContent }
+                        }
+                        .padding(14)
+                        .padding(.bottom, 40)
+                    }
+                    .refreshable { await vm.loadAll() }
+                }
             }
 
-            if vm.isLoading && vm.leaderboard == nil {
-                LoadingView()
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        if isParent { parentContent } else { childContent }
-                    }
-                    .padding(14)
-                    .padding(.bottom, 40)
+            // FAB for adding goals (parent only)
+            if isParent {
+                Button {
+                    showSetGoal = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Color.memberBlue)
+                        .clipShape(Circle())
+                        .shadow(radius: 4)
                 }
-                .refreshable { await vm.loadAll() }
+                .padding(20)
             }
         }
         .background(Color.screenBg.ignoresSafeArea())

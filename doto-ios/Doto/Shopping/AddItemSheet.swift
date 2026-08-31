@@ -19,6 +19,7 @@ struct AddItemSheet: View {
     @State private var isSubmitting = false
     @State private var isLoadingLists = false
     @State private var loadedLists: [ShoppingList] = []
+    @State private var errorMessage: String?
     @FocusState private var focusName: Bool
 
     var effectiveLists: [ShoppingList] {
@@ -88,6 +89,13 @@ struct AddItemSheet: View {
 
             // ── Buttons at the bottom ──────────────────────────────────
             VStack(spacing: 10) {
+                if let error = errorMessage {
+                    Text(error)
+                        .font(.system(size: 13))
+                        .foregroundColor(Color(hex: "#E24B4A"))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 4)
+                }
                 // Add & Continue — adds item, keeps sheet open
                 Button {
                     Task { await submitItem(andContinue: true) }
@@ -162,7 +170,7 @@ struct AddItemSheet: View {
             // Notify the shopping view to refresh
             await vm.loadItems(for: selectedListId)
         } catch {
-            // Show error — keep sheet open
+            errorMessage = error.localizedDescription
         }
     }
 }

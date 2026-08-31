@@ -5,6 +5,7 @@ struct SignInView: View {
     @State private var username = ""
     @State private var password = ""
     @State private var showPassword = false
+    @State private var showForgotPassword = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -28,6 +29,18 @@ struct SignInView: View {
             .disabled(username.isEmpty || password.isEmpty || authVM.isLoading)
             .padding(.top, 4)
 
+            HStack {
+                Spacer()
+                Button {
+                    showForgotPassword = true
+                } label: {
+                    Text("Forgot password?")
+                        .font(.system(size: 14))
+                        .foregroundColor(.memberBlue)
+                }
+                Spacer()
+            }
+
             Spacer()
         }
         .padding(.horizontal, 24)
@@ -36,5 +49,8 @@ struct SignInView: View {
         .navigationTitle("Sign in")
         .navigationBarTitleDisplayMode(.large)
         .onAppear { authVM.errorMessage = nil }
+        .sheet(isPresented: $showForgotPassword) {
+            ForgotPasswordView()
+        }
     }
 }

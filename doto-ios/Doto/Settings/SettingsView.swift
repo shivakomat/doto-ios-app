@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject var subscriptionManager: SubscriptionManager
     @StateObject private var vm = SettingsViewModel()
     @Environment(\.dismiss) private var dismiss
 
@@ -11,6 +12,7 @@ struct SettingsView: View {
     @State private var showFamilyManage = false
     @State private var showRewardCatalog = false
     @State private var showChangePassword = false
+    @State private var showSubscription = false
     @State private var isSavingProfile = false
     @State private var isSavingFamily = false
     @State private var email = ""
@@ -27,6 +29,7 @@ struct SettingsView: View {
             Form {
                 profileSection
                 familySection
+                subscriptionSection
                 notificationsSection
                 dangerSection
             }
@@ -73,6 +76,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showChangePassword) {
             ChangePasswordView(vm: vm)
+        }
+        .sheet(isPresented: $showSubscription) {
+            PaywallView()
         }
         .confirmationDialog(
             "Leave family?",
@@ -221,6 +227,43 @@ struct SettingsView: View {
 
             Button("Manage members") { showFamilyManage = true }
             Button("Reward catalog") { showRewardCatalog = true }
+        }
+    }
+
+    private var subscriptionSection: some View {
+        Section(header: Text("Subscription")) {
+            let manager = subscriptionManager
+            let profile = authVM.currentProfile
+
+            HStack {
+                Text("Status")
+                Spacer()
+                if manager.isSubscribed {
+                    Text("Active")
+                        .foregroundColor(.green)
+                } else if manager.isTrialActive {
+                    Text("Trial (\(manager.trialDaysRemaining) days left)")
+                        .foregroundColor(.textSecondary)
+                } else if profile?.isParent == true {
+                    Text("Expired")
+                        .foregroundColor(Color(hex: "#E24B4A"))
+                } else {
+                    Text("Included with family subscription")
+                        .foregroundColor(.textSecondary)
+                }
+            }
+
+            if profile?.isParent == true, !manager.isSubscribed {
+                Button {
+                    showSubscription = true
+                } label: {
+                    HStack {
+                        Text(manager.isTrialActive ? "View subscription options" : "Subscribe")
+                            .foregroundColor(.memberBlue)
+                        Spacer()
+                    }
+                }
+            }
         }
     }
 

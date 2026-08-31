@@ -3,8 +3,7 @@ import SwiftUI
 struct NewPasswordView: View {
     let email: String
     let code: String
-    @Environment(\.dismiss) private var dismiss
-    @State private var onSuccess: () -> Void
+    let onSuccess: () -> Void
 
     @State private var password = ""
     @State private var confirmPassword = ""
@@ -12,69 +11,37 @@ struct NewPasswordView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
 
-    private var passwordValid: Bool {
-        password.count >= 8
-    }
-
-    private var passwordsMatch: Bool {
-        password == confirmPassword && !confirmPassword.isEmpty
-    }
-
-    private var canSubmit: Bool {
-        passwordValid && passwordsMatch && !isLoading
-    }
-
-    init(email: String, code: String, onSuccess: @escaping () -> Void = {}) {
-        self.email = email
-        self.code = code
-        self._onSuccess = State(initialValue: onSuccess)
-    }
+    private var passwordValid: Bool { password.count >= 8 }
+    private var passwordsMatch: Bool { password == confirmPassword && !confirmPassword.isEmpty }
+    private var canSubmit: Bool { passwordValid && passwordsMatch && !isLoading }
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text("Create new password")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.textPrimary)
-                    .padding(.top, 40)
+        VStack(spacing: 20) {
+            Image(systemName: "lock.shield.fill")
+                .font(.system(size: 50))
+                .foregroundColor(.memberBlue)
+                .padding(.top, 40)
 
-                Text("Your new password must be at least 8 characters long.")
-                    .font(.system(size: 14))
-                    .foregroundColor(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
+            Text("Create new password")
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(.textPrimary)
 
-                // Password field
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("New password")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.textSecondary)
+            Text("Must be at least 8 characters.")
+                .font(.system(size: 14))
+                .foregroundColor(.textSecondary)
 
-                    HStack {
-                        Group {
-                            if showPassword {
-                                TextField("Enter new password", text: $password)
-                            } else {
-                                SecureField("Enter new password", text: $password)
-                            }
-                        }
-                        .textFieldStyle(.roundedBorder)
-
-                        Button {
-                            showPassword.toggle()
-                        } label: {
-                            Image(systemName: showPassword ? "eye.slash" : "eye")
-                                .foregroundColor(.textMuted)
-                        }
-                    }
-
+            VStack(spacing: 14) {
+                VStack(alignment: .leading, spacing: 4) {
+                    AuthSecureField(
+                        label: "New password",
+                        text: $password,
+                        showPassword: $showPassword
+                    )
                     HStack {
                         Text("\(password.count) characters")
                             .font(.system(size: 11))
                             .foregroundColor(passwordValid ? Color(hex: "#1D9E75") : Color(hex: "#D97706"))
-
                         Spacer()
-
                         if passwordValid {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(Color(hex: "#1D9E75"))
@@ -82,96 +49,69 @@ struct NewPasswordView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 20)
 
-                // Confirm password field
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Confirm password")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.textSecondary)
-
-                    HStack {
-                        Group {
-                            if showPassword {
-                                TextField("Confirm new password", text: $confirmPassword)
-                            } else {
-                                SecureField("Confirm new password", text: $confirmPassword)
-                            }
-                        }
-                        .textFieldStyle(.roundedBorder)
-
-                        if !confirmPassword.isEmpty {
-                            Image(systemName: passwordsMatch ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                .foregroundColor(passwordsMatch ? Color(hex: "#1D9E75") : Color(hex: "#E24B4A"))
-                        }
-                    }
-                }
-                .padding(.horizontal, 24)
-
-                if let error = errorMessage {
-                    Text(error)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color(hex: "#E24B4A"))
-                        .padding(.horizontal, 24)
-                }
-
-                Spacer()
-
-                Button {
-                    resetPassword()
-                } label: {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                    } else {
-                        Text("Reset password")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(canSubmit ? Color.memberBlue : Color.gray.opacity(0.3))
-                .cornerRadius(12)
-                .disabled(!canSubmit)
-                .padding(.horizontal)
-
-                Spacer()
+                AuthSecureField(
+                    label: "Confirm password",
+                    text: $confirmPassword,
+                    showPassword: $showPassword,
+                    error: !confirmPassword.isEmpty && !passwordsMatch ? "Passwords don't match" : nil
+                )
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 12)
+
+            if let error = errorMessage {
+                Text(error)
+                    .font(.system(size: 13))
+                    .foregroundColor(Color(hex: "#E24B4A"))
+                    .padding(.horizontal, 24)
+            }
+
+            Spacer()
+
+            PrimaryButton(
+                title: isLoading ? "Resetting..." : "Reset password",
+                isLoading: isLoading
+            ) {
+                resetPassword()
+            }
+            .disabled(!canSubmit)
+            .opacity(canSubmit ? 1.0 : 0.6)
+            .padding(.horizontal, 24)
             .padding(.bottom, 32)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-            }
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func resetPassword() {
         guard canSubmit else { return }
-
         isLoading = true
         errorMessage = nil
 
         Task {
             do {
                 let _: ResetPasswordResponse = try await APIClient.shared.post(
-                    "/api/auth/reset-password",
+                    "/auth/reset-password",
                     body: ResetPasswordDTO(code: code, newPassword: password)
                 )
                 await MainActor.run {
                     isLoading = false
                     onSuccess()
                 }
+            } catch APIError.validation(let msg) {
+                await MainActor.run {
+                    isLoading = false
+                    errorMessage = msg
+                }
+            } catch APIError.notFound {
+                await MainActor.run {
+                    isLoading = false
+                    errorMessage = "Invalid or expired code. Please request a new one."
+                }
             } catch {
                 await MainActor.run {
                     isLoading = false
-                    errorMessage = "Invalid or expired code. Please try again."
-                    // Clear code for security
-                    password = ""
-                    confirmPassword = ""
+                    errorMessage = error.localizedDescription
                 }
             }
         }

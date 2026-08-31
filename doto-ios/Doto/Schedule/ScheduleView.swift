@@ -13,33 +13,51 @@ struct ScheduleView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            ScheduleHeader(vm: vm, isReadOnly: isReadOnly, onAddTap: { showAddEvent = true })
+        ZStack(alignment: .bottomTrailing) {
+            VStack(spacing: 0) {
+                ScheduleHeader(vm: vm, isReadOnly: isReadOnly, onAddTap: { showAddEvent = true })
 
-            if vm.isLoading && vm.events.isEmpty {
-                LoadingView()
-            } else {
-                Group {
-                    switch vm.viewMode {
-                    case .day:
-                        DayView(vm: vm, isReadOnly: isReadOnly, currentProfileId: currentProfileId)
-                            .transition(.asymmetric(
-                                insertion: .move(edge: swipeOffset < 0 ? .trailing : .leading),
-                                removal:   .move(edge: swipeOffset < 0 ? .leading  : .trailing)
-                            ))
-                    case .week:
-                        WeekView(vm: vm, isReadOnly: isReadOnly, currentProfileId: currentProfileId)
-                            .transition(.asymmetric(
-                                insertion: .move(edge: swipeOffset < 0 ? .trailing : .leading),
-                                removal:   .move(edge: swipeOffset < 0 ? .leading  : .trailing)
-                            ))
-                    case .month:
-                        MonthView(vm: vm, isReadOnly: isReadOnly)
-                            .transition(.opacity)
+                if vm.isLoading && vm.events.isEmpty {
+                    LoadingView()
+                } else {
+                    Group {
+                        switch vm.viewMode {
+                        case .day:
+                            DayView(vm: vm, isReadOnly: isReadOnly, currentProfileId: currentProfileId)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: swipeOffset < 0 ? .trailing : .leading),
+                                    removal:   .move(edge: swipeOffset < 0 ? .leading  : .trailing)
+                                ))
+                        case .week:
+                            WeekView(vm: vm, isReadOnly: isReadOnly, currentProfileId: currentProfileId)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: swipeOffset < 0 ? .trailing : .leading),
+                                    removal:   .move(edge: swipeOffset < 0 ? .leading  : .trailing)
+                                ))
+                        case .month:
+                            MonthView(vm: vm, isReadOnly: isReadOnly)
+                                .transition(.opacity)
+                        }
                     }
+                    .animation(.spring(response: 0.3, dampingFraction: 0.85), value: vm.selectedDate)
+                    .animation(.easeInOut(duration: 0.2), value: vm.viewMode)
                 }
-                .animation(.spring(response: 0.3, dampingFraction: 0.85), value: vm.selectedDate)
-                .animation(.easeInOut(duration: 0.2), value: vm.viewMode)
+            }
+
+            // FAB for adding events (parent only)
+            if !isReadOnly {
+                Button {
+                    showAddEvent = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Color.memberBlue)
+                        .clipShape(Circle())
+                        .shadow(radius: 4)
+                }
+                .padding(20)
             }
         }
         .background(Color.screenBg.ignoresSafeArea())
