@@ -54,9 +54,14 @@ final class SubscriptionManager: NSObject, ObservableObject {
         return !isTrialActive && !isSubscribed
     }
 
-    func setUserID(_ userID: String?) {
+    func setUserID(_ userID: String?) async {
         guard let userID else { return }
-        Purchases.shared.logIn(userID) { _, _, _ in }
+        do {
+            let result = try await Purchases.shared.logIn(userID)
+            self.customerInfo = result.customerInfo
+        } catch {
+            // Log-in failure is non-fatal; subscription status will update via delegate.
+        }
     }
 
     func loadOfferings() async {

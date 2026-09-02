@@ -41,7 +41,7 @@ class ClaimProfileViewModel: ObservableObject {
             KeychainHelper.saveToken(res.token)
             authVM.currentProfile = res.profile
             claimedProfile = res.profile
-            SubscriptionManager.shared.setUserID(res.profile.id)
+            await SubscriptionManager.shared.setUserID(res.profile.id)
             SubscriptionManager.shared.beginTrialIfNeeded()
         } catch APIError.conflict(let msg) {
             errorMessage = msg
