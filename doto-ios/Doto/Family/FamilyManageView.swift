@@ -6,6 +6,7 @@ struct FamilyManageView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var showAddChild = false
+    @State private var showParentalConsent = false
     @State private var showInviteParent = false
     @State private var childName = ""
     @State private var memberToDelete: Profile?
@@ -108,7 +109,7 @@ struct FamilyManageView: View {
                             }
 
                             Button {
-                                showAddChild = true
+                                presentAddChildFlow()
                             } label: {
                                 Label("Add a child", systemImage: "person.badge.plus")
                                     .foregroundColor(.memberBlue)
@@ -201,5 +202,35 @@ struct FamilyManageView: View {
                 }
             }
         }
+        .sheet(isPresented: $showParentalConsent) {
+            ParentalConsentView(
+                onContinue: {
+                    grantParentalConsent()
+                    showParentalConsent = false
+                    showAddChild = true
+                },
+                onCancel: {
+                    showParentalConsent = false
+                }
+            )
+        }
+    }
+
+    private func presentAddChildFlow() {
+        if parentalConsentGiven {
+            showAddChild = true
+        } else {
+            showParentalConsent = true
+        }
+    }
+
+    private var parentalConsentGiven: Bool {
+        let key = "doto.parentalConsent.\(authVM.currentProfile?.id ?? "default")"
+        return UserDefaults.standard.bool(forKey: key)
+    }
+
+    private func grantParentalConsent() {
+        let key = "doto.parentalConsent.\(authVM.currentProfile?.id ?? "default")"
+        UserDefaults.standard.set(true, forKey: key)
     }
 }

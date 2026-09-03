@@ -123,6 +123,7 @@
 		F1F2F3F4F5F6F7F8F9F0F1F3 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D2D3D4D5D6D7D8D9D0D1D2 /* SubscriptionManager.swift */; };
 		A1A2A3A4A5A6A7A8A9A0A1A3 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2E3E4E5E6E7E8E9E0E1E3 /* PaywallView.swift */; };
 		B1B2B3B4B5B6B7B8B9B0B1A4 /* PrivacyScreenModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A2A3A4A5A6A7A8A9A0A1A4 /* PrivacyScreenModifier.swift */; };
+		B1B2B3B4B5B6B7B8B9B0B5B5 /* ParentalConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A2A3A4A5A6A7A8A9A0A5A5 /* ParentalConsentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -247,6 +248,7 @@
 		A1A2A3A4A5A6A7A8A9A0A4A4 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		B1B2B3B4B5B6B7B8B9B0B4B4 /* Secrets-Template.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Secrets-Template.xcconfig"; sourceTree = "<group>"; };
 		A1A2A3A4A5A6A7A8A9A0A1A4 /* PrivacyScreenModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyScreenModifier.swift; sourceTree = "<group>"; };
+		A1A2A3A4A5A6A7A8A9A0A5A5 /* ParentalConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentalConsentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -380,6 +382,7 @@
 		4A762B8B1765F954FB8C0B2A /* Family */ = {
 			isa = PBXGroup;
 			children = (
+				A1A2A3A4A5A6A7A8A9A0A5A5 /* ParentalConsentView.swift */,
 				6903FB406FC19AAE2BD11A76 /* FamilyManageView.swift */,
 				FF001A1B1C1D1E1F2021222401 /* InviteCoParentSheet.swift */,
 				9E9F2F21E197CD66FD3438F2 /* FamilyViewModel.swift */,
@@ -740,6 +743,7 @@
 			F1F2F3F4F5F6F7F8F9F0F1F3 /* SubscriptionManager.swift in Sources */,
 			A1A2A3A4A5A6A7A8A9A0A1A3 /* PaywallView.swift in Sources */,
 			B1B2B3B4B5B6B7B8B9B0B1A4 /* PrivacyScreenModifier.swift in Sources */,
+			B1B2B3B4B5B6B7B8B9B0B5B5 /* ParentalConsentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
