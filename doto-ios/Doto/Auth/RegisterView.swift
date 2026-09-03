@@ -17,6 +17,9 @@ struct RegisterView: View {
     @State private var showPassword = false
     @State private var usernameError: String?
     @State private var emailError: String?
+    @State private var ageConfirmed = false
+
+    @Environment(\.openURL) private var openURL
 
     private var isParent: Bool {
         if case .joinFamily(_, let role) = path {
@@ -36,6 +39,7 @@ struct RegisterView: View {
         !confirmMismatch &&
         !confirmPw.isEmpty &&
         (!isParent || isValidEmail(email)) &&
+        ageConfirmed &&
         !authVM.isLoading
     }
 
@@ -47,6 +51,7 @@ struct RegisterView: View {
         if password.count < 8 { return "Password must be at least 8 characters" }
         if confirmMismatch { return "Passwords don't match" }
         if confirmPw.isEmpty { return "Confirm your password" }
+        if !ageConfirmed { return "Confirm your age and consent to continue" }
         return nil
     }
 
@@ -150,6 +155,26 @@ struct RegisterView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
+                VStack(alignment: .leading, spacing: 8) {
+                    Toggle(isOn: $ageConfirmed) {
+                        Text(isParent
+                             ? "I am 13 years of age or older and I agree to the Terms and Privacy Policy."
+                             : "I am 13 years of age or older, or I have permission from a parent or legal guardian who has agreed to the Terms and Privacy Policy.")
+                            .font(.system(size: 13))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .toggleStyle(iOSCheckboxToggleStyle())
+
+                    Button("View Privacy Policy") {
+                        if let url = URL(string: "https://doto.family/privacy") {
+                            openURL(url)
+                        }
+                    }
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.memberBlue)
+                }
+                .padding(.top, 4)
+
                 PrimaryButton(
                     title: authVM.isLoading ? "Creating account..." : "Create my account →",
                     isLoading: authVM.isLoading
@@ -201,6 +226,25 @@ struct RegisterView: View {
     private func isValidEmail(_ value: String) -> Bool {
         let regex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: value)
+    }
+}
+
+private struct iOSCheckboxToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
+                    .font(.system(size: 20))
+                    .foregroundColor(configuration.isOn ? .memberBlue : .textMuted)
+                configuration.label
+                    .multilineTextAlignment(.leading)
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
