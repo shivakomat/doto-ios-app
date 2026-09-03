@@ -18,6 +18,7 @@ struct RegisterView: View {
     @State private var usernameError: String?
     @State private var emailError: String?
     @State private var ageConfirmed = false
+    @State private var showTerms = false
 
     @Environment(\.openURL) private var openURL
 
@@ -165,13 +166,21 @@ struct RegisterView: View {
                     }
                     .toggleStyle(iOSCheckboxToggleStyle())
 
-                    Button("View Privacy Policy") {
-                        if let url = LegalURLs.privacyPolicy {
-                            openURL(url)
+                    HStack(spacing: 12) {
+                        Button("View Terms") {
+                            showTerms = true
                         }
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.memberBlue)
+
+                        Button("View Privacy Policy") {
+                            if let url = LegalURLs.privacyPolicy {
+                                openURL(url)
+                            }
+                        }
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.memberBlue)
                     }
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.memberBlue)
                 }
                 .padding(.top, 4)
 
@@ -193,6 +202,9 @@ struct RegisterView: View {
         .navigationTitle("Create your account")
         .navigationBarTitleDisplayMode(.large)
         .onAppear { authVM.errorMessage = nil }
+        .sheet(isPresented: $showTerms) {
+            TermsOfServiceView()
+        }
     }
 
     private func submit() async {

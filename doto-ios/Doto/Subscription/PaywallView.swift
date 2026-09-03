@@ -8,6 +8,7 @@ struct PaywallView: View {
 
     @State private var selectedPackage: Package?
     @State private var isAnnual: Bool = true
+    @State private var showTerms = false
 
     private let benefits = [
         "Unlimited family schedules",
@@ -50,6 +51,9 @@ struct PaywallView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(subscriptionManager.errorMessage ?? "")
+            }
+            .sheet(isPresented: $showTerms) {
+                TermsOfServiceView()
             }
         }
     }
@@ -224,9 +228,7 @@ struct PaywallView: View {
                     .foregroundColor(.textMuted)
 
                 Button {
-                    if let url = LegalURLs.termsOfService {
-                        openURL(url)
-                    }
+                    showTerms = true
                 } label: {
                     Text("Terms")
                         .font(.system(size: 12, weight: .medium))

@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var showRewardCatalog = false
     @State private var showChangePassword = false
     @State private var showSubscription = false
+    @State private var showTerms = false
     @State private var isSavingProfile = false
     @State private var isSavingFamily = false
     @State private var email = ""
@@ -82,6 +83,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showSubscription) {
             PaywallView()
+        }
+        .sheet(isPresented: $showTerms) {
+            TermsOfServiceView()
         }
         .confirmationDialog(
             "Leave family?",
@@ -280,9 +284,7 @@ struct SettingsView: View {
             .foregroundColor(.memberBlue)
 
             Button("Terms of Service") {
-                if let url = LegalURLs.termsOfService {
-                    openURL(url)
-                }
+                showTerms = true
             }
             .foregroundColor(.memberBlue)
 

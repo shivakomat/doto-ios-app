@@ -3,6 +3,7 @@ import SwiftUI
 struct PrivacyNoticeView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+    @State private var showTerms = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -29,9 +30,7 @@ struct PrivacyNoticeView: View {
                         .font(.system(size: 13))
                         .foregroundColor(.textSecondary)
                     Button("Terms") {
-                        if let url = LegalURLs.termsOfService {
-                            openURL(url)
-                        }
+                        showTerms = true
                     }
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.memberBlue)
@@ -64,6 +63,9 @@ struct PrivacyNoticeView: View {
             }
         }
         .padding(24)
+        .sheet(isPresented: $showTerms) {
+            TermsOfServiceView()
+        }
     }
 }
 
