@@ -86,12 +86,12 @@ enum TermsHTML {
 
     <h2>3. Subscriptions and Payment</h2>
     <h3>Free Trial</h3>
-    <p>New accounts receive a 14-day free trial with full access to Doto's features. No payment is required to start the trial.</p>
+    <p>New accounts receive a 30-day free trial with full access to Doto's features. No payment is required to start the trial.</p>
 
     <h3>Subscription Plans</h3>
     <p>After the free trial ends, continued use of Doto requires an active paid subscription:</p>
     <ul>
-      <li><strong>Monthly:</strong> $2.99/month</li>
+      <li><strong>Monthly:</strong> $3.99/month</li>
       <li><strong>Annual:</strong> $29.99/year</li>
     </ul>
 
