@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LandingView: View {
     @State private var showClaimSheet = false
+    @State private var showPrivacyNotice = !UserDefaults.standard.bool(forKey: "doto.privacyNoticeShown")
 
     var body: some View {
         NavigationStack {
@@ -59,6 +60,9 @@ struct LandingView: View {
             .background(Color.white.ignoresSafeArea())
             .sheet(isPresented: $showClaimSheet) {
                 ClaimStep1View()
+            }
+            .sheet(isPresented: $showPrivacyNotice) {
+                PrivacyNoticeView()
             }
         }
     }
