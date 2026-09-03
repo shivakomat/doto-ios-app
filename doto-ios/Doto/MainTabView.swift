@@ -28,6 +28,7 @@ struct MainTabView: View {
                     .tabItem { Label("Rewards", systemImage: "star.fill") }
             }
             .accentColor(.memberBlue)
+            .privacyScreen()
         } else {
             TabView(selection: $selectedTab) {
                 DashboardView(selectedTab: $selectedTab)
@@ -47,6 +48,7 @@ struct MainTabView: View {
                     .tabItem { Label("Rewards",  systemImage: "star.fill") }
             }
             .accentColor(.memberBlue)
+            .privacyScreen()
         }
     }
 }
