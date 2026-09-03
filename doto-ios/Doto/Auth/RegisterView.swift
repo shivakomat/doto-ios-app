@@ -166,7 +166,7 @@ struct RegisterView: View {
                     .toggleStyle(iOSCheckboxToggleStyle())
 
                     Button("View Privacy Policy") {
-                        if let url = URL(string: "https://doto.family/privacy") {
+                        if let url = LegalURLs.privacyPolicy {
                             openURL(url)
                         }
                     }

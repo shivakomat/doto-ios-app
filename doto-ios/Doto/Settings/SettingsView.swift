@@ -273,14 +273,14 @@ struct SettingsView: View {
     private var privacyAndDataSection: some View {
         Section(header: Text("Privacy & Data")) {
             Button("Privacy Policy") {
-                if let url = URL(string: "https://doto.family/privacy") {
+                if let url = LegalURLs.privacyPolicy {
                     openURL(url)
                 }
             }
             .foregroundColor(.memberBlue)
 
             Button("Terms of Service") {
-                if let url = URL(string: "https://doto.family/terms") {
+                if let url = LegalURLs.termsOfService {
                     openURL(url)
                 }
             }

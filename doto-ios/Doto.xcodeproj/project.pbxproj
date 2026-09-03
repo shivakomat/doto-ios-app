@@ -124,6 +124,7 @@
 		A1A2A3A4A5A6A7A8A9A0A1A3 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E2E3E4E5E6E7E8E9E0E1E3 /* PaywallView.swift */; };
 		B1B2B3B4B5B6B7B8B9B0B1A4 /* PrivacyScreenModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A2A3A4A5A6A7A8A9A0A1A4 /* PrivacyScreenModifier.swift */; };
 		B1B2B3B4B5B6B7B8B9B0B5B5 /* ParentalConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A2A3A4A5A6A7A8A9A0A5A5 /* ParentalConsentView.swift */; };
+		B1B2B3B4B5B6B7B8B9B0B6B6 /* LegalURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A2A3A4A5A6A7A8A9A0A6A6 /* LegalURLs.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -249,6 +250,7 @@
 		B1B2B3B4B5B6B7B8B9B0B4B4 /* Secrets-Template.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Secrets-Template.xcconfig"; sourceTree = "<group>"; };
 		A1A2A3A4A5A6A7A8A9A0A1A4 /* PrivacyScreenModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyScreenModifier.swift; sourceTree = "<group>"; };
 		A1A2A3A4A5A6A7A8A9A0A5A5 /* ParentalConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentalConsentView.swift; sourceTree = "<group>"; };
+		A1A2A3A4A5A6A7A8A9A0A6A6 /* LegalURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalURLs.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -442,6 +444,7 @@
 			isa = PBXGroup;
 			children = (
 				E39BB0F55C4F72C2E23618B8 /* APIConfig.swift */,
+				A1A2A3A4A5A6A7A8A9A0A6A6 /* LegalURLs.swift */,
 				A1A2A3A4A5A6A7A8A9A0A4A4 /* Secrets.xcconfig */,
 				B1B2B3B4B5B6B7B8B9B0B4B4 /* Secrets-Template.xcconfig */,
 			);
@@ -744,6 +747,7 @@
 			A1A2A3A4A5A6A7A8A9A0A1A3 /* PaywallView.swift in Sources */,
 			B1B2B3B4B5B6B7B8B9B0B1A4 /* PrivacyScreenModifier.swift in Sources */,
 			B1B2B3B4B5B6B7B8B9B0B5B5 /* ParentalConsentView.swift in Sources */,
+			B1B2B3B4B5B6B7B8B9B0B6B6 /* LegalURLs.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
