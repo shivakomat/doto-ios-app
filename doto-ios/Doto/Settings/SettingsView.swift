@@ -18,6 +18,8 @@ struct SettingsView: View {
     @State private var email = ""
     @State private var emailError: String?
 
+    @Environment(\.openURL) private var openURL
+
     private let colorPalette = Color.settingsColorPalette
 
     private var isCurrentUserParent: Bool {
@@ -30,6 +32,7 @@ struct SettingsView: View {
                 profileSection
                 familySection
                 subscriptionSection
+                privacyAndDataSection
                 notificationsSection
                 dangerSection
             }
@@ -264,6 +267,37 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var privacyAndDataSection: some View {
+        Section(header: Text("Privacy & Data")) {
+            Button("Privacy Policy") {
+                if let url = URL(string: "https://doto.family/privacy") {
+                    openURL(url)
+                }
+            }
+            .foregroundColor(.memberBlue)
+
+            Button("Terms of Service") {
+                if let url = URL(string: "https://doto.family/terms") {
+                    openURL(url)
+                }
+            }
+            .foregroundColor(.memberBlue)
+
+            if isCurrentUserParent {
+                Button("Manage children & family") {
+                    showFamilyManage = true
+                }
+                .foregroundColor(.memberBlue)
+            }
+
+            Button("Data collection for children") {
+                // TODO: show child data notice sheet
+            }
+            .foregroundColor(.textSecondary)
+            .disabled(true)
         }
     }
 
