@@ -243,6 +243,8 @@
 		AA11BB22CC33DD44EE55FF02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D1D2D3D4D5D6D7D8D9D0D1D2 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		E1E2E3E4E5E6E7E8E9E0E1E3 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		A1A2A3A4A5A6A7A8A9A0A4A4 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		B1B2B3B4B5B6B7B8B9B0B4B4 /* Secrets-Template.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Secrets-Template.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -434,6 +436,8 @@
 			isa = PBXGroup;
 			children = (
 				E39BB0F55C4F72C2E23618B8 /* APIConfig.swift */,
+				A1A2A3A4A5A6A7A8A9A0A4A4 /* Secrets.xcconfig */,
+				B1B2B3B4B5B6B7B8B9B0B4B4 /* Secrets-Template.xcconfig */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -818,6 +822,7 @@
 		};
 		530860FEED0BBEB1888F1C93 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1A2A3A4A5A6A7A8A9A0A4A4 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;
@@ -899,6 +904,7 @@
 		};
 		C919906830C6D429E927AD35 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1A2A3A4A5A6A7A8A9A0A4A4 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = YES;

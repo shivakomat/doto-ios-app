@@ -7,7 +7,10 @@ struct DotoApp: App {
     @StateObject private var subscriptionManager = SubscriptionManager.shared
 
     init() {
-        Purchases.configure(withAPIKey: "test_CLokzPfMsOmKGutpZlazMOrTEoj")
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "REVENUECAT_API_KEY") as? String, !apiKey.isEmpty else {
+            fatalError("REVENUECAT_API_KEY missing from Info.plist. Ensure Secrets.xcconfig is included in the build.")
+        }
+        Purchases.configure(withAPIKey: apiKey)
         Purchases.shared.delegate = SubscriptionManager.shared
     }
 

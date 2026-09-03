@@ -1,0 +1,4 @@
+# RevenueCat secrets
+doto-ios/Doto/Config/Secrets.xcconfig
+*.xcuserstate
+xcuserdata/
