@@ -186,6 +186,7 @@ class AuthViewModel: ObservableObject {
     }
 
     private func syncSubscription(for profile: Profile) async {
+        guard profile.isParent else { return }
         await SubscriptionManager.shared.setUserID(profile.id)
         SubscriptionManager.shared.beginTrialIfNeeded()
     }
