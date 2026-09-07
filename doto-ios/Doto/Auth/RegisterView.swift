@@ -10,6 +10,7 @@ struct RegisterView: View {
     let path: RegistrationPath
 
     @State private var displayName  = ""
+    @State private var familyName   = ""
     @State private var username     = ""
     @State private var email        = ""
     @State private var password     = ""
@@ -29,12 +30,18 @@ struct RegisterView: View {
         return true // createFamily defaults to parent
     }
 
+    private var createsFamily: Bool {
+        if case .createFamily = path { return true }
+        return false
+    }
+
     private var confirmMismatch: Bool {
         !confirmPw.isEmpty && confirmPw != password
     }
 
     private var canSubmit: Bool {
         !displayName.trimmingCharacters(in: .whitespaces).isEmpty &&
+        (!createsFamily || !familyName.trimmingCharacters(in: .whitespaces).isEmpty) &&
         isValidUsername(username) &&
         password.count >= 8 &&
         !confirmMismatch &&
@@ -47,6 +54,7 @@ struct RegisterView: View {
     private var disabledReason: String? {
         if authVM.isLoading { return nil }
         if displayName.trimmingCharacters(in: .whitespaces).isEmpty { return "Enter a display name" }
+        if createsFamily && familyName.trimmingCharacters(in: .whitespaces).isEmpty { return "Enter a family name" }
         if !isValidUsername(username) { return "Username must be 3-50 characters, letters, numbers, underscores only" }
         if isParent && !isValidEmail(email) { return "Enter a valid email address" }
         if password.count < 8 { return "Password must be at least 8 characters" }
@@ -65,6 +73,10 @@ struct RegisterView: View {
                 }
 
                 AuthTextField(label: "Display name", text: $displayName)
+
+                if createsFamily {
+                    AuthTextField(label: "Family name", text: $familyName)
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     AuthTextField(
@@ -218,7 +230,8 @@ struct RegisterView: View {
             displayName: displayName,
             role: role,
             inviteCode: inviteCode,
-            email: isParent ? email : nil
+            email: isParent ? email : nil,
+            familyName: createsFamily ? familyName.trimmingCharacters(in: .whitespaces) : nil
         )
         // Check for specific errors to show inline
         if let err = authVM.errorMessage {

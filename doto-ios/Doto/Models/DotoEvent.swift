@@ -10,6 +10,7 @@ struct DotoEvent: Codable, Identifiable {
     var location: String?
     var color: String?
     var repeat_: String?
+    var repeatEndAt: Date?
     var assignedTo: [String]
     let createdBy: String?
     let createdAt: Date?
@@ -39,6 +40,7 @@ struct DotoEvent: Codable, Identifiable {
     private enum CodingKeys: String, CodingKey {
         case id, familyId, title, description, startAt, endAt
         case location, color, assignedTo, createdBy, createdAt, updatedAt
-        case repeat_ = "repeat"
+        case repeat_ = "repeatRule"
+        case repeatEndAt
     }
 }

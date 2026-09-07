@@ -109,7 +109,7 @@ struct SettingsView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Your account and all your data will be permanently deleted. This cannot be undone.")
+            Text("Delete your account? This cannot be undone. All your tasks, events, rewards, lists, and family data will be permanently removed.")
         }
     }
 
@@ -366,7 +366,6 @@ struct SettingsView: View {
                 Text("Delete account")
                     .foregroundColor(.red)
             }
-            .disabled(true)
         }
     }
 }

@@ -6,6 +6,7 @@ enum APIError: Error, LocalizedError {
     case forbidden
     case validation(String)
     case conflict(String)
+    case subscriptionRequired
     case serverError(String)
     case decodingError(Error)
     case networkError(Error)
@@ -18,6 +19,7 @@ enum APIError: Error, LocalizedError {
         case .forbidden:             return "You don't have permission to perform this action."
         case .validation(let msg):   return msg
         case .conflict(let msg):     return msg
+        case .subscriptionRequired:  return "This action requires premium access."
         case .serverError(let msg):  return "Server error: \(msg)"
         case .decodingError(let e):
             if let ctx = e as? DecodingError {

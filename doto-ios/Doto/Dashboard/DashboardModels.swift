@@ -66,6 +66,8 @@ struct DashboardEvent: Decodable, Identifiable {
     let endAt:         Date
     let location:      String?
     let assignedTo:    [String]
+    let repeatRule:    String?
+    let repeatEndAt:   Date?
     let isConflicting: Bool
 
     var durationMinutes: Int {
@@ -183,7 +185,7 @@ extension DashboardEvent {
     func asDotoEvent() -> DotoEvent {
         DotoEvent(id: id, familyId: nil, title: title, description: nil,
                   startAt: startAt, endAt: endAt, location: location, color: nil,
-                  repeat_: nil, assignedTo: assignedTo,
+                  repeat_: repeatRule, repeatEndAt: repeatEndAt, assignedTo: assignedTo,
                   createdBy: nil, createdAt: nil, updatedAt: nil, isConflicting: isConflicting)
     }
 }

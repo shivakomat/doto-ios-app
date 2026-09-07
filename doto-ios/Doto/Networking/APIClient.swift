@@ -103,6 +103,8 @@ class APIClient {
             throw APIError.validation(err?.message ?? "Validation error")
         case 401:
             throw APIError.unauthorized
+        case 402:
+            throw APIError.subscriptionRequired
         case 403:
             throw APIError.serverError("You don't have permission to perform this action.")
         case 404:

@@ -21,6 +21,7 @@ struct RegisterRequest: Encodable {
     let role: String
     let inviteCode: String?
     let email: String?
+    let familyName: String?
 
     func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
@@ -30,10 +31,11 @@ struct RegisterRequest: Encodable {
         try c.encode(role,        forKey: .role)
         if let code = inviteCode { try c.encode(code, forKey: .inviteCode) }
         if let e = email { try c.encode(e, forKey: .email) }
+        if let f = familyName { try c.encode(f, forKey: .familyName) }
     }
 
     private enum CodingKeys: String, CodingKey {
-        case username, password, displayName, role, inviteCode, email
+        case username, password, displayName, role, inviteCode, email, familyName
     }
 }
 
@@ -108,7 +110,8 @@ class AuthViewModel: ObservableObject {
         displayName: String,
         role: String,
         inviteCode: String?,
-        email: String? = nil
+        email: String? = nil,
+        familyName: String? = nil
     ) async {
         isLoading = true; errorMessage = nil
         do {
@@ -120,7 +123,8 @@ class AuthViewModel: ObservableObject {
                     displayName: displayName,
                     role: role,
                     inviteCode: inviteCode,
-                    email: email
+                    email: email,
+                    familyName: familyName
                 )
             )
             KeychainHelper.saveToken(res.token)
