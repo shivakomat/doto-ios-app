@@ -13,15 +13,33 @@ class ShoppingViewModel: ObservableObject {
     var selectedList: ShoppingList? { lists.first { $0.id == selectedListId } }
     var checkedCount: Int { items.filter { $0.isChecked }.count }
 
-    var groupedItems: [(category: ShoppingCategory, items: [ShoppingItem])] {
-        let grouped = Dictionary(grouping: items) {
-            ShoppingCategory(rawValue: $0.category) ?? .other
-        }
-        return ShoppingCategory.allCases
-            .compactMap { cat in
-                guard let catItems = grouped[cat], !catItems.isEmpty else { return nil }
-                return (category: cat, items: catItems)
+    /// A display group — the item's category (aisles on groceries lists).
+    /// Headers are text-only.
+    struct ItemGroup: Identifiable {
+        let title: String
+        let items: [ShoppingItem]
+        var id: String { title }
+    }
+
+    var groupedItems: [ItemGroup] {
+        let listType = selectedList?.type ?? .other
+        let grouped = Dictionary(grouping: items, by: { $0.category })
+        // Follow the list type's category ordering; unknown values go last.
+        let order = ShoppingListCategory.options(for: listType).map(\.value)
+        let keys = grouped.keys.sorted { a, b in
+            switch (order.firstIndex(of: a), order.firstIndex(of: b)) {
+            case let (x?, y?): return x < y
+            case (_?, nil):   return true
+            case (nil, _?):   return false
+            case (nil, nil):  return a < b
             }
+        }
+        return keys.map { key in
+            ItemGroup(
+                title: ShoppingListCategory.displayName(for: key, listType: listType),
+                items: grouped[key] ?? []
+            )
+        }
     }
 
     func loadLists() async {
@@ -61,12 +79,12 @@ class ShoppingViewModel: ObservableObject {
         await loadItems()
     }
 
-    func createList(name: String) async {
-        struct CreateListRequest: Encodable { let name: String }
+    func createList(name: String, listType: String = "other") async {
+        struct CreateListRequest: Encodable { let name: String; let listType: String }
         do {
             let newList: ShoppingList = try await APIClient.shared.post(
                 "/shopping/lists",
-                body: CreateListRequest(name: name)
+                body: CreateListRequest(name: name, listType: listType)
             )
             lists.append(newList)
             await selectList(newList.id)
@@ -106,6 +124,26 @@ class ShoppingViewModel: ObservableObject {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
         } catch {
             items[idx].isChecked = item.isChecked
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    /// Reassign an item's category (aisle on groceries lists) — manual override
+    /// of auto-detection.
+    func setCategory(_ item: ShoppingItem, _ category: String) async {
+        guard let listId = selectedListId else { return }
+        struct Body: Encodable { let category: String }
+        do {
+            let updated: ShoppingItem = try await APIClient.shared.put(
+                "/shopping/lists/\(listId)/items/\(item.id)",
+                body: Body(category: category)
+            )
+            if let idx = items.firstIndex(where: { $0.id == item.id }) {
+                items[idx] = updated
+            }
+        } catch APIError.unauthorized {
+            NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch {
             errorMessage = error.localizedDescription
         }
     }

@@ -3,8 +3,7 @@ import SwiftUI
 struct ShoppingView: View {
     @StateObject private var vm = ShoppingViewModel()
     @State private var showAddItem = false
-    @State private var showNewListInput = false
-    @State private var newListName = ""
+    @State private var showNewList = false
     let canManageLists: Bool
 
     init(canManageLists: Bool = true) {
@@ -37,7 +36,7 @@ struct ShoppingView: View {
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 16) {
-                            ForEach(vm.groupedItems, id: \.category) { group in
+                            ForEach(vm.groupedItems) { group in
                                 categorySection(group)
                             }
                         }
@@ -78,6 +77,9 @@ struct ShoppingView: View {
                 vm: vm
             )
         }
+        .sheet(isPresented: $showNewList) {
+            NewListSheet(vm: vm)
+        }
         .sheet(item: $vm.editingItem) { item in
             if let listId = vm.selectedListId {
                 EditItemSheet(item: item, listId: listId, vm: vm)
@@ -100,43 +102,16 @@ struct ShoppingView: View {
                 }
 
                 if canManageLists {
-                    if showNewListInput {
-                        HStack(spacing: 4) {
-                            TextField("List name", text: $newListName)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 120)
-                                .font(.system(size: 13))
-                                .submitLabel(.done)
-                                .onSubmit {
-                                    if !newListName.isEmpty {
-                                        Task {
-                                            await vm.createList(name: newListName)
-                                            newListName = ""
-                                            showNewListInput = false
-                                        }
-                                    }
-                                }
-                            Button {
-                                showNewListInput = false
-                                newListName = ""
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.textMuted)
-                            }
-                        }
-                        .padding(.horizontal, 8)
-                    } else {
-                        Button {
-                            showNewListInput = true
-                        } label: {
-                            Text("+ New List")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.textSecondary)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(Color(hex: "#E2E8F0"))
-                                .cornerRadius(12)
-                        }
+                    Button {
+                        showNewList = true
+                    } label: {
+                        Text("+ New List")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.textSecondary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color(hex: "#E2E8F0"))
+                            .cornerRadius(12)
                     }
                 }
             }
@@ -150,13 +125,17 @@ struct ShoppingView: View {
         return Button {
             Task { await vm.selectList(list.id) }
         } label: {
-            Text(list.name)
-                .font(.system(size: 13, weight: isActive ? .semibold : .regular))
-                .foregroundColor(isActive ? .white : .textSecondary)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(isActive ? Color.memberBlue : Color(hex: "#E2E8F0"))
-                .cornerRadius(12)
+            HStack(spacing: 5) {
+                Image(systemName: list.type.resolvedIcon)
+                    .font(.system(size: 10, weight: .semibold))
+                Text(list.name)
+                    .font(.system(size: 13, weight: isActive ? .semibold : .regular))
+            }
+            .foregroundColor(isActive ? .white : .textSecondary)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(isActive ? list.type.color : Color(hex: "#E2E8F0"))
+            .cornerRadius(12)
         }
         .contextMenu {
             if canManageLists {
@@ -169,16 +148,12 @@ struct ShoppingView: View {
         }
     }
 
-    private func categorySection(_ group: (category: ShoppingCategory, items: [ShoppingItem])) -> some View {
+    private func categorySection(_ group: ShoppingViewModel.ItemGroup) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 4) {
-                Text(group.category.emoji)
-                    .font(.system(size: 13))
-                Text(group.category.displayName)
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundColor(.textSecondary)
-            }
-            .padding(.horizontal)
+            Text(group.title)
+                .font(.system(size: 9, weight: .bold))
+                .foregroundColor(.textSecondary)
+                .padding(.horizontal)
 
             ForEach(group.items) { item in
                 shoppingItemRow(item)
@@ -206,6 +181,12 @@ struct ShoppingView: View {
                     }
                 }
             }
+
+            let listType = vm.selectedList?.type ?? .other
+            Image(systemName: item.iconSymbol(for: listType))
+                .font(.system(size: 13))
+                .foregroundColor(listType.color)
+                .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 1) {
                 HStack(spacing: 4) {
@@ -243,6 +224,18 @@ struct ShoppingView: View {
                 vm.editingItem = item
             } label: {
                 Label("Edit item", systemImage: "pencil")
+            }
+            let listType = vm.selectedList?.type ?? .other
+            Menu {
+                ForEach(ShoppingListCategory.options(for: listType), id: \.value) { option in
+                    Button {
+                        Task { await vm.setCategory(item, option.value) }
+                    } label: {
+                        Text(option.label)
+                    }
+                }
+            } label: {
+                Label("Move to category", systemImage: "arrow.left.arrow.right")
             }
             Button(role: .destructive) {
                 Task { await vm.deleteItem(item) }

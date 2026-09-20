@@ -4,11 +4,19 @@ struct ShoppingList: Codable, Identifiable {
     let id: String
     let familyId: String
     var name: String
+    let listType: String?
     let itemCount: Int
     let checkedCount: Int
     let createdBy: String
     let createdAt: Date
     let updatedAt: Date
+
+    /// List type; missing/unknown values fall back to `.other`.
+    var type: ShoppingListType {
+        ShoppingListType(rawValue: listType ?? "") ?? .other
+    }
+
+    var isGroceries: Bool { type == .groceries }
 
     var storeTypeEmoji: String {
         let lowercased = name.lowercased()

@@ -1,9 +1,12 @@
 import SwiftUI
 
-/// Grid picker for a task's SF Symbol icon. Selection is applied immediately
+/// Grid picker for an SF Symbol icon. Selection is applied immediately
 /// via `selected`; "Done" just closes the sheet.
 struct TaskIconPickerView: View {
     @Binding var selected: String?
+    /// Sections shown in the grid — task catalog by default; shopping items
+    /// pass a per-list-type pool.
+    var sections: [TaskIconCategory] = TaskIconCatalog.categories
     @Environment(\.dismiss) private var dismiss
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 5)
@@ -12,7 +15,7 @@ struct TaskIconPickerView: View {
         NavigationView {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 16, pinnedViews: .sectionHeaders) {
-                    ForEach(TaskIconCatalog.categories) { category in
+                    ForEach(sections) { category in
                         Section(header:
                             Text(category.name.uppercased())
                                 .font(.system(size: 11, weight: .semibold))

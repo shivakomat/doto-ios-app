@@ -7,6 +7,12 @@ struct ShoppingItem: Codable, Identifiable {
     var name: String
     var quantity: String?
     var category: String
+    var icon: String?
+
+    /// Stored icon, else auto-detected from the item name.
+    func iconSymbol(for listType: ShoppingListType) -> String {
+        icon.map { ItemIconCatalog.resolve($0) } ?? ItemIconCatalog.detect(from: name, for: listType)
+    }
     var isChecked: Bool
     var checkedBy: String?
     var checkedAt: Date?

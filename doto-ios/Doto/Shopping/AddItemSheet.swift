@@ -4,6 +4,7 @@ struct ItemCreateRequest: Encodable {
     let name: String
     let quantity: String?
     let category: String
+    let icon: String?
 }
 
 struct AddItemSheet: View {
@@ -15,7 +16,9 @@ struct AddItemSheet: View {
     @State private var selectedListId: String = ""
     @State private var name = ""
     @State private var quantity = ""
-    @State private var category: ShoppingCategory = .other
+    @State private var category: String = "other"
+    @State private var selectedIcon: String? = nil
+    @State private var showIconPicker = false
     @State private var isSubmitting = false
     @State private var isLoadingLists = false
     @State private var loadedLists: [ShoppingList] = []
@@ -46,7 +49,8 @@ struct AddItemSheet: View {
                         Picker("List", selection: $selectedListId) {
                             ForEach(effectiveLists) { list in
                                 HStack(spacing: 8) {
-                                    Text(list.storeTypeEmoji)
+                                    Image(systemName: list.type.resolvedIcon)
+                                        .foregroundColor(list.type.color)
                                     Text(list.name)
                                 }
                                 .tag(list.id)
@@ -58,24 +62,41 @@ struct AddItemSheet: View {
 
                 // ── Item details ───────────────────────────────────────
                 Section("Item") {
-                    TextField("Item name", text: $name)
-                        .focused($focusName)
-                        .onChange(of: name) { newValue in
-                            if !newValue.isEmpty {
-                                category = ShoppingCategory.detect(from: newValue)
-                            }
+                    HStack(spacing: 10) {
+                        Button {
+                            showIconPicker = true
+                        } label: {
+                            let type = selectedList?.type ?? .other
+                            let symbol = selectedIcon
+                                .map { ItemIconCatalog.resolve($0) }
+                                ?? ItemIconCatalog.detect(from: name, for: type)
+                            Image(systemName: symbol)
+                                .font(.system(size: 18))
+                                .foregroundColor(type.color)
+                                .frame(width: 40, height: 40)
+                                .background(type.color.opacity(0.12))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
+                        .buttonStyle(.plain)
+
+                        TextField("Item name", text: $name)
+                            .focused($focusName)
+                            .onChange(of: name) { newValue in
+                                if !newValue.isEmpty {
+                                    let type = selectedList?.type ?? .other
+                                    category = ShoppingListCategory.detect(from: newValue, for: type)
+                                    selectedIcon = ItemIconCatalog.detect(from: newValue, for: type)
+                                }
+                            }
+                    }
 
                     TextField("Quantity (optional, e.g. × 2, 500g)", text: $quantity)
                         .font(.system(size: 14))
 
                     Picker("Category", selection: $category) {
-                        ForEach(ShoppingCategory.allCases, id: \.self) { cat in
-                            HStack {
-                                Text(cat.emoji)
-                                Text(cat.displayName)
-                            }
-                            .tag(cat)
+                        ForEach(ShoppingListCategory.options(for: selectedList?.type ?? .other),
+                                id: \.value) { option in
+                            Text(option.label).tag(option.value)
                         }
                     }
                 }
@@ -135,8 +156,23 @@ struct AddItemSheet: View {
                 }
                 // Pre-select the active list, fall back to first list
                 selectedListId = preselectedListId ?? effectiveLists.first?.id ?? ""
+                category = ShoppingListCategory.options(for: selectedList?.type ?? .other)
+                    .contains { $0.value == category } ? category : "other"
                 focusName = true
             }
+        }
+        .onChange(of: selectedListId) { _ in
+            // Category sets differ per list type — reset to a valid default.
+            let type = selectedList?.type ?? .other
+            if !ShoppingListCategory.options(for: type).contains(where: { $0.value == category }) {
+                category = ShoppingListCategory.detect(from: name, for: type)
+            }
+        }
+        .sheet(isPresented: $showIconPicker) {
+            TaskIconPickerView(
+                selected: $selectedIcon,
+                sections: ItemIconCatalog.sections(for: selectedList?.type ?? .other)
+            )
         }
     }
 
@@ -153,7 +189,8 @@ struct AddItemSheet: View {
                 body: ItemCreateRequest(
                     name: name.trimmingCharacters(in: .whitespaces),
                     quantity: quantity.isEmpty ? nil : quantity,
-                    category: category.rawValue
+                    category: category,
+                    icon: selectedIcon
                 )
             )
 
@@ -161,7 +198,8 @@ struct AddItemSheet: View {
                 // Clear name and quantity, keep sheet open
                 name = ""
                 quantity = ""
-                category = .other
+                category = "other"
+                selectedIcon = nil
                 focusName = true
             } else {
                 dismiss()

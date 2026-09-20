@@ -102,6 +102,11 @@
 		A0F1E2D3C4B5A6978897A6B5 /* TaskType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F1E2D3C4B5A6978897A6B6 /* TaskType.swift */; };
 		B0F1E2D3C4B5A6978897A7B1 /* TaskIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1E2D3C4B5A6978897A7B2 /* TaskIcon.swift */; };
 		B0F1E2D3C4B5A6978897A7B3 /* TaskIconPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1E2D3C4B5A6978897A7B4 /* TaskIconPickerView.swift */; };
+		C1F1E2D3C4B5A6978897B1B1 /* ShoppingListType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F1E2D3C4B5A6978897B1B2 /* ShoppingListType.swift */; };
+		C2F1E2D3C4B5A6978897B2B1 /* GrocerySubcategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F1E2D3C4B5A6978897B2B2 /* GrocerySubcategory.swift */; };
+		D1F1E2D3C4B5A6978897D1B1 /* ShoppingListCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F1E2D3C4B5A6978897D1B2 /* ShoppingListCategory.swift */; };
+		C4F1E2D3C4B5A6978897B4B1 /* ItemIconCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1E2D3C4B5A6978897B4B2 /* ItemIconCatalog.swift */; };
+		C3F1E2D3C4B5A6978897B3B1 /* NewListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F1E2D3C4B5A6978897B3B2 /* NewListSheet.swift */; };
 		B894A8DCDB125C091BB2C59A /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EEDAF18A29F1FBD55FA3C05 /* ShoppingList.swift */; };
 		B8FE7C96313835337569AB25 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340B50E4E2E79553E7A9E094 /* KeychainHelper.swift */; };
 		BA0C47E71FBC0053EB2A5CD5 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B1C1DEBE77843E3179BA6E /* DashboardView.swift */; };
@@ -223,6 +228,11 @@
 		A0F1E2D3C4B5A6978897A6B6 /* TaskType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskType.swift; sourceTree = "<group>"; };
 		B0F1E2D3C4B5A6978897A7B2 /* TaskIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskIcon.swift; sourceTree = "<group>"; };
 		B0F1E2D3C4B5A6978897A7B4 /* TaskIconPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskIconPickerView.swift; sourceTree = "<group>"; };
+		C1F1E2D3C4B5A6978897B1B2 /* ShoppingListType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListType.swift; sourceTree = "<group>"; };
+		C2F1E2D3C4B5A6978897B2B2 /* GrocerySubcategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrocerySubcategory.swift; sourceTree = "<group>"; };
+		D1F1E2D3C4B5A6978897D1B2 /* ShoppingListCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListCategory.swift; sourceTree = "<group>"; };
+		C4F1E2D3C4B5A6978897B4B2 /* ItemIconCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemIconCatalog.swift; sourceTree = "<group>"; };
+		C3F1E2D3C4B5A6978897B3B2 /* NewListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewListSheet.swift; sourceTree = "<group>"; };
 		9B796863AF47CB48A088A81E /* PreviousGoalChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviousGoalChip.swift; sourceTree = "<group>"; };
 		9D73E121C2C3915A666F732B /* ChildGoalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildGoalCard.swift; sourceTree = "<group>"; };
 		9E9F2F21E197CD66FD3438F2 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
@@ -428,6 +438,10 @@
 				40368D14FBD46536636E0B06 /* RewardsModels.swift */,
 				3F414C98D7C7CE0B2913F811 /* ShoppingItem.swift */,
 				3EEDAF18A29F1FBD55FA3C05 /* ShoppingList.swift */,
+				C1F1E2D3C4B5A6978897B1B2 /* ShoppingListType.swift */,
+				C2F1E2D3C4B5A6978897B2B2 /* GrocerySubcategory.swift */,
+				D1F1E2D3C4B5A6978897D1B2 /* ShoppingListCategory.swift */,
+				C4F1E2D3C4B5A6978897B4B2 /* ItemIconCatalog.swift */,
 				A0F1E2D3C4B5A6978897A6B6 /* TaskType.swift */,
 				B0F1E2D3C4B5A6978897A7B2 /* TaskIcon.swift */,
 				7E038E461FA7C6BB0610D3B1 /* UnclaimedChild.swift */,
@@ -440,6 +454,7 @@
 			children = (
 				4361CD241FC2FFBEDAA8303B /* AddItemSheet.swift */,
 				01A8070C61D0C93DF6850EF8 /* EditItemSheet.swift */,
+				C3F1E2D3C4B5A6978897B3B2 /* NewListSheet.swift */,
 				7C84AB35298FF8EB3E09E856 /* ShoppingView.swift */,
 				0B28A9A97A7A2B491FDB6486 /* ShoppingViewModel.swift */,
 			);
@@ -703,6 +718,11 @@
 				A0F1E2D3C4B5A6978897A6B5 /* TaskType.swift in Sources */,
 				B0F1E2D3C4B5A6978897A7B1 /* TaskIcon.swift in Sources */,
 				B0F1E2D3C4B5A6978897A7B3 /* TaskIconPickerView.swift in Sources */,
+				C1F1E2D3C4B5A6978897B1B1 /* ShoppingListType.swift in Sources */,
+				C2F1E2D3C4B5A6978897B2B1 /* GrocerySubcategory.swift in Sources */,
+				D1F1E2D3C4B5A6978897D1B1 /* ShoppingListCategory.swift in Sources */,
+				C4F1E2D3C4B5A6978897B4B1 /* ItemIconCatalog.swift in Sources */,
+				C3F1E2D3C4B5A6978897B3B1 /* NewListSheet.swift in Sources */,
 				9814E7A4BA1A20B8B3C3479A /* DotoWordmark.swift in Sources */,
 				EF72790746AA346D6B78B8AB /* EditItemSheet.swift in Sources */,
 				0DDA83CEDD0A14C4C04A154E /* EditRewardSheet.swift in Sources */,
