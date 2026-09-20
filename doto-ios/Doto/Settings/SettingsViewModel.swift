@@ -158,7 +158,7 @@ class SettingsViewModel: ObservableObject {
             try await APIClient.shared.delete("/profiles/me")
             await authVM.logout()
         } catch APIError.conflict {
-            errorMessage = "Please remove all other family members first, or add another parent."
+            errorMessage = "Please remove all other family members first (Settings → Manage Family), or add another parent."
         } catch APIError.subscriptionRequired {
             errorMessage = "You need premium access to delete your account."
         } catch APIError.unauthorized {

@@ -76,7 +76,7 @@ struct FamilyManageView: View {
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 let isParent = authVM.currentProfile?.isParent == true
                                 let isChildMember = member.isChild
-                                let canDelete = isParent && isChildMember && member.isAuthAccount != true
+                                let canDelete = isParent && isChildMember
                                 let canResetPassword = isParent && isChildMember
 
                                 if canDelete {
@@ -140,7 +140,11 @@ struct FamilyManageView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: { member in
-                Text("Remove \(member.displayName) from the family?")
+                if member.isAuthAccount == true {
+                    Text("Remove \(member.displayName) from the family? This will also delete their account and sign them out.")
+                } else {
+                    Text("Remove \(member.displayName) from the family?")
+                }
             }
         }
         .task { await vm.load() }

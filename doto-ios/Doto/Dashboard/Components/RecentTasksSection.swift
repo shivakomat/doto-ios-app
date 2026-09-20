@@ -5,6 +5,8 @@ struct RecentTasksSection: View {
     let onTaskTap: ((DashboardTask) -> Void)?
     var onComplete: ((DashboardTask) -> Void)? = nil
     var completingIds: Set<String> = []
+    /// Ids of recurring occurrences due tomorrow or later — checkbox is locked.
+    var lockedIds: Set<String> = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -17,8 +19,11 @@ struct RecentTasksSection: View {
                     RecentTaskRow(
                         task: task,
                         isCompleting: completingIds.contains(task.id),
+                        isLocked: lockedIds.contains(task.id),
                         onTap: onTaskTap,
-                        onComplete: { if !task.isDone { onComplete?(task) } }
+                        onComplete: {
+                            if !task.isDone && !lockedIds.contains(task.id) { onComplete?(task) }
+                        }
                     )
                 }
             }
@@ -32,6 +37,7 @@ struct RecentTasksSection: View {
 struct RecentTaskRow: View {
     let task: DashboardTask
     let isCompleting: Bool
+    var isLocked: Bool = false
     let onTap: ((DashboardTask) -> Void)?
     let onComplete: () -> Void
 
@@ -55,12 +61,18 @@ struct RecentTaskRow: View {
                             .foregroundColor(.white)
                     }
                 }
+                .opacity(isLocked ? 0.35 : 1)
             }
             .buttonStyle(.plain)
+            .disabled(isLocked || task.isDone)
 
             if let color = task.assigneeColor, let name = task.assigneeName {
                 AvatarView(name: name, color: color, size: 18)
             }
+
+            Image(systemName: task.resolvedIcon)
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundColor(task.iconColor)
 
             Text(task.title)
                 .font(.system(size: 12))
@@ -73,12 +85,20 @@ struct RecentTaskRow: View {
 
             Spacer()
 
-            if task.isDone {
+            if task.isDone && task.type.earnsPoints {
                 Text("+\(task.points) pts")
                     .font(.system(size: 9, weight: .medium))
                     .foregroundColor(Color(hex: "#1D9E75"))
                     .padding(.horizontal, 6).padding(.vertical, 2)
                     .background(Color.doneBg)
+                    .cornerRadius(4)
+            } else if task.isDone {
+                // Completed non-chore — show the type badge instead of points.
+                Image(systemName: task.type.icon)
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundColor(task.type.color)
+                    .padding(.horizontal, 6).padding(.vertical, 2)
+                    .background(task.type.color.opacity(0.15))
                     .cornerRadius(4)
             } else if task.isOverdue {
                 Text("Overdue")
@@ -87,12 +107,27 @@ struct RecentTaskRow: View {
                     .padding(.horizontal, 6).padding(.vertical, 2)
                     .background(Color.overdueBg)
                     .cornerRadius(4)
-            } else if Calendar.current.isDateInToday(task.dueAt) {
+            } else if task.dueDate.map({ Calendar.current.isDateInToday($0) }) == true {
                 Text("Today")
                     .font(.system(size: 9, weight: .medium))
                     .foregroundColor(.conflictText)
                     .padding(.horizontal, 6).padding(.vertical, 2)
                     .background(Color.conflictBg)
+                    .cornerRadius(4)
+            } else if task.dueDate.map({ Calendar.current.isDateInTomorrow($0) }) == true {
+                Text("Tomorrow")
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(.textSecondary)
+                    .padding(.horizontal, 6).padding(.vertical, 2)
+                    .background(Color.cardBorder)
+                    .cornerRadius(4)
+            } else if let due = task.dueDate,
+                      due >= Calendar.current.date(byAdding: .day, value: 2, to: Calendar.current.startOfDay(for: Date()))! {
+                Text("Upcoming")
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(.textSecondary)
+                    .padding(.horizontal, 6).padding(.vertical, 2)
+                    .background(Color.cardBorder.opacity(0.5))
                     .cornerRadius(4)
             }
         }

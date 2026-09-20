@@ -14,6 +14,8 @@ class TasksViewModel: ObservableObject {
     func load() async {
         isLoading = true; errorMessage = nil; defer { isLoading = false }
         do {
+            // The backend materializes a rolling 28-day window of occurrences;
+            // GET /tasks returns every generated row.
             async let t: [DotoTask] = APIClient.shared.get("/tasks")
             async let f: Family     = APIClient.shared.get("/families/mine")
             let (fetchedTasks, fetchedFamily) = try await (t, f)
@@ -29,7 +31,9 @@ class TasksViewModel: ObservableObject {
     }
 
     func completeTask(_ task: DotoTask) async {
-        guard let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return }
+        // Recurring occurrences due tomorrow or later cannot be completed yet.
+        guard !task.isFutureOccurrence,
+              let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return }
         tasks[idx].status = "done"
         tasks[idx].completedAt = Date()
         do {
@@ -44,10 +48,19 @@ class TasksViewModel: ObservableObject {
         }
     }
 
-    func deleteTask(_ task: DotoTask) async {
+    func deleteTask(_ task: DotoTask, scope: TaskScope = .this) async {
         do {
-            try await APIClient.shared.delete("/tasks/\(task.id)")
-            tasks.removeAll { $0.id == task.id }
+            let path = task.isRecurring
+                ? "/tasks/\(task.id)?scope=\(scope.rawValue)"
+                : "/tasks/\(task.id)"
+            try await APIClient.shared.delete(path)
+            if scope == .future, let sid = task.seriesId {
+                // Drop this and all later occurrences of the series locally.
+                let cutoff = task.dueDate ?? .distantPast
+                tasks.removeAll { $0.seriesId == sid && ($0.dueDate ?? .distantPast) >= cutoff }
+            } else {
+                tasks.removeAll { $0.id == task.id }
+            }
         } catch APIError.unauthorized {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
         } catch {
@@ -56,7 +69,16 @@ class TasksViewModel: ObservableObject {
     }
 
     func tasksForMember(_ id: String) -> [DotoTask] {
-        tasks.filter { $0.assignedTo == id }
+        let mine = tasks.filter { $0.assignedTo == id }
+        let upcoming = TaskListWindow.upcomingRepresentatives(
+            mine, seriesId: { $0.seriesId }, dueDate: { $0.dueDate }, isDone: { $0.isDone })
+        return mine.filter { isVisibleInWindow($0) || upcoming.contains($0.id) }
+    }
+
+    /// The backend materializes a 28-day window of occurrences — the list only
+    /// shows recurring rows due today or tomorrow (plus pending overdue ones).
+    private func isVisibleInWindow(_ task: DotoTask) -> Bool {
+        TaskListWindow.isVisible(dueDate: task.dueDate, isDone: task.isDone, isRecurring: task.isRecurring)
     }
 
     func clearCompleted(memberId: String? = nil) async {

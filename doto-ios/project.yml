@@ -13,22 +13,32 @@ settings:
     IPHONEOS_DEPLOYMENT_TARGET: "16.0"
     SWIFT_STRICT_CONCURRENCY: complete
 
+packages:
+  RevenueCat:
+    url: https://github.com/RevenueCat/purchases-ios.git
+    majorVersion: 5.0.0
+
 targets:
   Doto:
     type: application
     platform: iOS
     sources:
       - path: Doto
+    configFiles:
+      Debug: Doto/Config/Secrets.xcconfig
+      Release: Doto/Config/Secrets.xcconfig
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.doto.dev.app
         INFOPLIST_FILE: Doto/Info.plist
-        DEVELOPMENT_TEAM: ""
-        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: "2U623X2R5H"
+        CODE_SIGN_STYLE: Automatic
         CODE_SIGNING_REQUIRED: "NO"
         CODE_SIGNING_ALLOWED: "YES"
-        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_IDENTITY: "Apple Development"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-    dependencies: []
+    dependencies:
+      - package: RevenueCat
+        product: RevenueCat
     scheme:
       testTargets: []

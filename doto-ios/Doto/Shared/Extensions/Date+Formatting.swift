@@ -7,9 +7,18 @@ extension Date {
     static let shortDateFormatter: DateFormatter = {
         let f = DateFormatter(); f.dateStyle = .medium; f.timeStyle = .none; return f
     }()
+    /// Date-only API format ("yyyy-MM-dd") used by task dueDate/repeatUntil.
+    static let apiDateOnlyFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.calendar = Calendar(identifier: .gregorian)
+        return f
+    }()
 
     var shortTime: String { Date.shortTimeFormatter.string(from: self) }
     var shortDate: String { Date.shortDateFormatter.string(from: self) }
+    var apiDateOnly: String { Date.apiDateOnlyFormatter.string(from: self) }
 
     var relativeDue: String {
         if Calendar.current.isDateInToday(self)     { return "Today" }

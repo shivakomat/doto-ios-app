@@ -42,7 +42,8 @@ struct ChildDashboardView: View {
                                     onComplete: { task in
                                         Task { await vm.completeTask(task) }
                                     },
-                                    completingIds: vm.completingTaskIds
+                                    completingIds: vm.completingTaskIds,
+                                    lockedIds: vm.lockedTaskIds
                                 )
                             }
 

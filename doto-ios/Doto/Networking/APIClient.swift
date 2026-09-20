@@ -160,6 +160,10 @@ extension JSONDecoder {
             fmtPlain.formatOptions = [.withInternetDateTime]
             if let date = fmtPlain.date(from: normalized) { return date }
 
+            // Date-only fields (e.g. task dueDate/repeatUntil) arrive as "yyyy-MM-dd"
+            // and are interpreted as local start-of-day.
+            if let date = Date.apiDateOnlyFormatter.date(from: str) { return date }
+
             throw DecodingError.dataCorruptedError(
                 in: container,
                 debugDescription: "Cannot decode date: \(str)"

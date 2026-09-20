@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // MARK: - Shared
 
@@ -82,12 +83,34 @@ struct DashboardTask: Decodable, Identifiable {
     let assigneeName:  String?
     let assigneeColor: String?
     let priority:      String
+    let taskType:      TaskType?
+    let icon:          String?
+    let timeOfDay:     String?
     let points:        Int
-    let dueAt:         Date
+    let dueDate:       Date?
     var status:        String
     let isOverdue:     Bool
+    let repeatRule:    String?
+    let repeatDays:    [Int]?
+    let repeatUntil:   Date?
+    let seriesId:      String?
+    let isSeriesParent: Bool?
+    let isRecurring:   Bool?
 
     var isDone: Bool { status == "done" }
+    var type: TaskType { taskType ?? .chore }
+    var resolvedIcon: String {
+        TaskIconCatalog.resolve(icon ?? TaskIconCatalog.defaultSymbol)
+    }
+    var iconColor: Color {
+        TaskIconCatalog.color(for: icon ?? TaskIconCatalog.defaultSymbol) ?? type.color
+    }
+    var timeOfDayLabel: String? { timeOfDay?.capitalized }
+
+    /// True when the task belongs to a recurring series (flag or series fields).
+    var isRecurringTask: Bool {
+        isRecurring == true || seriesId != nil || (repeatRule != nil && repeatRule != "none")
+    }
 }
 
 struct MemberProgress: Decodable, Identifiable {
@@ -152,12 +175,23 @@ struct ActiveGoal: Decodable {
 struct ChildTask: Decodable, Identifiable {
     let id:        String
     let title:     String
+    let taskType:  TaskType?
+    let icon:      String?
+    let timeOfDay: String?
     let points:    Int
     let status:    String
-    let dueAt:     Date
+    let dueDate:   Date?
     let isOverdue: Bool
+    let isRecurring: Bool?
 
     var isDone: Bool { status == "done" }
+    var type: TaskType { taskType ?? .chore }
+    var resolvedIcon: String {
+        TaskIconCatalog.resolve(icon ?? TaskIconCatalog.defaultSymbol)
+    }
+    var iconColor: Color {
+        TaskIconCatalog.color(for: icon ?? TaskIconCatalog.defaultSymbol) ?? type.color
+    }
 }
 
 struct FamilyMemberRow: Decodable, Identifiable {

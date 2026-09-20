@@ -41,6 +41,10 @@ extension Color {
     static let dueTodayBg     = Color(hex: "#FAEEDA")
     static let dueTodayText   = Color(hex: "#633806")
     static let selectedDayBg  = Color(hex: "#DBEAFE")
+    static let pointsPendingBg   = Color(hex: "#FEF3C7")
+    static let pointsPendingText = Color(hex: "#92400E")
+    static let pointsDoneBg      = Color(hex: "#DCFCE7")
+    static let pointsDoneText    = Color(hex: "#166534")
 
     static let screenBg      = Color(hex: "#F8FAFC")
     static let cardBorder    = Color(hex: "#E2E8F0")

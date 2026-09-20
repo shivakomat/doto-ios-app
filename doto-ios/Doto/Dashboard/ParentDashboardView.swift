@@ -3,6 +3,7 @@ import SwiftUI
 // Inline ShoppingNudgeCard to avoid compile order issues
 struct ShoppingNudgeCard: View {
     let nudge: ShoppingNudge
+    var onTap: () -> Void = {}
 
     private var lastUpdatedLabel: String {
         let days = Calendar.current.dateComponents([.day],
@@ -13,25 +14,28 @@ struct ShoppingNudgeCard: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            Text("🛒").font(.system(size: 20))
-            VStack(alignment: .leading, spacing: 2) {
-                Text("\(nudge.listName) — \(nudge.uncheckedCount) items to buy")
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                Text("🛒").font(.system(size: 20))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("\(nudge.listName) — \(nudge.uncheckedCount) items to buy")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(Color(hex: "#14532D"))
+                    Text(lastUpdatedLabel)
+                        .font(.system(size: 10))
+                        .foregroundColor(Color(hex: "#166534"))
+                }
+                Spacer()
+                Text("Go →")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(Color(hex: "#14532D"))
-                Text(lastUpdatedLabel)
-                    .font(.system(size: 10))
-                    .foregroundColor(Color(hex: "#166534"))
+                    .foregroundColor(Color(hex: "#1D9E75"))
             }
-            Spacer()
-            Text("Go →")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(Color(hex: "#1D9E75"))
+            .padding(12)
+            .background(Color(hex: "#F0FDF4"))
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#BBF7D0"), lineWidth: 1))
+            .cornerRadius(8)
         }
-        .padding(12)
-        .background(Color(hex: "#F0FDF4"))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#BBF7D0"), lineWidth: 1))
-        .cornerRadius(8)
+        .buttonStyle(.plain)
     }
 }
 
@@ -108,7 +112,8 @@ struct ParentDashboardView: View {
                                         onComplete: { task in
                                             Task { await vm.completeParentTask(task) }
                                         },
-                                        completingIds: vm.completingParentTaskIds
+                                        completingIds: vm.completingParentTaskIds,
+                                        lockedIds: vm.lockedTaskIds
                                     )
                                 }
 
@@ -119,7 +124,9 @@ struct ParentDashboardView: View {
 
                                 // 5. Shopping nudge
                                 if let nudge = d.shoppingNudge {
-                                    ShoppingNudgeCard(nudge: nudge)
+                                    ShoppingNudgeCard(nudge: nudge) {
+                                        selectedTab = .shopping
+                                    }
                                 }
 
                                 // 6. Pending reward approvals
@@ -169,9 +176,14 @@ struct ParentDashboardView: View {
                     priority: task.priority,
                     status: task.status,
                     points: task.points,
-                    dueAt: task.dueAt,
-                    repeat_: nil,
+                    dueDate: task.dueDate,
+                    repeatRule: task.repeatRule,
+                    repeatDays: task.repeatDays,
+                    repeatUntil: task.repeatUntil,
                     completedAt: nil,
+                    seriesId: task.seriesId,
+                    isSeriesParent: task.isSeriesParent,
+                    isRecurringFlag: task.isRecurring,
                     createdBy: nil,
                     createdAt: nil,
                     updatedAt: nil
