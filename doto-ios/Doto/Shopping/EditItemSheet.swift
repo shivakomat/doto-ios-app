@@ -9,7 +9,9 @@ struct EditItemSheet: View {
     @State private var name: String
     @State private var quantity: String
     @State private var category: String
+    @State private var categoryManuallyPicked = false
     @State private var selectedIcon: String?
+    @State private var iconManuallyPicked = false
     @State private var showIconPicker = false
     @State private var isSubmitting = false
 
@@ -51,15 +53,23 @@ struct EditItemSheet: View {
                             .autocorrectionDisabled()
                             .onChange(of: name) { newValue in
                                 if !newValue.isEmpty {
-                                    category = ShoppingListCategory.detect(from: newValue, for: listType)
-                                    selectedIcon = ItemIconCatalog.detect(from: newValue, for: listType)
+                                    if !categoryManuallyPicked {
+                                        category = ShoppingListCategory.detect(from: newValue, for: listType)
+                                    }
+                                    if !iconManuallyPicked {
+                                        selectedIcon = ItemIconCatalog.detect(from: newValue, for: listType)
+                                    }
                                 }
                             }
                     }
 
                     TextField("Quantity (optional)", text: $quantity)
 
-                    Picker("Category", selection: $category) {
+                    // Manual pick wins — typing stops auto-detecting once chosen.
+                    Picker("Category", selection: Binding(
+                        get: { category },
+                        set: { category = $0; categoryManuallyPicked = true }
+                    )) {
                         ForEach(ShoppingListCategory.options(for: listType), id: \.value) { option in
                             Text(option.label).tag(option.value)
                         }
@@ -74,7 +84,10 @@ struct EditItemSheet: View {
             )
             .sheet(isPresented: $showIconPicker) {
                 TaskIconPickerView(
-                    selected: $selectedIcon,
+                    selected: Binding(
+                        get: { selectedIcon },
+                        set: { selectedIcon = $0; iconManuallyPicked = true }
+                    ),
                     sections: ItemIconCatalog.sections(for: listType)
                 )
             }

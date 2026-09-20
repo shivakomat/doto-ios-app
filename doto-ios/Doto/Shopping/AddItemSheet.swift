@@ -17,7 +17,9 @@ struct AddItemSheet: View {
     @State private var name = ""
     @State private var quantity = ""
     @State private var category: String = "other"
+    @State private var categoryManuallyPicked = false
     @State private var selectedIcon: String? = nil
+    @State private var iconManuallyPicked = false
     @State private var showIconPicker = false
     @State private var isSubmitting = false
     @State private var isLoadingLists = false
@@ -84,8 +86,12 @@ struct AddItemSheet: View {
                             .onChange(of: name) { newValue in
                                 if !newValue.isEmpty {
                                     let type = selectedList?.type ?? .other
-                                    category = ShoppingListCategory.detect(from: newValue, for: type)
-                                    selectedIcon = ItemIconCatalog.detect(from: newValue, for: type)
+                                    if !categoryManuallyPicked {
+                                        category = ShoppingListCategory.detect(from: newValue, for: type)
+                                    }
+                                    if !iconManuallyPicked {
+                                        selectedIcon = ItemIconCatalog.detect(from: newValue, for: type)
+                                    }
                                 }
                             }
                     }
@@ -93,7 +99,11 @@ struct AddItemSheet: View {
                     TextField("Quantity (optional, e.g. × 2, 500g)", text: $quantity)
                         .font(.system(size: 14))
 
-                    Picker("Category", selection: $category) {
+                    // Manual pick wins — typing stops auto-detecting once chosen.
+                    Picker("Category", selection: Binding(
+                        get: { category },
+                        set: { category = $0; categoryManuallyPicked = true }
+                    )) {
                         ForEach(ShoppingListCategory.options(for: selectedList?.type ?? .other),
                                 id: \.value) { option in
                             Text(option.label).tag(option.value)
@@ -162,15 +172,20 @@ struct AddItemSheet: View {
             }
         }
         .onChange(of: selectedListId) { _ in
-            // Category sets differ per list type — reset to a valid default.
+            // Category sets and icon pools differ per list type — clear manual
+            // picks and re-detect for the new type.
             let type = selectedList?.type ?? .other
-            if !ShoppingListCategory.options(for: type).contains(where: { $0.value == category }) {
-                category = ShoppingListCategory.detect(from: name, for: type)
-            }
+            categoryManuallyPicked = false
+            iconManuallyPicked = false
+            category = ShoppingListCategory.detect(from: name, for: type)
+            selectedIcon = ItemIconCatalog.detect(from: name, for: type)
         }
         .sheet(isPresented: $showIconPicker) {
             TaskIconPickerView(
-                selected: $selectedIcon,
+                selected: Binding(
+                    get: { selectedIcon },
+                    set: { selectedIcon = $0; iconManuallyPicked = true }
+                ),
                 sections: ItemIconCatalog.sections(for: selectedList?.type ?? .other)
             )
         }
@@ -199,7 +214,9 @@ struct AddItemSheet: View {
                 name = ""
                 quantity = ""
                 category = "other"
+                categoryManuallyPicked = false
                 selectedIcon = nil
+                iconManuallyPicked = false
                 focusName = true
             } else {
                 dismiss()
