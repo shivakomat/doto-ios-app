@@ -10,7 +10,13 @@ struct CatalogItemRow: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 12) {
-                Text(item.emoji ?? "🎯").font(.system(size: 18))
+                let category = item.rewardCategory
+                Image(systemName: category.resolvedIcon)
+                    .font(.system(size: 14))
+                    .foregroundColor(category.color)
+                    .frame(width: 30, height: 30)
+                    .background(category.color.opacity(0.12))
+                    .clipShape(Circle())
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.title)
                         .font(.system(size: 13, weight: .medium))

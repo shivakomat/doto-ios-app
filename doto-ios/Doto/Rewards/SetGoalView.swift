@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct SetGoalView: View {
-    let memberId: String
     let memberBalance: Int
     let previousGoals: [Reward]
     @ObservedObject var vm: RewardsViewModel
@@ -10,11 +9,6 @@ struct SetGoalView: View {
     @State private var customTitle = ""
     @State private var customCost = 100
     @State private var isSubmitting = false
-    @State private var selectedMemberId: String = ""
-
-    private var effectiveMemberId: String {
-        selectedMemberId.isEmpty ? memberId : selectedMemberId
-    }
 
     var body: some View {
         NavigationView {
@@ -31,7 +25,6 @@ struct SetGoalView: View {
                                         PreviousGoalChip(goal: goal) {
                                             Task {
                                                 await vm.createReward(
-                                                    memberId: effectiveMemberId,
                                                     title: goal.title,
                                                     emoji: goal.emoji,
                                                     pointsCost: goal.pointsCost,
@@ -56,7 +49,6 @@ struct SetGoalView: View {
                                     CatalogItemRow(item: item, memberBalance: memberBalance) {
                                         Task {
                                             await vm.createReward(
-                                                memberId: effectiveMemberId,
                                                 title: item.title,
                                                 emoji: item.emoji,
                                                 pointsCost: item.pointsCost,
@@ -96,11 +88,6 @@ struct SetGoalView: View {
                             .background(Color.white)
                             .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.cardBorder))
 
-                            // Member picker for parents
-                            if memberId.isEmpty {
-                                memberPicker
-                            }
-
                             if let error = vm.errorMessage {
                                 Text(error)
                                     .font(.system(size: 12))
@@ -114,7 +101,6 @@ struct SetGoalView: View {
                                 isSubmitting = true
                                 Task {
                                     await vm.createReward(
-                                        memberId: effectiveMemberId,
                                         title: customTitle,
                                         emoji: nil,
                                         pointsCost: customCost,
@@ -153,39 +139,6 @@ struct SetGoalView: View {
                     Text("\(memberBalance) pts")
                         .font(.system(size: 11))
                         .foregroundColor(.textMuted)
-                }
-            }
-            .onAppear {
-                if memberId.isEmpty {
-                    selectedMemberId = vm.leaderboard?.entries.first(where: { $0.role == "child" })?.memberId ?? ""
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var memberPicker: some View {
-        let children = vm.leaderboard?.entries.filter { $0.role == "child" } ?? []
-        if children.count > 1 {
-            VStack(alignment: .leading, spacing: 6) {
-                Text("For").font(.system(size: 12)).foregroundColor(.textMuted)
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(children) { child in
-                            VStack(spacing: 4) {
-                                AvatarView(
-                                    name: child.displayName,
-                                    color: child.color,
-                                    size: 32,
-                                    isActive: selectedMemberId == child.memberId
-                                )
-                                Text(child.displayName).font(.system(size: 9))
-                                    .foregroundColor(selectedMemberId == child.memberId
-                                        ? .memberBlue : .textMuted)
-                            }
-                            .onTapGesture { selectedMemberId = child.memberId }
-                        }
-                    }
                 }
             }
         }

@@ -13,9 +13,9 @@ struct StreakRowView: View {
 
     private var streakIcon: String {
         switch entry.streakStatus ?? "none" {
-        case "active": return "🔥"
-        case "grace":  return "🔸"
-        default:       return "—"
+        case "active": return "flame.fill"
+        case "grace":  return "flame"
+        default:       return "flame"
         }
     }
 
@@ -53,7 +53,9 @@ struct StreakRowView: View {
             Spacer()
 
             HStack(spacing: 4) {
-                Text(streakIcon).font(.system(size: 14))
+                Image(systemName: streakIcon)
+                    .font(.system(size: 14))
+                    .foregroundColor(streakColor)
                 Text(streakValueLabel)
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(streakColor)

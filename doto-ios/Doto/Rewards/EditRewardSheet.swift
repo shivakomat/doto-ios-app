@@ -9,6 +9,7 @@ struct EditRewardSheet: View {
     @State private var emoji: String
     @State private var pointsCost: Int
     @State private var isSubmitting = false
+    @State private var errorMessage: String?
 
     init(reward: Reward, vm: RewardsViewModel) {
         self.reward = reward
@@ -39,6 +40,12 @@ struct EditRewardSheet: View {
             )
 
             VStack(spacing: 10) {
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(hex: "#E24B4A"))
+                        .multilineTextAlignment(.center)
+                }
                 Button {
                     Task { await saveEdit() }
                 } label: {
@@ -70,7 +77,7 @@ struct EditRewardSheet: View {
             await vm.loadRewards()
             dismiss()
         } catch {
-            // show error
+            errorMessage = error.localizedDescription
         }
     }
 }

@@ -65,9 +65,6 @@ struct AddEditTaskView: View {
 
     private let priorityOptions = ["low", "medium", "high"]
     private var isEdit: Bool { task != nil }
-    private var isParent: Bool { authVM.currentProfile?.isParent == true }
-    private var assignedMember: Profile? { members.first { $0.id == assignedToId } }
-    private var assignedIsChild: Bool { assignedMember?.role == "child" }
     private var dueWeekday: Int { Calendar.current.component(.weekday, from: dueDate) }
 
     var body: some View {
@@ -211,8 +208,12 @@ struct AddEditTaskView: View {
                     }
                 }
 
-                if isParent && assignedIsChild && !availableGoals.isEmpty {
-                    Section(header: Text("Reward Goal (optional)")) {
+                Section(header: Text("Reward Goal (optional)")) {
+                    if availableGoals.isEmpty {
+                        Text("No active goals — set one in Rewards")
+                            .font(.system(size: 12))
+                            .foregroundColor(.textMuted)
+                    } else {
                         Button {
                             rewardGoalId = nil
                         } label: {
@@ -326,17 +327,8 @@ struct AddEditTaskView: View {
             prefill()
             if let family: Family = try? await APIClient.shared.get("/families/mine") {
                 members = family.members
-                if !assignedToId.isEmpty {
-                    await loadGoalsForAssignee(assignedToId)
-                }
             }
-        }
-        .onChange(of: assignedToId) { newId in
-            rewardGoalId = nil
-            availableGoals = []
-            if !newId.isEmpty {
-                Task { await loadGoalsForAssignee(newId) }
-            }
+            await loadGoals()
         }
     }
 
@@ -392,11 +384,10 @@ struct AddEditTaskView: View {
         }
     }
 
-    private func loadGoalsForAssignee(_ memberId: String) async {
-        guard assignedIsChild else { availableGoals = []; return }
+    private func loadGoals() async {
         let goals: [Reward]? = try? await APIClient.shared.get(
             "/rewards",
-            params: ["memberId": memberId, "status": "active"]
+            params: ["status": "active"]
         )
         availableGoals = goals ?? []
     }

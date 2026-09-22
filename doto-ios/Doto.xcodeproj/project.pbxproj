@@ -117,6 +117,10 @@
 		C8A9DC5616F55AEA6E5FD72B /* RecentTasksSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EAC8B2C08946D030430140 /* RecentTasksSection.swift */; };
 		CBEEC20ED3D28A4491B81224 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD2427F1E39C0E808117FEE /* AuthView.swift */; };
 		CE07FD1A449FE5C24A50D27E /* CatalogItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90B4A2D879DE1F63586B058 /* CatalogItemRow.swift */; };
+		D070CA7E60A10000000000B1 /* RewardCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D070CA7E60A10000000000F1 /* RewardCategory.swift */; };
+		D070CA7E60A10000000000B2 /* RewardCatalogFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D070CA7E60A10000000000F2 /* RewardCatalogFormView.swift */; };
+		D070CA7E60A10000000000B3 /* RewardCategoryPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D070CA7E60A10000000000F3 /* RewardCategoryPickerSheet.swift */; };
+		D070CA7E60A10000000000B4 /* RewardCatalogGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D070CA7E60A10000000000F4 /* RewardCatalogGridView.swift */; };
 		CE0D3BA12454208AAFDC3671 /* MilestoneProgressTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863DD1A86A06F2A145263AE5 /* MilestoneProgressTrack.swift */; };
 		CF458014CBF6F5DB91ED6583 /* ChildSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4EAD0A330EF801C9AD7CAB /* ChildSettingsView.swift */; };
 		CFCAEF995ABC0930BEB629E0 /* UnclaimedChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E038E461FA7C6BB0610D3B1 /* UnclaimedChild.swift */; };
@@ -277,6 +281,10 @@
 		F5C7D161F82C5A7EA98E0991 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
 		F739C51BBEA4F3898F781496 /* DotoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotoApp.swift; sourceTree = "<group>"; };
 		F90B4A2D879DE1F63586B058 /* CatalogItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogItemRow.swift; sourceTree = "<group>"; };
+		D070CA7E60A10000000000F1 /* RewardCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardCategory.swift; sourceTree = "<group>"; };
+		D070CA7E60A10000000000F2 /* RewardCatalogFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardCatalogFormView.swift; sourceTree = "<group>"; };
+		D070CA7E60A10000000000F3 /* RewardCategoryPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardCategoryPickerSheet.swift; sourceTree = "<group>"; };
+		D070CA7E60A10000000000F4 /* RewardCatalogGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardCatalogGridView.swift; sourceTree = "<group>"; };
 		FA7CB838C5E8CC53139B35C8 /* RepeatPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatPickerSheet.swift; sourceTree = "<group>"; };
 		FCE1CD4A122A54DD43893B83 /* ClaimStep2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimStep2View.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -332,6 +340,7 @@
 				DEF17358E05378BA2872D89D /* PointsHistoryViewModel.swift */,
 				7EAB757EFD6247D4BB6AF558 /* RewardCatalogView.swift */,
 				325CBE8F2EDDEA6942ED6631 /* RewardCatalogViewModel.swift */,
+				D070CA7E60A10000000000F2 /* RewardCatalogFormView.swift */,
 				DE1E02B2B007DD78804FBDE0 /* RewardsView.swift */,
 				06F79992653B440FCB14930D /* RewardsViewModel.swift */,
 				404D3707356878C22ECCB16F /* SetGoalView.swift */,
@@ -436,6 +445,7 @@
 				DA7200F9B8CDC7F18CE81B50 /* Profile.swift */,
 				45DA32D100E7AECD333F3122 /* Reward.swift */,
 				40368D14FBD46536636E0B06 /* RewardsModels.swift */,
+				D070CA7E60A10000000000F1 /* RewardCategory.swift */,
 				3F414C98D7C7CE0B2913F811 /* ShoppingItem.swift */,
 				3EEDAF18A29F1FBD55FA3C05 /* ShoppingList.swift */,
 				C1F1E2D3C4B5A6978897B1B2 /* ShoppingListType.swift */,
@@ -574,6 +584,8 @@
 			isa = PBXGroup;
 			children = (
 				F90B4A2D879DE1F63586B058 /* CatalogItemRow.swift */,
+				D070CA7E60A10000000000F3 /* RewardCategoryPickerSheet.swift */,
+				D070CA7E60A10000000000F4 /* RewardCatalogGridView.swift */,
 				C72AFD8226CE74A4499FE265 /* GoalsSection.swift */,
 				C63780CC5A11131CE0AE614A /* LeaderboardCard.swift */,
 				863DD1A86A06F2A145263AE5 /* MilestoneProgressTrack.swift */,
@@ -691,6 +703,10 @@
 				DE4A304A809A076059296687 /* AvatarView.swift in Sources */,
 				670CED854F73AF24CA803766 /* BonusPointsSheet.swift in Sources */,
 				CE07FD1A449FE5C24A50D27E /* CatalogItemRow.swift in Sources */,
+				D070CA7E60A10000000000B1 /* RewardCategory.swift in Sources */,
+				D070CA7E60A10000000000B2 /* RewardCatalogFormView.swift in Sources */,
+				D070CA7E60A10000000000B3 /* RewardCategoryPickerSheet.swift in Sources */,
+				D070CA7E60A10000000000B4 /* RewardCatalogGridView.swift in Sources */,
 				89AD334D3A20D7B1B7B9EDF5 /* ChildDashboardHeader.swift in Sources */,
 				ACA5D105043880E606214E44 /* ChildDashboardView.swift in Sources */,
 				9AD3ABE6D160A3D08632D4CB /* ChildEventsSection.swift in Sources */,

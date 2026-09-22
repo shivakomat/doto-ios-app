@@ -2,16 +2,17 @@ import SwiftUI
 
 struct RewardCatalogView: View {
     @StateObject private var vm = RewardCatalogViewModel()
+    @Environment(\.dismiss) private var dismiss
 
-    private let suggestions: [(emoji: String, title: String, cost: Int)] = [
-        ("🎬", "Movie night",        100),
-        ("🍕", "Choose dinner",       50),
-        ("📱", "Extra screen time",   75),
-        ("🛌", "Stay up late (Fri)",  80),
-        ("🎡", "Day out",            300),
-        ("👫", "Friend sleepover",   150),
-        ("🧹", "Day off chores",      60),
-        ("📚", "New book",            80),
+    private let suggestions: [(category: RewardCategory, title: String, cost: Int)] = [
+        (.movieEntertainment, "Movie night",        100),
+        (.treatsFood,         "Choose dinner",       50),
+        (.screenTime,         "Extra screen time",   75),
+        (.lateBedtime,        "Stay up late (Fri)",  80),
+        (.outing,             "Day out",            300),
+        (.sleepoverFriends,   "Friend sleepover",   150),
+        (.skipChore,          "Day off chores",      60),
+        (.chooseActivity,     "New book",            80),
     ]
 
     var body: some View {
@@ -32,25 +33,23 @@ struct RewardCatalogView: View {
                     List {
                         Section {
                             ForEach(vm.items) { item in
-                                HStack(spacing: 12) {
-                                    Text(item.emoji ?? "🎯").font(.system(size: 18))
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(item.title)
-                                            .font(.system(size: 13, weight: .medium))
-                                            .foregroundColor(.textPrimary)
-                                        Text("\(item.pointsCost) pts")
-                                            .font(.system(size: 11))
-                                            .foregroundColor(.textMuted)
+                                catalogRow(item)
+                                    .swipeActions(edge: .trailing) {
+                                        Button(role: .destructive) {
+                                            Task { await vm.deleteItem(item) }
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
                                     }
-                                    Spacer()
-                                }
-                                .swipeActions(edge: .trailing) {
-                                    Button(role: .destructive) {
-                                        Task { await vm.deleteItem(item) }
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
+                                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                                        Button {
+                                            vm.editingItem = item
+                                            vm.showAddSheet = true
+                                        } label: {
+                                            Label("Edit", systemImage: "pencil")
+                                        }
+                                        .tint(Color.memberBlue)
                                     }
-                                }
                             }
                         }
 
@@ -67,7 +66,7 @@ struct RewardCatalogView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { }
+                    Button("Done") { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("+ Add") { vm.editingItem = nil; vm.showAddSheet = true }
@@ -76,12 +75,12 @@ struct RewardCatalogView: View {
             }
             .task { await vm.load() }
             .sheet(isPresented: $vm.showAddSheet, onDismiss: { vm.editingItem = nil }) {
-                AddCatalogItemSheet(editingItem: vm.editingItem) { emoji, title, cost in
+                RewardCatalogFormView(editingItem: vm.editingItem) { category, title, cost, description in
                     Task {
                         if let editing = vm.editingItem {
-                            await vm.updateItem(id: editing.id, emoji: emoji, title: title, cost: cost)
+                            await vm.updateItem(id: editing.id, category: category, title: title, cost: cost, description: description)
                         } else {
-                            await vm.addItem(emoji: emoji, title: title, cost: cost)
+                            await vm.addItem(category: category, title: title, cost: cost, description: description)
                         }
                         vm.showAddSheet = false
                     }
@@ -97,15 +96,38 @@ struct RewardCatalogView: View {
         }
     }
 
+    private func catalogRow(_ item: RewardCatalogItem) -> some View {
+        let category = item.rewardCategory
+        return HStack(spacing: 12) {
+            Image(systemName: category.resolvedIcon)
+                .font(.system(size: 14))
+                .foregroundColor(category.color)
+                .frame(width: 30, height: 30)
+                .background(category.color.opacity(0.12))
+                .clipShape(Circle())
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.title)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.textPrimary)
+                Text("\(item.pointsCost) pts")
+                    .font(.system(size: 11))
+                    .foregroundColor(.textMuted)
+            }
+            Spacer()
+        }
+    }
+
     private var suggestionsGrid: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 8)], spacing: 8) {
             ForEach(suggestions, id: \.title) { s in
                 let alreadyAdded = vm.items.contains { $0.title == s.title }
                 Button {
-                    Task { await vm.addItem(emoji: s.emoji, title: s.title, cost: s.cost) }
+                    Task { await vm.addItem(category: s.category, title: s.title, cost: s.cost, description: nil) }
                 } label: {
                     HStack(spacing: 6) {
-                        Text(s.emoji).font(.system(size: 14))
+                        Image(systemName: s.category.resolvedIcon)
+                            .font(.system(size: 12))
+                            .foregroundColor(s.category.color)
                         Text(s.title)
                             .font(.system(size: 11, weight: .medium))
                             .foregroundColor(alreadyAdded ? .textMuted : .memberBlue)
@@ -123,49 +145,5 @@ struct RewardCatalogView: View {
             }
         }
         .padding(.horizontal, 16)
-    }
-}
-
-struct AddCatalogItemSheet: View {
-    let editingItem: RewardCatalogItem?
-    let onSave: (String?, String, Int) -> Void
-
-    @State private var title = ""
-    @State private var emoji = ""
-    @State private var cost = 50
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    TextField("Reward title", text: $title)
-                    TextField("Emoji (optional)", text: $emoji)
-                }
-                Section(header: Text("Points cost")) {
-                    Stepper("\(cost) pts", value: $cost, in: 5...500, step: 5)
-                }
-            }
-            .navigationTitle(editingItem == nil ? "Add reward" : "Edit reward")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        onSave(emoji.isEmpty ? nil : emoji, title, cost)
-                    }
-                    .disabled(title.isEmpty)
-                }
-            }
-            .onAppear {
-                if let item = editingItem {
-                    title = item.title
-                    emoji = item.emoji ?? ""
-                    cost = item.pointsCost
-                }
-            }
-        }
     }
 }

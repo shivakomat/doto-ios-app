@@ -130,17 +130,17 @@ class RewardsViewModel: ObservableObject {
         }
     }
 
-    func createReward(memberId: String? = nil, title: String, emoji: String?,
+    func createReward(title: String, emoji: String?,
                       pointsCost: Int, catalogItemId: String?) async {
         struct CreateRewardRequest: Encodable {
-            let memberId: String?; let title: String; let emoji: String?
+            let title: String; let emoji: String?
             let pointsCost: Int; let catalogItemId: String?
         }
         isLoading = true
         defer { isLoading = false }
         do {
             let r: Reward = try await APIClient.shared.post("/rewards",
-                body: CreateRewardRequest(memberId: memberId, title: title,
+                body: CreateRewardRequest(title: title,
                                           emoji: emoji, pointsCost: pointsCost,
                                           catalogItemId: catalogItemId))
             rewards.append(r)
@@ -149,6 +149,55 @@ class RewardsViewModel: ObservableObject {
             NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
         } catch APIError.conflict(let msg) {
             errorMessage = msg
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: - Catalog
+
+    func addCatalogItem(category: RewardCategory, title: String, cost: Int, description: String?) async {
+        struct CreateCatalogRequest: Encodable {
+            let title: String; let category: String; let description: String?; let pointsCost: Int
+        }
+        do {
+            let item: RewardCatalogItem = try await APIClient.shared.post(
+                "/rewards/catalog",
+                body: CreateCatalogRequest(title: title, category: category.rawValue, description: description, pointsCost: cost)
+            )
+            catalog.append(item)
+        } catch APIError.unauthorized {
+            NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func updateCatalogItem(id: String, category: RewardCategory, title: String, cost: Int, description: String?) async {
+        struct UpdateCatalogRequest: Encodable {
+            let title: String; let category: String; let description: String?; let pointsCost: Int
+        }
+        do {
+            let updated: RewardCatalogItem = try await APIClient.shared.put(
+                "/rewards/catalog/\(id)",
+                body: UpdateCatalogRequest(title: title, category: category.rawValue, description: description, pointsCost: cost)
+            )
+            if let i = catalog.firstIndex(where: { $0.id == id }) {
+                catalog[i] = updated
+            }
+        } catch APIError.unauthorized {
+            NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func deleteCatalogItem(_ item: RewardCatalogItem) async {
+        do {
+            try await APIClient.shared.delete("/rewards/catalog/\(item.id)")
+            catalog.removeAll { $0.id == item.id }
+        } catch APIError.unauthorized {
+            NotificationCenter.default.post(name: .dotoUnauthorized, object: nil)
         } catch {
             errorMessage = error.localizedDescription
         }

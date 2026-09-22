@@ -42,6 +42,29 @@ struct GoalsSection: View {
                     }
                 }
             }
+
+            // Goals with no member — any child can work toward them via linked tasks
+            let sharedRewards = rewards.filter { $0.memberId == nil }
+            if !sharedRewards.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Shared goals")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.textMuted)
+
+                    ForEach(sharedRewards) { reward in
+                        GoalCard(
+                            reward: reward,
+                            balance: reward.currentProgress ?? 0,
+                            memberColor: "#1E2761",
+                            isOwner: false,
+                            isParent: isParent,
+                            onRequest: { onRequest(reward) },
+                            onEdit: onEdit != nil ? { onEdit?(reward) } : nil,
+                            onDelete: onDelete != nil ? { onDelete?(reward) } : nil
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ import Foundation
 struct Reward: Codable, Identifiable {
     let id: String
     let familyId: String
-    let memberId: String
+    let memberId: String?
     var title: String
     var emoji: String?
     var pointsCost: Int

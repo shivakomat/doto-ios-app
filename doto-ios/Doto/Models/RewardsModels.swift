@@ -71,6 +71,8 @@ struct RewardCatalogItem: Codable, Identifiable {
     let familyId: String
     var title: String
     var emoji: String?
+    var category: String?
+    var description: String?
     var pointsCost: Int
     let createdBy: String
     let createdAt: Date
@@ -79,6 +81,9 @@ struct RewardCatalogItem: Codable, Identifiable {
         if let e = emoji { return "\(e) \(title)" }
         return title
     }
+
+    /// Category drives the icon chip; unknown/missing values render as `.custom`.
+    var rewardCategory: RewardCategory { RewardCategory.from(category) }
 }
 
 // MARK: - Bonus Points

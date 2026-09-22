@@ -5,6 +5,8 @@ struct RewardsView: View {
     @StateObject private var vm = RewardsViewModel()
     @State private var showSetGoal = false
     @State private var showHistory = false
+    @State private var showCatalogForm = false
+    @State private var editingCatalogItem: RewardCatalogItem?
 
     private var isParent: Bool { authVM.currentProfile?.isParent == true }
     private var currentId: String? { authVM.currentProfile?.id }
@@ -65,7 +67,6 @@ struct RewardsView: View {
         .sheet(isPresented: $showSetGoal, onDismiss: { Task { await vm.loadRewards() } }) {
             if let profile = authVM.currentProfile {
                 SetGoalView(
-                    memberId: isParent ? "" : profile.id,
                     memberBalance: profile.pointsBalance,
                     previousGoals: vm.rewards.filter { $0.memberId == profile.id && $0.status == "redeemed" },
                     vm: vm
@@ -102,6 +103,18 @@ struct RewardsView: View {
         .sheet(item: $vm.editingReward) { reward in
             EditRewardSheet(reward: reward, vm: vm)
         }
+        .sheet(isPresented: $showCatalogForm, onDismiss: { editingCatalogItem = nil }) {
+            RewardCatalogFormView(editingItem: editingCatalogItem) { category, title, cost, description in
+                Task {
+                    if let editing = editingCatalogItem {
+                        await vm.updateCatalogItem(id: editing.id, category: category, title: title, cost: cost, description: description)
+                    } else {
+                        await vm.addCatalogItem(category: category, title: title, cost: cost, description: description)
+                    }
+                    showCatalogForm = false
+                }
+            }
+        }
         .alert("Something went wrong",
                isPresented: Binding(get: { vm.errorMessage != nil }, set: { if !$0 { vm.errorMessage = nil } })
         ) {
@@ -133,9 +146,7 @@ struct RewardsView: View {
             )
         }
 
-        if let goal = vm.familyGoal {
-            FamilyGoalCard(goal: goal)
-        }
+        streaksSection(entries: vm.leaderboard?.entries.filter { $0.role == "child" } ?? [])
 
         GoalsSection(
             rewards: vm.activeGoals,
@@ -147,7 +158,11 @@ struct RewardsView: View {
             onDelete: { r in Task { await vm.deleteReward(r) } }
         )
 
-        streaksSection
+        if let goal = vm.familyGoal {
+            FamilyGoalCard(goal: goal)
+        }
+
+        catalogSection
     }
 
     // MARK: - Child Content
@@ -158,11 +173,15 @@ struct RewardsView: View {
             childBalanceCard(profile)
         }
 
-        childGoalsSection
-
         if let lb = vm.leaderboard {
             LeaderboardCard(leaderboard: lb, currentProfileId: currentId)
         }
+
+        streaksSection(entries: vm.leaderboard?.entries.filter { $0.memberId == currentId } ?? [])
+
+        childGoalsSection
+
+        catalogSection
 
         Button { showHistory = true } label: {
             Text("View my points history →")
@@ -229,7 +248,7 @@ struct RewardsView: View {
                     .foregroundColor(.memberBlue)
             }
 
-            let myRewards = vm.activeGoals.filter { $0.memberId == currentId }
+            let myRewards = vm.activeGoals.filter { $0.memberId == nil || $0.memberId == currentId }
             if myRewards.isEmpty {
                 Text("No goals yet — set one!")
                     .font(.system(size: 13))
@@ -257,24 +276,23 @@ struct RewardsView: View {
 
     // MARK: - Streaks
 
-    private var streaksSection: some View {
+    private func streaksSection(entries: [LeaderboardEntry]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Streaks 🔥")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(.textPrimary)
 
             VStack(spacing: 0) {
-                let childEntries = vm.leaderboard?.entries.filter { $0.role == "child" } ?? []
-                if childEntries.isEmpty {
+                if entries.isEmpty {
                     Text("No streaks yet")
                         .font(.system(size: 13))
                         .foregroundColor(.textMuted)
                         .padding()
                 } else {
-                    ForEach(Array(childEntries.enumerated()), id: \.element.id) { idx, entry in
+                    ForEach(Array(entries.enumerated()), id: \.element.id) { idx, entry in
                         StreakRowView(entry: entry)
                             .padding(.horizontal, 14)
-                        if idx < childEntries.count - 1 {
+                        if idx < entries.count - 1 {
                             Divider().padding(.leading, 14)
                         }
                     }
@@ -284,5 +302,37 @@ struct RewardsView: View {
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.cardBorder, lineWidth: 1))
             .cornerRadius(8)
         }
+    }
+
+    // MARK: - Reward Catalog
+
+    private var catalogSection: some View {
+        RewardCatalogGridView(
+            items: vm.catalog,
+            isParent: isParent,
+            memberBalance: authVM.currentProfile?.pointsBalance ?? 0,
+            onAdd: {
+                editingCatalogItem = nil
+                showCatalogForm = true
+            },
+            onTapItem: { item in
+                if isParent {
+                    editingCatalogItem = item
+                    showCatalogForm = true
+                } else if currentId != nil {
+                    Task {
+                        await vm.createReward(
+                            title: item.title,
+                            emoji: item.emoji,
+                            pointsCost: item.pointsCost,
+                            catalogItemId: item.id
+                        )
+                    }
+                }
+            },
+            onDeleteItem: { item in
+                Task { await vm.deleteCatalogItem(item) }
+            }
+        )
     }
 }

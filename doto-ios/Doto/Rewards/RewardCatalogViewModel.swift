@@ -19,14 +19,14 @@ class RewardCatalogViewModel: ObservableObject {
         }
     }
 
-    func addItem(emoji: String?, title: String, cost: Int) async {
+    func addItem(category: RewardCategory, title: String, cost: Int, description: String?) async {
         struct CreateCatalogRequest: Encodable {
-            let title: String; let emoji: String?; let pointsCost: Int
+            let title: String; let category: String; let description: String?; let pointsCost: Int
         }
         do {
             let item: RewardCatalogItem = try await APIClient.shared.post(
                 "/rewards/catalog",
-                body: CreateCatalogRequest(title: title, emoji: emoji, pointsCost: cost)
+                body: CreateCatalogRequest(title: title, category: category.rawValue, description: description, pointsCost: cost)
             )
             items.append(item)
         } catch {
@@ -34,14 +34,14 @@ class RewardCatalogViewModel: ObservableObject {
         }
     }
 
-    func updateItem(id: String, emoji: String?, title: String, cost: Int) async {
+    func updateItem(id: String, category: RewardCategory, title: String, cost: Int, description: String?) async {
         struct UpdateCatalogRequest: Encodable {
-            let title: String; let emoji: String?; let pointsCost: Int
+            let title: String; let category: String; let description: String?; let pointsCost: Int
         }
         do {
             let updated: RewardCatalogItem = try await APIClient.shared.put(
                 "/rewards/catalog/\(id)",
-                body: UpdateCatalogRequest(title: title, emoji: emoji, pointsCost: cost)
+                body: UpdateCatalogRequest(title: title, category: category.rawValue, description: description, pointsCost: cost)
             )
             if let idx = items.firstIndex(where: { $0.id == id }) {
                 items[idx] = updated
