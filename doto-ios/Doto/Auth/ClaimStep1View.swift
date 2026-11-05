@@ -53,10 +53,11 @@ struct ClaimStep1View: View {
                     Section {
                         Text(err)
                             .font(.system(size: 13))
-                            .foregroundColor(.red)
+                            .foregroundColor(.dashRedText)
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle("Join Your Family")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

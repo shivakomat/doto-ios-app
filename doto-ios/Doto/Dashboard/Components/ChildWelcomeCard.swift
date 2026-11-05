@@ -6,19 +6,17 @@ struct ChildWelcomeCard: View {
     var body: some View {
         VStack(spacing: 8) {
             Text("👋")
-                .font(.system(size: 32))
+                .font(.system(size: 36))
             Text("Hi \(displayName)!")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.textPrimary)
+                .font(.system(size: 17, weight: .bold))
+                .foregroundColor(.dashNavy)
             Text("You have no tasks or events today. Enjoy your free time!")
-                .font(.system(size: 11))
-                .foregroundColor(.textSecondary)
+                .font(.system(size: 13))
+                .foregroundColor(.dashSubtle)
                 .multilineTextAlignment(.center)
         }
-        .padding(16)
+        .padding(20)
         .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .cornerRadius(10)
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cardBorder, lineWidth: 1))
+        .dashboardCard(radius: 16)
     }
 }

@@ -8,46 +8,44 @@ struct SignInView: View {
     @State private var showForgotPassword = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            AuthTextField(label: "Username", text: $username, autocapitalization: .never)
-
-            AuthSecureField(label: "Password", text: $password, showPassword: $showPassword)
-
-            if let err = authVM.errorMessage {
-                Text(err)
-                    .font(.system(size: 13))
-                    .foregroundColor(Color(hex: "#E24B4A"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        AuthScreen(
+            title: "Welcome back",
+            subtitle: "Sign in to your family's Doto.",
+            footer: {
+                AnyView(
+                    PrimaryButton(
+                        title: authVM.isLoading ? "Signing in..." : "Sign in",
+                        isLoading: authVM.isLoading
+                    ) {
+                        Task { await authVM.login(username: username, password: password) }
+                    }
+                    .disabled(username.isEmpty || password.isEmpty || authVM.isLoading)
+                )
             }
+        ) {
+            VStack(alignment: .leading, spacing: 16) {
+                AuthTextField(label: "Username", text: $username, autocapitalization: .never)
 
-            PrimaryButton(
-                title: authVM.isLoading ? "Signing in..." : "Sign in",
-                isLoading: authVM.isLoading
-            ) {
-                Task { await authVM.login(username: username, password: password) }
-            }
-            .disabled(username.isEmpty || password.isEmpty || authVM.isLoading)
-            .padding(.top, 4)
+                AuthSecureField(label: "Password", text: $password, showPassword: $showPassword)
 
-            HStack {
-                Spacer()
-                Button {
-                    showForgotPassword = true
-                } label: {
-                    Text("Forgot password?")
-                        .font(.system(size: 14))
-                        .foregroundColor(.memberBlue)
+                if let err = authVM.errorMessage {
+                    AuthMessage(text: err)
                 }
-                Spacer()
-            }
 
-            Spacer()
+                HStack {
+                    Spacer()
+                    Button {
+                        showForgotPassword = true
+                    } label: {
+                        Text("Forgot password?")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.dashBlue)
+                    }
+                    Spacer()
+                }
+                .padding(.top, 4)
+            }
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 24)
-        .background(Color.white.ignoresSafeArea())
-        .navigationTitle("Sign in")
-        .navigationBarTitleDisplayMode(.large)
         .onAppear { authVM.errorMessage = nil }
         .sheet(isPresented: $showForgotPassword) {
             ForgotPasswordView()

@@ -82,7 +82,7 @@ struct AddEditEventView: View {
                         .onChange(of: startTime) { _ in validateTimes() }
                         .onChange(of: date) { _ in validateTimes() }
                     if let err = timeError {
-                        Text(err).font(.caption).foregroundColor(.red)
+                        Text(err).font(.caption).foregroundColor(.dashRedText)
                     }
                 }
 
@@ -126,10 +126,11 @@ struct AddEditEventView: View {
 
                 if let err = errorMessage {
                     Section {
-                        Text(err).foregroundColor(.red).font(.caption)
+                        Text(err).foregroundColor(.dashRedText).font(.caption)
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle(isEdit ? "Edit event" : "Add event")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -186,10 +187,10 @@ struct AddEditEventView: View {
                                isActive: assignedTo.contains(member.id))
                         .opacity(assignedTo.contains(member.id) ? 1 : 0.3)
                     Text(member.displayName)
-                        .foregroundColor(.textPrimary)
+                        .foregroundColor(.dashNavy)
                     Spacer()
                     if assignedTo.contains(member.id) {
-                        Image(systemName: "checkmark").foregroundColor(.memberBlue)
+                        Image(systemName: "checkmark").foregroundColor(.dashBlue)
                     }
                 }
             }

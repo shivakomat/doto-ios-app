@@ -9,7 +9,7 @@ struct MilestoneCelebrationView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color.appNavy, Color.memberBlue],
+                colors: [Color.dashNavy, Color.dashBlue],
                 startPoint: .topLeading, endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
@@ -37,11 +37,11 @@ struct MilestoneCelebrationView: View {
                 Button(action: onDismiss) {
                     Text("Awesome! 🎉")
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.appNavy)
+                        .foregroundColor(.dashNavy)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
+                        .padding(.vertical, 15)
                         .background(Color.white)
-                        .cornerRadius(12)
+                        .clipShape(Capsule())
                 }
                 .padding(.horizontal, 32)
                 .padding(.bottom, 40)

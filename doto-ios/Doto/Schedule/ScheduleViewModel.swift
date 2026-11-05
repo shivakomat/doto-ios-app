@@ -1,7 +1,6 @@
 import Foundation
 
 enum ScheduleMode: String, CaseIterable {
-    case day   = "Day"
     case week  = "Week"
     case month = "Month"
 }
@@ -10,7 +9,7 @@ enum ScheduleMode: String, CaseIterable {
 class ScheduleViewModel: ObservableObject {
 
     @Published var selectedDate: Date = .now
-    @Published var viewMode: ScheduleMode = .day
+    @Published var viewMode: ScheduleMode = .week
     @Published var events: [DotoEvent] = []
     @Published var members: [Profile] = []
     @Published var isLoading = false
@@ -109,7 +108,6 @@ class ScheduleViewModel: ObservableObject {
     func navigateForward() {
         let cal = Calendar.current
         switch viewMode {
-        case .day:   selectedDate = cal.date(byAdding: .day,   value:  1, to: selectedDate)!
         case .week:  selectedDate = cal.date(byAdding: .day,   value:  7, to: selectedDate)!
         case .month: selectedDate = cal.date(byAdding: .month, value:  1, to: selectedDate)!
         }
@@ -119,7 +117,6 @@ class ScheduleViewModel: ObservableObject {
     func navigateBack() {
         let cal = Calendar.current
         switch viewMode {
-        case .day:   selectedDate = cal.date(byAdding: .day,   value: -1, to: selectedDate)!
         case .week:  selectedDate = cal.date(byAdding: .day,   value: -7, to: selectedDate)!
         case .month: selectedDate = cal.date(byAdding: .month, value: -1, to: selectedDate)!
         }

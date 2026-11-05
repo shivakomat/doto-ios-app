@@ -6,81 +6,56 @@ struct PrivacyNoticeView: View {
     @State private var showTerms = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Welcome to Doto")
-                    .font(.system(size: 28, weight: .bold))
-                Text("Before you get started, here is how we protect your family's privacy.")
-                    .font(.system(size: 15))
-                    .foregroundColor(.textSecondary)
-            }
+        AuthScreen(
+            title: "Welcome to Doto",
+            subtitle: "Before you get started, here is how we protect your family's privacy.",
+            systemImage: "lock.shield.fill",
+            footer: {
+                AnyView(
+                    VStack(spacing: 12) {
+                        VStack(spacing: 2) {
+                            Text("By continuing you agree to our")
+                                .font(.system(size: 13))
+                                .foregroundColor(.dashSubtle)
+                            HStack(spacing: 4) {
+                                Button("Terms") {
+                                    showTerms = true
+                                }
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.dashBlue)
+                                Text("and")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.dashSubtle)
+                                Button("Privacy Policy") {
+                                    if let url = LegalURLs.privacyPolicy {
+                                        openURL(url)
+                                    }
+                                }
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.dashBlue)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
 
-            VStack(alignment: .leading, spacing: 12) {
-                BulletLabel(text: "Children's accounts do not require an email address.")
-                BulletLabel(text: "We do not collect location, photos, or advertising identifiers from children.")
-                BulletLabel(text: "Parents control family membership and can remove children at any time.")
-                BulletLabel(text: "We do not sell personal information or show behaviorally-targeted ads.")
-            }
-
-            Spacer()
-
-            VStack(spacing: 12) {
-                HStack(spacing: 4) {
-                    Text("By continuing you agree to our")
-                        .font(.system(size: 13))
-                        .foregroundColor(.textSecondary)
-                    Button("Terms") {
-                        showTerms = true
-                    }
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.memberBlue)
-                    Text("and")
-                        .font(.system(size: 13))
-                        .foregroundColor(.textSecondary)
-                    Button("Privacy Policy") {
-                        if let url = LegalURLs.privacyPolicy {
-                            openURL(url)
+                        PrimaryButton(title: "Continue") {
+                            UserDefaults.standard.set(true, forKey: "doto.privacyNoticeShown")
+                            dismiss()
                         }
                     }
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.memberBlue)
-                    Spacer()
-                }
-                .multilineTextAlignment(.leading)
-
-                Button {
-                    UserDefaults.standard.set(true, forKey: "doto.privacyNoticeShown")
-                    dismiss()
-                } label: {
-                    Text("Continue")
-                        .font(.system(size: 16, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.memberBlue)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
+                )
+            }
+        ) {
+            AuthCard {
+                VStack(alignment: .leading, spacing: 14) {
+                    DashboardBullet(text: "Children's accounts do not require an email address.")
+                    DashboardBullet(text: "We do not collect location, photos, or advertising identifiers from children.")
+                    DashboardBullet(text: "Parents control family membership and can remove children at any time.")
+                    DashboardBullet(text: "We do not sell personal information or show behaviorally-targeted ads.")
                 }
             }
         }
-        .padding(24)
         .sheet(isPresented: $showTerms) {
             TermsOfServiceView()
-        }
-    }
-}
-
-private struct BulletLabel: View {
-    let text: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundColor(.memberBlue)
-                .font(.system(size: 14))
-            Text(text)
-                .font(.system(size: 14))
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer()
         }
     }
 }

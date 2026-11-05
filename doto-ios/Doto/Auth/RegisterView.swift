@@ -64,9 +64,28 @@ struct RegisterView: View {
         return nil
     }
 
+    private var hint: (text: String, kind: AuthMessage.Kind)? {
+        guard !authVM.isLoading, let reason = disabledReason else { return nil }
+        return (reason, .warning)
+    }
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: 14) {
+        AuthScreen(
+            title: "Create your account",
+            subtitle: createsFamily ? "Set up your family on Doto." : "Almost there — add your details.",
+            footer: {
+                AnyView(
+                    PrimaryButton(
+                        title: authVM.isLoading ? "Creating account..." : "Create my account →",
+                        isLoading: authVM.isLoading
+                    ) {
+                        Task { await submit() }
+                    }
+                    .disabled(!canSubmit)
+                )
+            }
+        ) {
+            VStack(spacing: 16) {
 
                 if case .joinFamily(let code, let role) = path {
                     JoinConfirmationBanner(inviteCode: code, role: role)
@@ -78,7 +97,7 @@ struct RegisterView: View {
                     AuthTextField(label: "Family name", text: $familyName)
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     AuthTextField(
                         label: "Username",
                         text: Binding(
@@ -92,18 +111,18 @@ struct RegisterView: View {
                     )
                     if let err = usernameError {
                         Text(err)
-                            .font(.system(size: 11))
-                            .foregroundColor(Color(hex: "#E24B4A"))
+                            .font(.system(size: 12))
+                            .foregroundColor(.dashRedText)
                     } else {
                         Text("Letters, numbers, underscores only.")
-                            .font(.system(size: 11))
-                            .foregroundColor(.textMuted)
+                            .font(.system(size: 12))
+                            .foregroundColor(.dashSubtle)
                     }
                 }
 
                 // Email field - only for parents
                 if isParent {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 6) {
                         AuthTextField(
                             label: "Email",
                             text: Binding(
@@ -118,17 +137,17 @@ struct RegisterView: View {
                         )
                         if let err = emailError {
                             Text(err)
-                                .font(.system(size: 11))
-                                .foregroundColor(Color(hex: "#E24B4A"))
+                                .font(.system(size: 12))
+                                .foregroundColor(.dashRedText)
                         } else {
                             Text("Used for password recovery")
-                                .font(.system(size: 11))
-                                .foregroundColor(.textMuted)
+                                .font(.system(size: 12))
+                                .foregroundColor(.dashSubtle)
                         }
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     AuthSecureField(
                         label: "Password (min. 8 characters)",
                         text: $password,
@@ -136,13 +155,13 @@ struct RegisterView: View {
                     )
                     HStack {
                         Text("\(password.count) characters")
-                            .font(.system(size: 11))
-                            .foregroundColor(password.count >= 8 ? Color(hex: "#1D9E75") : Color(hex: "#D97706"))
+                            .font(.system(size: 12))
+                            .foregroundColor(password.count >= 8 ? .dashGreen : Color(hex: "#B7791F"))
                         Spacer()
                         if password.count >= 8 {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(Color(hex: "#1D9E75"))
-                                .font(.system(size: 11))
+                                .foregroundColor(.dashGreen)
+                                .font(.system(size: 12))
                         }
                     }
                 }
@@ -155,64 +174,43 @@ struct RegisterView: View {
                 )
 
                 if let err = authVM.errorMessage, usernameError == nil && emailError == nil {
-                    Text(err)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color(hex: "#E24B4A"))
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    AuthMessage(text: err)
                 }
 
-                if let reason = disabledReason, !authVM.isLoading {
-                    Text(reason)
-                        .font(.system(size: 12))
-                        .foregroundColor(Color(hex: "#D97706"))
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                if let hint {
+                    AuthMessage(text: hint.text, kind: hint.kind)
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Toggle(isOn: $ageConfirmed) {
-                        Text(isParent
-                             ? "I am 13 years of age or older and I agree to the Terms and Privacy Policy."
-                             : "I am 13 years of age or older, or I have permission from a parent or legal guardian who has agreed to the Terms and Privacy Policy.")
-                            .font(.system(size: 13))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .toggleStyle(iOSCheckboxToggleStyle())
-
-                    HStack(spacing: 12) {
-                        Button("View Terms") {
-                            showTerms = true
+                AuthCard {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Toggle(isOn: $ageConfirmed) {
+                            Text(isParent
+                                 ? "I am 13 years of age or older and I agree to the Terms and Privacy Policy."
+                                 : "I am 13 years of age or older, or I have permission from a parent or legal guardian who has agreed to the Terms and Privacy Policy.")
+                                .font(.system(size: 13))
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.memberBlue)
+                        .toggleStyle(DashboardCheckboxToggleStyle())
 
-                        Button("View Privacy Policy") {
-                            if let url = LegalURLs.privacyPolicy {
-                                openURL(url)
+                        HStack(spacing: 16) {
+                            Button("View Terms") {
+                                showTerms = true
                             }
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.dashBlue)
+
+                            Button("View Privacy Policy") {
+                                if let url = LegalURLs.privacyPolicy {
+                                    openURL(url)
+                                }
+                            }
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.dashBlue)
                         }
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.memberBlue)
                     }
                 }
-                .padding(.top, 4)
-
-                PrimaryButton(
-                    title: authVM.isLoading ? "Creating account..." : "Create my account →",
-                    isLoading: authVM.isLoading
-                ) {
-                    Task { await submit() }
-                }
-                .disabled(!canSubmit)
-                .opacity(canSubmit ? 1.0 : 0.6)
-                .padding(.top, 4)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 16)
-            .padding(.bottom, 32)
         }
-        .background(Color.white.ignoresSafeArea())
-        .navigationTitle("Create your account")
-        .navigationBarTitleDisplayMode(.large)
         .onAppear { authVM.errorMessage = nil }
         .sheet(isPresented: $showTerms) {
             TermsOfServiceView()
@@ -254,25 +252,6 @@ struct RegisterView: View {
     }
 }
 
-private struct iOSCheckboxToggleStyle: ToggleStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        Button {
-            configuration.isOn.toggle()
-        } label: {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
-                    .font(.system(size: 20))
-                    .foregroundColor(configuration.isOn ? .memberBlue : .textMuted)
-                configuration.label
-                    .multilineTextAlignment(.leading)
-                    .foregroundColor(.primary)
-                Spacer()
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
 struct JoinConfirmationBanner: View {
     let inviteCode: String
     let role: String
@@ -280,21 +259,19 @@ struct JoinConfirmationBanner: View {
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundColor(Color(hex: "#1D9E75"))
-                .font(.system(size: 16))
+                .foregroundColor(.dashGreen)
+                .font(.system(size: 18))
             VStack(alignment: .leading, spacing: 2) {
                 Text("Joining with code \(inviteCode)")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(Color(hex: "#1D9E75"))
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.dashNavy)
                 Text("Role: \(role == "parent" ? "Parent" : "Child / Teen")")
-                    .font(.system(size: 11))
-                    .foregroundColor(.textSecondary)
+                    .font(.system(size: 12))
+                    .foregroundColor(.dashSubtle)
             }
             Spacer()
         }
-        .padding(12)
-        .background(Color(hex: "#F0FDF4"))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#1D9E75"), lineWidth: 1))
-        .cornerRadius(8)
+        .padding(14)
+        .dashboardCard(radius: 14, fill: .dashGreenTint, border: .dashGreenBorder)
     }
 }

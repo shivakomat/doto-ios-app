@@ -7,22 +7,25 @@ struct PreviousGoalChip: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 4) {
-                Text(goal.emoji ?? "🎯").font(.system(size: 20))
+            VStack(spacing: 6) {
+                Text(goal.emoji ?? "🎯")
+                    .font(.system(size: 22))
+                    .frame(width: 40, height: 40)
+                    .background(Color(hex: "#F2711C").opacity(0.16))
+                    .clipShape(Circle())
                 Text(goal.title)
-                    .font(.system(size: 8, weight: .semibold))
-                    .foregroundColor(Color(hex: "#412402"))
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.dashNavy)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
-                    .frame(width: 60)
+                    .frame(width: 78)
                 Text("\(goal.pointsCost) pts")
-                    .font(.system(size: 8))
-                    .foregroundColor(Color(hex: "#633806"))
+                    .font(.system(size: 11))
+                    .foregroundColor(.dashSubtle)
             }
-            .padding(8)
-            .background(Color(hex: "#FAEEDA"))
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#FAC775")))
-            .cornerRadius(8)
+            .padding(.vertical, 12)
+            .padding(.horizontal, 8)
+            .dashboardCard(radius: 16, fill: Color(hex: "#F2711C").opacity(0.07), border: Color(hex: "#F2711C").opacity(0.25))
         }
         .buttonStyle(.plain)
     }

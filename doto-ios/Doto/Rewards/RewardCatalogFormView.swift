@@ -38,6 +38,7 @@ struct RewardCatalogFormView: View {
                         .lineLimit(3)
                 }
             }
+            .dashboardForm()
             .navigationTitle(editingItem == nil ? "Add reward" : "Edit reward")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

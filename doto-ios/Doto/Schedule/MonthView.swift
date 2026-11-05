@@ -7,7 +7,9 @@ struct MonthView: View {
     @State private var selectedEvent: DotoEvent?
 
     var body: some View {
-        VStack(spacing: 0) {
+        let dayEvents = vm.eventsForDay(vm.selectedDate)
+
+        VStack(spacing: 12) {
             MonthGridView(
                 date:        vm.selectedDate,
                 eventsByDay: vm.eventsForMonth(containing: vm.selectedDate),
@@ -17,34 +19,20 @@ struct MonthView: View {
                 ),
                 onDoubleTap: { date in
                     vm.selectedDate = date
-                    withAnimation(.easeOut(duration: 0.3)) { vm.setMode(.day) }
+                    withAnimation(.easeOut(duration: 0.3)) { vm.setMode(.week) }
                 }
             )
-            .background(Color.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 12)
+            .dashboardCard()
+            .padding(.horizontal, 18)
 
-            Divider()
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 10) {
+                    ScheduleSelectedDayHeader(date: vm.selectedDate, eventCount: dayEvents.count)
 
-            ScrollView {
-                VStack(spacing: 0) {
-                    HStack {
-                        Text(vm.selectedDate.fullDayLabel)
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(Calendar.current.isDateInToday(vm.selectedDate) ? Color.memberBlue : Color.textPrimary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 6)
-                    .background(Color.screenBg)
-
-                    Divider()
-
-                    let dayEvents = vm.eventsForDay(vm.selectedDate)
                     if dayEvents.isEmpty {
-                        Text("No events")
-                            .font(.system(size: 13))
-                            .foregroundColor(Color.textMuted)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.top, 20)
+                        ScheduleEmptyDay()
                     } else {
                         ForEach(dayEvents) { event in
                             EventListRow(event: event)
@@ -52,7 +40,8 @@ struct MonthView: View {
                         }
                     }
                 }
-                .padding(.bottom, 80)
+                .padding(.horizontal, 18)
+                .padding(.bottom, 24)
             }
             .refreshable { await vm.load(monthStart: vm.selectedDate.monthStart) }
         }

@@ -32,6 +32,7 @@ struct EditRewardSheet: View {
                             value: $pointsCost, in: 5...500, step: 5)
                 }
             }
+            .dashboardForm()
             .navigationTitle("Edit Goal")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(

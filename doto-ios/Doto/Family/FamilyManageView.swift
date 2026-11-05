@@ -24,19 +24,19 @@ struct FamilyManageView: View {
                             Text("Name")
                             Spacer()
                             Text(family.name)
-                                .foregroundColor(.textSecondary)
+                                .foregroundColor(.dashSubtle)
                         }
                         HStack {
                             Text("Invite code")
                             Spacer()
                             Text(family.inviteCode)
                                 .font(.system(size: 13, design: .monospaced))
-                                .foregroundColor(.textSecondary)
+                                .foregroundColor(.dashSubtle)
                             Button {
                                 UIPasteboard.general.string = family.inviteCode
                             } label: {
                                 Image(systemName: "doc.on.doc")
-                                    .foregroundColor(.memberBlue)
+                                    .foregroundColor(.dashBlue)
                             }
                         }
                     }
@@ -71,7 +71,7 @@ struct FamilyManageView: View {
                                 Spacer()
                                 Text("\(member.pointsTotal) pts")
                                     .font(.system(size: 12))
-                                    .foregroundColor(.textSecondary)
+                                    .foregroundColor(.dashSubtle)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 let isParent = authVM.currentProfile?.isParent == true
@@ -95,7 +95,7 @@ struct FamilyManageView: View {
                                     } label: {
                                         Label("Reset Password", systemImage: "key.fill")
                                     }
-                                    .tint(.memberBlue)
+                                    .tint(.dashBlue)
                                 }
                             }
                         }
@@ -105,14 +105,14 @@ struct FamilyManageView: View {
                                 showInviteParent = true
                             } label: {
                                 Label("Add a co-parent", systemImage: "person.2.badge.plus")
-                                    .foregroundColor(.memberBlue)
+                                    .foregroundColor(.dashBlue)
                             }
 
                             Button {
                                 presentAddChildFlow()
                             } label: {
                                 Label("Add a child", systemImage: "person.badge.plus")
-                                    .foregroundColor(.memberBlue)
+                                    .foregroundColor(.dashBlue)
                             }
                         }
                     }
@@ -127,6 +127,7 @@ struct FamilyManageView: View {
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle("Manage Family")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

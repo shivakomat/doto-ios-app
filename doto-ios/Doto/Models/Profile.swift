@@ -68,6 +68,7 @@ struct Profile: Codable, Identifiable {
 
     var isParent: Bool { role == "parent" }
     var isChild: Bool  { role == "child"  }
+    var isDemoAccount: Bool { username?.hasPrefix("demo_") == true }
 
     var initials: String {
         displayName.split(separator: " ").prefix(2)

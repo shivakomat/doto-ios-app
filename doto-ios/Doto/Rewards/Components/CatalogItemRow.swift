@@ -12,28 +12,28 @@ struct CatalogItemRow: View {
             HStack(spacing: 12) {
                 let category = item.rewardCategory
                 Image(systemName: category.resolvedIcon)
-                    .font(.system(size: 14))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(category.color)
-                    .frame(width: 30, height: 30)
-                    .background(category.color.opacity(0.12))
+                    .frame(width: 36, height: 36)
+                    .background(category.color.opacity(0.14))
                     .clipShape(Circle())
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.title)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.textPrimary)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.dashNavy)
                     Text("\(item.pointsCost) pts")
-                        .font(.system(size: 11))
-                        .foregroundColor(canAfford ? Color(hex: "#1D9E75") : .textMuted)
+                        .font(.system(size: 12))
+                        .foregroundColor(canAfford ? .dashGreen : .dashSubtle)
                 }
                 Spacer()
                 Text("Set goal →")
-                    .font(.system(size: 12))
-                    .foregroundColor(.memberBlue)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.dashBlue)
             }
             .padding(.horizontal, 14)
-            .padding(.vertical, 12)
+            .padding(.vertical, 10)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .background(Color.white)
     }
 }

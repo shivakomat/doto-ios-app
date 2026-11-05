@@ -37,6 +37,7 @@ struct SettingsView: View {
                 notificationsSection
                 dangerSection
             }
+            .dashboardForm()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -182,7 +183,7 @@ struct SettingsView: View {
             } label: {
                 HStack {
                     Text("Save Profile")
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                     if isSavingProfile { Spacer(); ProgressView() }
                 }
             }
@@ -210,7 +211,7 @@ struct SettingsView: View {
             } label: {
                 HStack {
                     Text("Save Family Name")
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                     if isSavingFamily { Spacer(); ProgressView() }
                 }
             }
@@ -222,12 +223,12 @@ struct SettingsView: View {
                     Spacer()
                     Text(code)
                         .font(.system(size: 13, design: .monospaced))
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.dashSubtle)
                     Button {
                         UIPasteboard.general.string = code
                     } label: {
                         Image(systemName: "doc.on.doc")
-                            .foregroundColor(.memberBlue)
+                            .foregroundColor(.dashBlue)
                     }
                 }
             }
@@ -245,28 +246,31 @@ struct SettingsView: View {
             HStack {
                 Text("Status")
                 Spacer()
-                if manager.isSubscribed {
+                if profile?.isDemoAccount == true {
+                    Text("Premium (demo)")
+                        .foregroundColor(.green)
+                } else if manager.isSubscribed {
                     Text("Active")
                         .foregroundColor(.green)
                 } else if manager.isTrialActive {
                     Text("Trial (\(manager.trialDaysRemaining) days left)")
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.dashSubtle)
                 } else if profile?.isParent == true {
                     Text("Expired")
                         .foregroundColor(Color(hex: "#E24B4A"))
                 } else {
                     Text("Included with family subscription")
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.dashSubtle)
                 }
             }
 
-            if profile?.isParent == true, !manager.isSubscribed {
+            if profile?.isParent == true, profile?.isDemoAccount != true, !manager.isSubscribed {
                 Button {
                     showSubscription = true
                 } label: {
                     HStack {
                         Text(manager.isTrialActive ? "View subscription options" : "Subscribe")
-                            .foregroundColor(.memberBlue)
+                            .foregroundColor(.dashBlue)
                         Spacer()
                     }
                 }
@@ -281,24 +285,24 @@ struct SettingsView: View {
                     openURL(url)
                 }
             }
-            .foregroundColor(.memberBlue)
+            .foregroundColor(.dashBlue)
 
             Button("Terms of Service") {
                 showTerms = true
             }
-            .foregroundColor(.memberBlue)
+            .foregroundColor(.dashBlue)
 
             if isCurrentUserParent {
                 Button("Manage children & family") {
                     showFamilyManage = true
                 }
-                .foregroundColor(.memberBlue)
+                .foregroundColor(.dashBlue)
             }
 
             Button("Data collection for children") {
                 // TODO: show child data notice sheet
             }
-            .foregroundColor(.textSecondary)
+            .foregroundColor(.dashSubtle)
             .disabled(true)
         }
     }
@@ -364,7 +368,7 @@ struct SettingsView: View {
                 vm.showDeleteConfirm = true
             } label: {
                 Text("Delete account")
-                    .foregroundColor(.red)
+                    .foregroundColor(.dashRedText)
             }
         }
     }
@@ -388,7 +392,7 @@ struct ChangePasswordView: View {
                     SecureField("Confirm new password", text: $confirm)
                 }
                 if let err = error {
-                    Section { Text(err).foregroundColor(.red).font(.caption) }
+                    Section { Text(err).foregroundColor(.dashRedText).font(.caption) }
                 }
             }
             .navigationTitle("Change Password")

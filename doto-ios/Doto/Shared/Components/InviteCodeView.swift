@@ -9,15 +9,15 @@ struct InviteCodeView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("Family invite code")
-                .font(.system(size: 12))
-                .foregroundColor(.textMuted)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(.dashNavy)
 
             HStack {
                 Text(code)
                     .font(.system(size: 28, weight: .bold, design: .monospaced))
-                    .foregroundColor(.memberBlue)
+                    .foregroundColor(.dashBlue)
                     .tracking(6)
 
                 Spacer()
@@ -26,26 +26,28 @@ struct InviteCodeView: View {
                     UIPasteboard.general.string = code
                 } label: {
                     Label("Copy", systemImage: "doc.on.doc")
-                        .font(.system(size: 12))
-                        .foregroundColor(.memberBlue)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.dashBlue)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 7)
+                        .background(Color.white)
+                        .clipShape(Capsule())
                 }
             }
             .padding(14)
-            .background(Color(hex: "#EFF6FF"))
-            .cornerRadius(10)
+            .background(Color.dashBlueTint)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Color.dashBlueBorder, lineWidth: 1))
 
             ShareLink(item: shareText) {
                 Label("Share via iMessage / WhatsApp", systemImage: "square.and.arrow.up")
-                    .font(.system(size: 14))
-                    .foregroundColor(.memberBlue)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.dashBlue)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
+                    .frame(height: 46)
                     .background(Color.white)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.memberBlue, lineWidth: 1)
-                    )
-                    .cornerRadius(8)
+                    .clipShape(Capsule())
+                    .overlay(Capsule().stroke(Color.dashBlue, lineWidth: 1.2))
             }
         }
     }

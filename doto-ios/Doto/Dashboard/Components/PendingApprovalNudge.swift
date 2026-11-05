@@ -7,48 +7,48 @@ struct PendingApprovalNudge: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Member avatar
-            AvatarView(name: approval.memberName, color: approval.memberColor, size: 32)
+            AvatarView(name: approval.memberName, color: approval.memberColor, size: 38)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 4) {
                     Text(approval.emoji ?? "🎁")
                         .font(.system(size: 14))
                     Text(approval.title)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.textPrimary)
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(.dashNavy)
+                        .lineLimit(1)
                 }
 
                 Text("\(approval.memberName) · \(approval.pointsCost) pts · Balance: \(approval.memberBalance)")
-                    .font(.system(size: 10))
-                    .foregroundColor(.textSecondary)
+                    .font(.system(size: 12))
+                    .foregroundColor(.dashSubtle)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
             }
 
-            Spacer()
+            Spacer(minLength: 6)
 
             HStack(spacing: 8) {
                 Button(action: onDeny) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.textMuted)
-                        .frame(width: 28, height: 28)
-                        .background(Color.white)
-                        .cornerRadius(6)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(.dashRedText)
+                        .frame(width: 34, height: 34)
+                        .background(Color.dashRedTint)
+                        .clipShape(Circle())
                 }
 
                 Button(action: onApprove) {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.system(size: 13, weight: .bold))
                         .foregroundColor(.white)
-                        .frame(width: 28, height: 28)
-                        .background(Color.memberBlue)
-                        .cornerRadius(6)
+                        .frame(width: 34, height: 34)
+                        .background(Color.dashGreen)
+                        .clipShape(Circle())
                 }
             }
         }
         .padding(12)
-        .background(Color(hex: "#FEF3C7"))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#FDE68A"), lineWidth: 1))
-        .cornerRadius(8)
+        .dashboardCard(radius: 16, fill: Color(hex: "#FEF6DC"), border: Color(hex: "#F6DF93"))
     }
 }

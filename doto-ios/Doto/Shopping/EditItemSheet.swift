@@ -76,6 +76,7 @@ struct EditItemSheet: View {
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle("Edit Item")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(

@@ -1,7 +1,8 @@
 import SwiftUI
 
-struct RecentTasksSection: View {
+struct TodaysTasksSection: View {
     let tasks: [DashboardTask]
+    var onSeeAll: (() -> Void)? = nil
     let onTaskTap: ((DashboardTask) -> Void)?
     var onComplete: ((DashboardTask) -> Void)? = nil
     var completingIds: Set<String> = []
@@ -10,16 +11,19 @@ struct RecentTasksSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Recently assigned")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(.textPrimary)
+            DashboardSectionHeader(
+                title: "Today's tasks",
+                actionTitle: onSeeAll == nil ? nil : "See all",
+                action: onSeeAll
+            )
 
             VStack(spacing: 0) {
                 ForEach(tasks) { task in
-                    RecentTaskRow(
+                    TodayTaskRow(
                         task: task,
                         isCompleting: completingIds.contains(task.id),
                         isLocked: lockedIds.contains(task.id),
+                        showDivider: task.id != tasks.last?.id,
                         onTap: onTaskTap,
                         onComplete: {
                             if !task.isDone && !lockedIds.contains(task.id) { onComplete?(task) }
@@ -27,37 +31,36 @@ struct RecentTasksSection: View {
                     )
                 }
             }
-            .background(Color.white)
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cardBorder, lineWidth: 1))
+            .dashboardCard()
         }
     }
 }
 
-struct RecentTaskRow: View {
+struct TodayTaskRow: View {
     let task: DashboardTask
     let isCompleting: Bool
     var isLocked: Bool = false
+    var showDivider: Bool = true
     let onTap: ((DashboardTask) -> Void)?
     let onComplete: () -> Void
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             Button(action: onComplete) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(task.isDone ? Color(hex: "#1D9E75") : Color.clear)
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(task.isDone ? Color.dashGreen : Color.clear)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 3)
-                                .stroke(task.isDone ? Color(hex: "#1D9E75") : Color.cardBorder, lineWidth: 2)
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .stroke(task.isDone ? Color.dashGreen : Color(hex: "#C5CCD9"), lineWidth: 1.5)
                         )
-                        .frame(width: 16, height: 16)
+                        .frame(width: 20, height: 20)
 
                     if isCompleting {
-                        ProgressView().scaleEffect(0.4)
+                        ProgressView().scaleEffect(0.5)
                     } else if task.isDone {
                         Image(systemName: "checkmark")
-                            .font(.system(size: 9, weight: .bold))
+                            .font(.system(size: 10, weight: .bold))
                             .foregroundColor(.white)
                     }
                 }
@@ -66,77 +69,63 @@ struct RecentTaskRow: View {
             .buttonStyle(.plain)
             .disabled(isLocked || task.isDone)
 
-            if let color = task.assigneeColor, let name = task.assigneeName {
-                AvatarView(name: name, color: color, size: 18)
-            }
-
             Image(systemName: task.resolvedIcon)
-                .font(.system(size: 9, weight: .semibold))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(task.iconColor)
+                .frame(width: 32, height: 32)
+                .background(task.iconColor.opacity(0.14))
+                .clipShape(Circle())
 
             Text(task.title)
-                .font(.system(size: 12))
+                .font(.system(size: 15, weight: .medium))
                 .foregroundColor(
                     task.isDone    ? .textMuted :
-                    task.isOverdue ? Color(hex: "#E24B4A") : .textPrimary
+                    task.isOverdue ? .dashRedText : .dashNavy
                 )
                 .strikethrough(task.isDone, color: .textMuted)
                 .lineLimit(1)
 
-            Spacer()
+            Spacer(minLength: 8)
 
-            if task.isDone && task.type.earnsPoints {
-                Text("+\(task.points) pts")
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(Color(hex: "#1D9E75"))
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Color.doneBg)
-                    .cornerRadius(4)
-            } else if task.isDone {
-                // Completed non-chore — show the type badge instead of points.
-                Image(systemName: task.type.icon)
-                    .font(.system(size: 9, weight: .semibold))
-                    .foregroundColor(task.type.color)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(task.type.color.opacity(0.15))
-                    .cornerRadius(4)
-            } else if task.isOverdue {
-                Text("Overdue")
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(.overdueText)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Color.overdueBg)
-                    .cornerRadius(4)
-            } else if task.dueDate.map({ Calendar.current.isDateInToday($0) }) == true {
-                Text("Today")
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(.conflictText)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Color.conflictBg)
-                    .cornerRadius(4)
-            } else if task.dueDate.map({ Calendar.current.isDateInTomorrow($0) }) == true {
-                Text("Tomorrow")
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(.textSecondary)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Color.cardBorder)
-                    .cornerRadius(4)
-            } else if let due = task.dueDate,
-                      due >= Calendar.current.date(byAdding: .day, value: 2, to: Calendar.current.startOfDay(for: Date()))! {
-                Text("Upcoming")
-                    .font(.system(size: 9, weight: .medium))
-                    .foregroundColor(.textSecondary)
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Color.cardBorder.opacity(0.5))
-                    .cornerRadius(4)
+            badge
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .overlay(alignment: .bottom) {
+            if showDivider {
+                Rectangle()
+                    .fill(Color.dashCardBorder)
+                    .frame(height: 1)
+                    .padding(.horizontal, 14)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .overlay(Divider().frame(maxWidth: .infinity), alignment: .bottom)
         .contentShape(Rectangle())
         .onTapGesture {
             onTap?(task)
+        }
+    }
+
+    @ViewBuilder
+    private var badge: some View {
+        if task.isDone && task.type.earnsPoints {
+            DashboardBadge(text: "+\(task.points) pts", foreground: .doneText, background: .doneBg)
+        } else if task.isDone {
+            // Completed non-chore — show the type badge instead of points.
+            Image(systemName: task.type.icon)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundColor(task.type.color)
+                .padding(.horizontal, 10).padding(.vertical, 5)
+                .background(task.type.color.opacity(0.15))
+                .clipShape(Capsule())
+        } else if task.isOverdue {
+            DashboardBadge(text: "Overdue", foreground: .dashRedText, background: .dashRedTint)
+        } else if task.dueDate.map({ Calendar.current.isDateInToday($0) }) == true {
+            DashboardBadge(text: "Today", foreground: .dashBlue, background: .dashBlueTint)
+        } else if task.dueDate.map({ Calendar.current.isDateInTomorrow($0) }) == true {
+            DashboardBadge(text: "Tomorrow", foreground: .textSecondary, background: Color(hex: "#EEF1F6"))
+        } else if let due = task.dueDate,
+                  due >= Calendar.current.date(byAdding: .day, value: 2, to: Calendar.current.startOfDay(for: Date()))! {
+            DashboardBadge(text: "Upcoming", foreground: .textSecondary, background: Color(hex: "#EEF1F6"))
         }
     }
 }

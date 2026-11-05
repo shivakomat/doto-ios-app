@@ -19,6 +19,7 @@ struct RewardCategoryPickerSheet: View {
                 }
                 .padding(16)
             }
+            .background(DashboardBackground(showLandscape: false))
             .navigationTitle("Choose a Category")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -45,12 +46,12 @@ struct RewardCategoryPickerSheet: View {
                         .clipShape(Circle())
                         .overlay(
                             Circle()
-                                .stroke(Color.memberBlue, lineWidth: isSelected ? 3 : 0)
+                                .stroke(Color.dashBlue, lineWidth: isSelected ? 3 : 0)
                         )
                     if isSelected {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.system(size: 16))
-                            .foregroundColor(.memberBlue)
+                            .foregroundColor(.dashBlue)
                             .background(Circle().fill(Color.white).padding(2))
                             .offset(x: 2, y: 2)
                     }
@@ -58,7 +59,7 @@ struct RewardCategoryPickerSheet: View {
                 .frame(width: 56, height: 56)
                 Text(category.label)
                     .font(.system(size: 10))
-                    .foregroundColor(.textSecondary)
+                    .foregroundColor(.dashSubtle)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)

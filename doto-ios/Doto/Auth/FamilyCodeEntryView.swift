@@ -8,36 +8,30 @@ struct FamilyCodeEntryView: View {
     @State private var navigateToPreview = false
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Enter the invite code from your family member's Doto app.")
-                .font(.system(size: 14))
-                .foregroundColor(.textSecondary)
-                .multilineTextAlignment(.center)
-                .padding(.top, 24)
-
-            CodeInputView(code: $code)
-
-            if let err = errorMessage {
-                Text(err)
-                    .font(.system(size: 13))
-                    .foregroundColor(Color(hex: "#E24B4A"))
-                    .multilineTextAlignment(.center)
+        AuthScreen(
+            title: "Join a family",
+            subtitle: "Enter the invite code from your family member's Doto app.",
+            systemImage: "person.2.fill",
+            footer: {
+                AnyView(
+                    PrimaryButton(
+                        title: isLoading ? "Checking..." : "Continue →",
+                        isLoading: isLoading
+                    ) {
+                        Task { await lookupCode() }
+                    }
+                    .disabled(code.count < 6 || isLoading)
+                )
             }
+        ) {
+            VStack(spacing: 16) {
+                CodeInputView(code: $code)
 
-            PrimaryButton(
-                title: isLoading ? "Checking..." : "Continue →",
-                isLoading: isLoading
-            ) {
-                Task { await lookupCode() }
+                if let err = errorMessage {
+                    AuthMessage(text: err)
+                }
             }
-            .disabled(code.count < 6 || isLoading)
-
-            Spacer()
         }
-        .padding(.horizontal, 28)
-        .background(Color.white.ignoresSafeArea())
-        .navigationTitle("Join a family")
-        .navigationBarTitleDisplayMode(.large)
         .navigationDestination(isPresented: $navigateToPreview) {
             if let preview {
                 FamilyPreviewView(preview: preview)

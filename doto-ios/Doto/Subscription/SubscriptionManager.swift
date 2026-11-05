@@ -50,7 +50,7 @@ final class SubscriptionManager: NSObject, ObservableObject {
 
     /// A parent needs to subscribe once the 30-day trial has ended.
     func shouldShowPaywall(for profile: Profile?) -> Bool {
-        guard let profile, profile.isParent else { return false }
+        guard let profile, profile.isParent, !profile.isDemoAccount else { return false }
         return !isTrialActive && !isSubscribed
     }
 
@@ -79,7 +79,8 @@ final class SubscriptionManager: NSObject, ObservableObject {
         do {
             let result = try await Purchases.shared.purchase(package: package)
             self.customerInfo = result.customerInfo
-            return !result.userCancelled && result.customerInfo.entitlements.active.isEmpty == false
+            guard !result.userCancelled else { return false }
+            return await waitForEntitlement()
         } catch {
             errorMessage = error.localizedDescription
             return false
@@ -92,9 +93,23 @@ final class SubscriptionManager: NSObject, ObservableObject {
         do {
             let info = try await Purchases.shared.restorePurchases()
             self.customerInfo = info
+            _ = await waitForEntitlement()
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    /// Entitlement activation can lag the StoreKit transaction — poll for a few seconds.
+    private func waitForEntitlement() async -> Bool {
+        if isSubscribed { return true }
+        for _ in 0..<5 {
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            if let info = try? await Purchases.shared.customerInfo(fetchPolicy: .fetchCurrent) {
+                self.customerInfo = info
+                if isSubscribed { return true }
+            }
+        }
+        return false
     }
 }
 

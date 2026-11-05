@@ -22,7 +22,6 @@ struct TaskIconPickerView: View {
                                 .foregroundColor(.textMuted)
                                 .padding(.top, 8)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(UIColor.systemBackground))
                         ) {
                             LazyVGrid(columns: columns, spacing: 10) {
                                 ForEach(category.icons) { icon in
@@ -35,6 +34,7 @@ struct TaskIconPickerView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
             }
+            .background(DashboardBackground(showLandscape: false))
             .navigationTitle("Choose Icon")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -63,12 +63,12 @@ struct TaskIconPickerView: View {
                     .clipShape(Circle())
                     .overlay(
                         Circle()
-                            .stroke(Color.memberBlue, lineWidth: isSelected ? 3 : 0)
+                            .stroke(Color.dashBlue, lineWidth: isSelected ? 3 : 0)
                     )
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 16))
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                         .background(Circle().fill(Color.white).padding(2))
                         .offset(x: 2, y: 2)
                 }

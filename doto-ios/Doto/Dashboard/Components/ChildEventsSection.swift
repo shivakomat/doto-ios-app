@@ -5,60 +5,59 @@ struct ChildEventsSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Upcoming events")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(.textPrimary)
+            DashboardSectionHeader(title: "Upcoming events")
 
             VStack(spacing: 0) {
-                ForEach(events) { event in
-                    ChildEventRow(event: event)
+                ForEach(Array(events.enumerated()), id: \.element.id) { idx, event in
+                    ChildEventRow(event: event, showDivider: idx < events.count - 1)
                 }
             }
-            .background(Color.white)
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cardBorder, lineWidth: 1))
+            .dashboardCard()
         }
     }
 }
 
 struct ChildEventRow: View {
     let event: DashboardEvent
+    var showDivider: Bool = true
+
+    private var accent: Color { event.isConflicting ? .conflictBorder : .dashBlue }
 
     var body: some View {
-        HStack(spacing: 10) {
-            // Accent bar
-            Rectangle()
-                .fill(event.isConflicting ? Color.conflictBorder : Color.memberBlue)
-                .frame(width: 3)
-                .cornerRadius(2)
+        HStack(spacing: 12) {
+            Capsule()
+                .fill(accent)
+                .frame(width: 4, height: 34)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(event.title)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(event.isConflicting ? .conflictText : .textPrimary)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(event.isConflicting ? .conflictText : .dashNavy)
+                    .lineLimit(1)
 
                 HStack(spacing: 4) {
                     Text(event.startAt.shortTime)
-                        .font(.system(size: 10))
-                        .foregroundColor(.textSecondary)
                     if let loc = event.location {
                         Text("· \(loc)")
-                            .font(.system(size: 10))
-                            .foregroundColor(.textMuted)
                     }
                     if event.isConflicting {
-                        Text("· CONFLICT")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundColor(.conflictText)
+                        Text("· CONFLICT").fontWeight(.semibold)
                     }
                 }
+                .font(.system(size: 12))
+                .foregroundColor(event.isConflicting ? .conflictText.opacity(0.8) : .dashSubtle)
+                .lineLimit(1)
             }
 
             Spacer()
         }
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .background(event.isConflicting ? Color.conflictBg : Color.clear)
-        .overlay(Divider().frame(maxWidth: .infinity), alignment: .bottom)
+        .overlay(alignment: .bottom) {
+            if showDivider {
+                Rectangle().fill(Color.dashCardBorder).frame(height: 1).padding(.horizontal, 14)
+            }
+        }
     }
 }

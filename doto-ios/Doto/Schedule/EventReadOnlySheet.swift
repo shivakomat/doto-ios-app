@@ -6,65 +6,65 @@ struct EventReadOnlySheet: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    private var accent: Color { Color(hex: event.color ?? "#185FA5") }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Capsule()
-                .fill(Color.cardBorder)
-                .frame(width: 36, height: 4)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 10)
+        ZStack {
+            DashboardBackground(showLandscape: false)
 
-            HStack(alignment: .top) {
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(Color(hex: event.color ?? "#185FA5"))
-                        .frame(width: 10, height: 10)
-                        .padding(.top, 3)
-                    Text(event.title)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(Color.textPrimary)
+            VStack(alignment: .leading, spacing: 16) {
+                Capsule()
+                    .fill(Color.dashCardBorder)
+                    .frame(width: 36, height: 4)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 10)
+
+                HStack(alignment: .center) {
+                    HStack(spacing: 10) {
+                        Capsule().fill(accent).frame(width: 5, height: 28)
+                        Text(event.title)
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundColor(.dashNavy)
+                    }
+                    Spacer()
+                    Button("Close") { dismiss() }
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.dashBlue)
                 }
+
+                VStack(alignment: .leading, spacing: 16) {
+                    DetailInfoRow(icon: "clock",
+                        text: "\(event.startAt.fullDayLabel)\n\(event.timeRangeLabel) · \(event.durationMinutes) min")
+                    if let loc = event.location, !loc.isEmpty {
+                        DetailInfoRow(icon: "mappin", text: loc)
+                    }
+                    if let rep = event.repeat_, rep != "none" {
+                        DetailInfoRow(icon: "repeat", text: rep.capitalized)
+                    }
+                    if let notes = event.description, !notes.isEmpty {
+                        DetailInfoRow(icon: "note.text", text: notes)
+                    }
+                }
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .dashboardCard(radius: 16)
+
+                if event.isConflicting {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(Color.conflictBorder)
+                        Text("Scheduling conflict")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(Color.conflictText)
+                        Spacer()
+                    }
+                    .padding(12)
+                    .dashboardCard(radius: 14, fill: .conflictBg, border: .conflictBorder)
+                }
+
                 Spacer()
-                Button("Close") { dismiss() }
-                    .font(.system(size: 13))
-                    .foregroundColor(Color.memberBlue)
             }
             .padding(.horizontal, 20)
-            .padding(.top, 14)
-
-            VStack(spacing: 14) {
-                DetailInfoRow(icon: "clock",
-                    text: "\(event.startAt.fullDayLabel)\n\(event.timeRangeLabel) · \(event.durationMinutes) min")
-                if let loc = event.location, !loc.isEmpty {
-                    DetailInfoRow(icon: "mappin", text: loc)
-                }
-                if let rep = event.repeat_, rep != "none" {
-                    DetailInfoRow(icon: "repeat", text: rep.capitalized)
-                }
-                if let notes = event.description, !notes.isEmpty {
-                    DetailInfoRow(icon: "note.text", text: notes)
-                }
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 14)
-
-            if event.isConflicting {
-                HStack(spacing: 8) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundColor(Color.conflictBorder)
-                    Text("Scheduling conflict")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(Color.conflictText)
-                }
-                .padding(12)
-                .background(Color.conflictBg)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.conflictBorder, lineWidth: 1))
-                .cornerRadius(8)
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
-            }
-
-            Spacer()
         }
         .presentationDetents([.medium, .large])
     }
@@ -77,13 +77,16 @@ struct DetailInfoRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
-                .font(.system(size: 13))
-                .foregroundColor(Color.textMuted)
-                .frame(width: 18)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.dashBlue)
+                .frame(width: 32, height: 32)
+                .background(Color.dashBlueTint)
+                .clipShape(Circle())
             Text(text)
-                .font(.system(size: 13))
-                .foregroundColor(Color.textPrimary)
+                .font(.system(size: 15))
+                .foregroundColor(.dashNavy)
                 .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 6)
         }
     }
 }

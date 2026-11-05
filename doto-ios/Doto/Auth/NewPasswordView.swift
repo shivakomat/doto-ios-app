@@ -16,22 +16,25 @@ struct NewPasswordView: View {
     private var canSubmit: Bool { passwordValid && passwordsMatch && !isLoading }
 
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "lock.shield.fill")
-                .font(.system(size: 50))
-                .foregroundColor(.memberBlue)
-                .padding(.top, 40)
-
-            Text("Create new password")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundColor(.textPrimary)
-
-            Text("Must be at least 8 characters.")
-                .font(.system(size: 14))
-                .foregroundColor(.textSecondary)
-
-            VStack(spacing: 14) {
-                VStack(alignment: .leading, spacing: 4) {
+        AuthScreen(
+            title: "Create new password",
+            subtitle: "Must be at least 8 characters.",
+            systemImage: "lock.shield.fill",
+            centered: true,
+            footer: {
+                AnyView(
+                    PrimaryButton(
+                        title: isLoading ? "Resetting..." : "Reset password",
+                        isLoading: isLoading
+                    ) {
+                        resetPassword()
+                    }
+                    .disabled(!canSubmit)
+                )
+            }
+        ) {
+            VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 6) {
                     AuthSecureField(
                         label: "New password",
                         text: $password,
@@ -39,13 +42,13 @@ struct NewPasswordView: View {
                     )
                     HStack {
                         Text("\(password.count) characters")
-                            .font(.system(size: 11))
-                            .foregroundColor(passwordValid ? Color(hex: "#1D9E75") : Color(hex: "#D97706"))
+                            .font(.system(size: 12))
+                            .foregroundColor(passwordValid ? .dashGreen : Color(hex: "#B7791F"))
                         Spacer()
                         if passwordValid {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(Color(hex: "#1D9E75"))
-                                .font(.system(size: 11))
+                                .foregroundColor(.dashGreen)
+                                .font(.system(size: 12))
                         }
                     }
                 }
@@ -56,31 +59,12 @@ struct NewPasswordView: View {
                     showPassword: $showPassword,
                     error: !confirmPassword.isEmpty && !passwordsMatch ? "Passwords don't match" : nil
                 )
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 12)
 
-            if let error = errorMessage {
-                Text(error)
-                    .font(.system(size: 13))
-                    .foregroundColor(Color(hex: "#E24B4A"))
-                    .padding(.horizontal, 24)
+                if let error = errorMessage {
+                    AuthMessage(text: error)
+                }
             }
-
-            Spacer()
-
-            PrimaryButton(
-                title: isLoading ? "Resetting..." : "Reset password",
-                isLoading: isLoading
-            ) {
-                resetPassword()
-            }
-            .disabled(!canSubmit)
-            .opacity(canSubmit ? 1.0 : 0.6)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 32)
         }
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func resetPassword() {

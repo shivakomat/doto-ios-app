@@ -13,95 +13,81 @@ struct FamilySetupView: View {
     @FocusState private var focusFamilyName: Bool
 
     var body: some View {
-        VStack(spacing: 0) {
-            DotoNavHeader(title: "Set up your family", trailing: {
+        AuthScreen(
+            title: "Set up your family",
+            subtitle: "Step 2 of 3",
+            systemImage: "house.fill",
+            footer: {
                 AnyView(
-                    Text("Step 2 of 3")
-                        .font(.system(size: 12))
-                        .foregroundColor(.appNavySub)
+                    Group {
+                        if createdFamily == nil {
+                            PrimaryButton(
+                                title: isLoading ? "Creating..." : "Create family →",
+                                isLoading: isLoading
+                            ) {
+                                Task { await submit() }
+                            }
+                            .disabled(isLoading || familyName.trimmingCharacters(in: .whitespaces).isEmpty)
+                        } else {
+                            PrimaryButton(title: "Continue →") {
+                                showNotificationsOnboarding = true
+                            }
+                        }
+                    }
                 )
-            })
+            }
+        ) {
+            VStack(alignment: .leading, spacing: 20) {
+                AuthTextField(label: "Family name", text: $familyName)
+                    .focused($focusFamilyName)
+                    .onAppear { focusFamilyName = true }
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-
-                    AuthTextField(label: "Family name", text: $familyName)
-                        .focused($focusFamilyName)
-                        .onAppear { focusFamilyName = true }
-
-                    Divider()
-
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Your profile")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.dashNavy)
 
                     HStack(spacing: 12) {
                         AvatarView(
                             name: authVM.currentProfile?.displayName ?? "?",
                             color: authVM.currentProfile?.color ?? "#185FA5",
-                            size: 36,
+                            size: 40,
                             isActive: true
                         )
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 6) {
                                 Text(authVM.currentProfile?.displayName ?? "")
-                                    .font(.system(size: 14, weight: .semibold))
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundColor(.dashNavy)
                                 Text("(you)")
                                     .font(.system(size: 12))
-                                    .foregroundColor(.textMuted)
+                                    .foregroundColor(.dashSubtle)
                             }
-                            Text("Parent")
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundColor(.memberBlue)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(Color(hex: "#EFF6FF"))
-                                .cornerRadius(4)
+                            DashboardBadge(text: "Parent", foreground: .dashBlue, background: .dashBlueTint)
                         }
                         Spacer()
                     }
                     .padding(12)
-                    .background(Color(hex: "#EFF6FF"))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.memberBlue.opacity(0.3), lineWidth: 1))
-                    .cornerRadius(8)
-
-                    if let family = createdFamily {
-                        Divider()
-
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Invite your family")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.textSecondary)
-                            Text("Share this code with your partner and children so they can join.")
-                                .font(.system(size: 12))
-                                .foregroundColor(.textMuted)
-                        }
-
-                        InviteCodeView(code: family.inviteCode, familyName: family.name)
-                    }
-
-                    if let err = errorMessage {
-                        Text(err)
-                            .font(.system(size: 12))
-                            .foregroundColor(.red)
-                    }
-
-                    if createdFamily == nil {
-                        PrimaryButton(
-                            title: isLoading ? "Creating..." : "Create family →",
-                            isLoading: isLoading
-                        ) {
-                            Task { await submit() }
-                        }
-                        .disabled(isLoading || familyName.trimmingCharacters(in: .whitespaces).isEmpty)
-                    } else {
-                        PrimaryButton(title: "Continue →") {
-                            showNotificationsOnboarding = true
-                        }
-                    }
+                    .dashboardCard(radius: 14, fill: .dashBlueTint.opacity(0.6), border: .dashBlueBorder)
                 }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 24)
+
+                if let family = createdFamily {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Invite your family")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.dashNavy)
+                        Text("Share this code with your partner and children so they can join.")
+                            .font(.system(size: 13))
+                            .foregroundColor(.dashSubtle)
+                    }
+                    .padding(.top, 4)
+
+                    InviteCodeView(code: family.inviteCode, familyName: family.name)
+                }
+
+                if let err = errorMessage {
+                    AuthMessage(text: err)
+                }
             }
         }
         .navigationBarHidden(true)

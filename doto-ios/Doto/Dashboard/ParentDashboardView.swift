@@ -9,31 +9,37 @@ struct ShoppingNudgeCard: View {
         let days = Calendar.current.dateComponents([.day],
             from: nudge.lastUpdatedAt, to: Date()).day ?? 0
         if days == 0 { return "Updated today" }
-        if days == 1 { return "Updated yesterday" }
+        if days == 1 { return "Last updated 1 day ago" }
         return "Last updated \(days) days ago"
     }
 
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 12) {
-                Text("🛒").font(.system(size: 20))
+                Image(systemName: "cart")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.dashGreen)
+                    .frame(width: 36, height: 36)
+                    .background(Color(hex: "#D6F2E0"))
+                    .clipShape(Circle())
                 VStack(alignment: .leading, spacing: 2) {
                     Text("\(nudge.listName) — \(nudge.uncheckedCount) items to buy")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(Color(hex: "#14532D"))
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.dashNavy)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.85)
                     Text(lastUpdatedLabel)
-                        .font(.system(size: 10))
-                        .foregroundColor(Color(hex: "#166534"))
+                        .font(.system(size: 11))
+                        .foregroundColor(.dashSubtle)
                 }
-                Spacer()
+                Spacer(minLength: 8)
                 Text("Go →")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(Color(hex: "#1D9E75"))
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.dashGreen)
             }
-            .padding(12)
-            .background(Color(hex: "#F0FDF4"))
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#BBF7D0"), lineWidth: 1))
-            .cornerRadius(8)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .dashboardCard(radius: 12, fill: .dashGreenTint, border: .dashGreenBorder)
         }
         .buttonStyle(.plain)
     }
@@ -49,7 +55,6 @@ struct ParentDashboardView: View {
     @State private var showAddItem = false
     @State private var showSettings = false
     @State private var showFamilyManage = false
-    @State private var selectedMemberId: String? = nil
     @State private var selectedTask: DashboardTask? = nil
     @State private var showEditTask = false
 
@@ -57,17 +62,12 @@ struct ParentDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
+            DashboardBackground()
+
             VStack(spacing: 0) {
-                // Dark navy header
-                ParentDashboardHeader(
+                DashboardHeader(
                     profile: data?.profile,
-                    members: data?.family.members ?? [],
-                    onAvatarTap: { showSettings = true },
-                    onMemberTap: { id in
-                        selectedMemberId = selectedMemberId == id ? nil : id
-                    },
-                    onAddMember: { showFamilyManage = true },
-                    selectedMemberId: selectedMemberId
+                    onAvatarTap: { showSettings = true }
                 )
 
                 if vm.isLoading && data == nil {
@@ -82,7 +82,7 @@ struct ParentDashboardView: View {
                         ParentEmptyDashboard(
                             onAddEvent: { showAddEvent = true },
                             onAddTask: { showAddTask = true },
-                            onInvitePartner: { /* Navigate to family management */ }
+                            onInvitePartner: { showFamilyManage = true }
                         )
                     } else {
                         ScrollView {
@@ -101,10 +101,11 @@ struct ParentDashboardView: View {
                                     }
                                 }
 
-                                // 3. Recently assigned tasks
+                                // 3. Today's tasks
                                 if !d.recentTasks.isEmpty {
-                                    RecentTasksSection(
+                                    TodaysTasksSection(
                                         tasks: d.recentTasks,
+                                        onSeeAll: { selectedTab = .tasks },
                                         onTaskTap: { task in
                                             selectedTask = task
                                             showEditTask = true
@@ -138,7 +139,7 @@ struct ParentDashboardView: View {
                                     )
                                 }
                             }
-                            .padding(14)
+                            .padding(.horizontal, 18)
                             .padding(.bottom, 80) // space for FAB
                         }
                         .refreshable { await vm.load(role: "parent") }
@@ -148,7 +149,8 @@ struct ParentDashboardView: View {
 
             // FAB
             fabButton
-                .padding(20)
+                .padding(.trailing, 20)
+                .padding(.bottom, 16)
         }
         .sheet(isPresented: $showFABSheet) {
             FABBottomSheet(showAddEvent: $showAddEvent, showAddTask: $showAddTask, showAddItem: $showAddItem)
@@ -206,9 +208,9 @@ struct ParentDashboardView: View {
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundColor(.white)
                 .frame(width: 56, height: 56)
-                .background(Color.memberBlue)
+                .background(Color.dashBlue)
                 .clipShape(Circle())
-                .shadow(radius: 4)
+                .shadow(color: Color.dashBlue.opacity(0.4), radius: 10, x: 0, y: 5)
         }
     }
 }

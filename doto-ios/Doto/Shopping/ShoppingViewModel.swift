@@ -16,9 +16,10 @@ class ShoppingViewModel: ObservableObject {
     /// A display group — the item's category (aisles on groceries lists).
     /// Headers are text-only.
     struct ItemGroup: Identifiable {
+        let key: String
         let title: String
         let items: [ShoppingItem]
-        var id: String { title }
+        var id: String { key }
     }
 
     var groupedItems: [ItemGroup] {
@@ -36,6 +37,7 @@ class ShoppingViewModel: ObservableObject {
         }
         return keys.map { key in
             ItemGroup(
+                key: key,
                 title: ShoppingListCategory.displayName(for: key, listType: listType),
                 items: grouped[key] ?? []
             )

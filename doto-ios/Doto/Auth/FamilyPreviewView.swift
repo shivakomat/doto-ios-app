@@ -8,24 +8,16 @@ struct FamilyPreviewView: View {
     @StateObject private var claimVM = ClaimProfileViewModel()
 
     var body: some View {
-        VStack(spacing: 24) {
-            VStack(spacing: 6) {
-                Text(preview.familyName)
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundColor(.textPrimary)
-                    .multilineTextAlignment(.center)
-                Text("\(preview.memberCount) member\(preview.memberCount == 1 ? "" : "s") already")
-                    .font(.system(size: 14))
-                    .foregroundColor(.textMuted)
-            }
-            .padding(.top, 24)
-
-            Divider()
-
-            VStack(alignment: .leading, spacing: 12) {
+        AuthScreen(
+            title: preview.familyName,
+            subtitle: "\(preview.memberCount) member\(preview.memberCount == 1 ? "" : "s") already",
+            systemImage: "house.fill",
+            centered: true
+        ) {
+            VStack(alignment: .leading, spacing: 14) {
                 Text("I am a...")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.textPrimary)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.dashNavy)
 
                 HStack(spacing: 12) {
                     RoleCard(
@@ -40,39 +32,26 @@ struct FamilyPreviewView: View {
                         isSelected: selectedRole == "child"
                     ) { selectedRole = "child" }
                 }
-            }
 
-            NavigationLink(destination: RegisterView(
-                path: .joinFamily(inviteCode: preview.inviteCode, role: selectedRole)
-            )) {
-                Text("Create my account →")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(PrimaryButtonStyle())
-
-            if selectedRole == "child" && !preview.unclaimedChildren.isEmpty {
-                Button {
-                    navigateToClaim = true
-                } label: {
-                    Text("I already have a profile →")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundColor(.memberBlue)
+                NavigationLink(destination: RegisterView(
+                    path: .joinFamily(inviteCode: preview.inviteCode, role: selectedRole)
+                )) {
+                    Text("Create my account →")
                         .frame(maxWidth: .infinity)
-                        .frame(height: 48)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.memberBlue.opacity(0.4), lineWidth: 1)
-                        )
                 }
-                .buttonStyle(.plain)
-            }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, 6)
 
-            Spacer()
+                if selectedRole == "child" && !preview.unclaimedChildren.isEmpty {
+                    Button {
+                        navigateToClaim = true
+                    } label: {
+                        Text("I already have a profile →")
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
+            }
         }
-        .padding(.horizontal, 24)
-        .background(Color.white.ignoresSafeArea())
-        .navigationTitle("You're joining...")
-        .navigationBarTitleDisplayMode(.large)
         .navigationDestination(isPresented: $navigateToClaim) {
             ClaimStep2View(vm: claimVM, familyPreview: preview)
         }
@@ -88,22 +67,20 @@ struct RoleCard: View {
     var body: some View {
         Button(action: onTap) {
             VStack(spacing: 8) {
-                Text(emoji).font(.system(size: 28))
+                Text(emoji).font(.system(size: 30))
                 Text(label)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(isSelected ? .memberBlue : .textSecondary)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(isSelected ? .dashBlue : .dashSubtle)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(isSelected ? Color(hex: "#EFF6FF") : Color(hex: "#F8FAFC"))
+            .padding(.vertical, 18)
+            .dashboardCard(radius: 16,
+                           fill: isSelected ? .dashBlueTint : .white,
+                           border: isSelected ? .dashBlue : .dashCardBorder)
             .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(
-                        isSelected ? Color.memberBlue : Color(hex: "#E2E8F0"),
-                        lineWidth: isSelected ? 2 : 1
-                    )
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(Color.dashBlue, lineWidth: isSelected ? 1.5 : 0)
             )
-            .cornerRadius(10)
         }
         .buttonStyle(.plain)
     }

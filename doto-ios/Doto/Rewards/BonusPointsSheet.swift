@@ -28,106 +28,106 @@ struct BonusPointsSheet: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Capsule().fill(Color.cardBorder)
-                .frame(width: 36, height: 4)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 8)
+        ZStack {
+            DashboardBackground(showLandscape: false)
 
-            Text("Give bonus points")
-                .font(.system(size: 17, weight: .semibold))
-                .padding(.horizontal, 20)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 18) {
+                    Capsule().fill(Color.dashCardBorder)
+                        .frame(width: 36, height: 4)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 8)
 
-            if allChildren.count > 1 {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("For").font(.system(size: 12)).foregroundColor(.textMuted)
-                        .padding(.horizontal, 20)
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            ForEach(allChildren) { child in
-                                VStack(spacing: 4) {
-                                    AvatarView(
-                                        name: child.displayName,
-                                        color: child.color,
-                                        size: 32,
-                                        isActive: selectedMemberId == child.memberId
-                                    )
-                                    Text(child.displayName).font(.system(size: 9))
-                                        .foregroundColor(selectedMemberId == child.memberId
-                                            ? .memberBlue : .textMuted)
+                    Text("Give bonus points")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.dashNavy)
+
+                    if allChildren.count > 1 {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("For")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.dashNavy)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 10) {
+                                    ForEach(allChildren) { child in
+                                        let selected = selectedMemberId == child.memberId
+                                        VStack(spacing: 6) {
+                                            AvatarView(
+                                                name: child.displayName,
+                                                color: child.color,
+                                                size: 40,
+                                                isActive: selected
+                                            )
+                                            Text(child.displayName)
+                                                .font(.system(size: 12, weight: selected ? .semibold : .regular))
+                                                .foregroundColor(selected ? .dashBlue : .dashSubtle)
+                                        }
+                                        .padding(.vertical, 10)
+                                        .frame(width: 80)
+                                        .dashboardCard(radius: 14,
+                                                       fill: selected ? .dashBlueTint : .white,
+                                                       border: selected ? .dashBlue : .dashCardBorder)
+                                        .onTapGesture { selectedMemberId = child.memberId }
+                                    }
                                 }
-                                .onTapGesture { selectedMemberId = child.memberId }
+                                .padding(.vertical, 2)
                             }
                         }
-                        .padding(.horizontal, 20)
                     }
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Points")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.dashNavy)
+
+                        HStack(spacing: 20) {
+                            stepButton("minus") { if amount > 1 { amount -= 1 } }
+                            Text("\(amount)")
+                                .font(.system(size: 40, weight: .bold))
+                                .foregroundColor(.dashBlue)
+                                .frame(minWidth: 90)
+                            stepButton("plus") { if amount < 500 { amount += 1 } }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .dashboardCard(radius: 16)
+
+                        HStack(spacing: 8) {
+                            ForEach(presets, id: \.self) { preset in
+                                Button("+\(preset)") { amount = preset }
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 9)
+                                    .background(amount == preset ? Color.dashBlue : Color.dashBlueTint)
+                                    .foregroundColor(amount == preset ? .white : .dashBlue)
+                                    .clipShape(Capsule())
+                            }
+                        }
+                    }
+
+                    AuthTextField(label: "Note (shown to \(selectedName))", text: $note,
+                                  placeholder: "What did they do well?")
+
+                    PrimaryButton(title: "Give \(amount) bonus points to \(selectedName)") {
+                        onSubmit(selectedMemberId, amount, note.isEmpty ? nil : note)
+                        dismiss()
+                    }
+                    .padding(.top, 4)
                 }
+                .padding(.horizontal, 22)
+                .padding(.bottom, 24)
             }
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Points").font(.system(size: 12)).foregroundColor(.textMuted)
-                    .padding(.horizontal, 20)
-
-                HStack(spacing: 16) {
-                    Button { if amount > 1 { amount -= 1 } } label: {
-                        Image(systemName: "minus")
-                            .frame(width: 32, height: 32)
-                            .background(Color.screenBg)
-                            .cornerRadius(8)
-                    }
-                    Text("\(amount)")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(.memberBlue)
-                        .frame(minWidth: 60, alignment: .center)
-                    Button { if amount < 500 { amount += 1 } } label: {
-                        Image(systemName: "plus")
-                            .frame(width: 32, height: 32)
-                            .background(Color.screenBg)
-                            .cornerRadius(8)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-
-                HStack(spacing: 8) {
-                    ForEach(presets, id: \.self) { preset in
-                        Button("+\(preset)") { amount = preset }
-                            .font(.system(size: 12, weight: .medium))
-                            .padding(.horizontal, 14).padding(.vertical, 6)
-                            .background(amount == preset ? Color.memberBlue : Color(hex: "#EFF6FF"))
-                            .foregroundColor(amount == preset ? .white : .memberBlue)
-                            .cornerRadius(14)
-                    }
-                }
-                .padding(.horizontal, 20)
-            }
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Note (shown to \(selectedName))")
-                    .font(.system(size: 12)).foregroundColor(.textMuted)
-                    .padding(.horizontal, 20)
-                TextField("What did they do well?", text: $note)
-                    .font(.system(size: 14))
-                    .padding(12)
-                    .background(Color.white)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.cardBorder))
-                    .padding(.horizontal, 20)
-            }
-
-            Button {
-                onSubmit(selectedMemberId, amount, note.isEmpty ? nil : note)
-                dismiss()
-            } label: {
-                Text("Give \(amount) bonus points to \(selectedName)")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Color.memberBlue)
-                    .cornerRadius(10)
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 24)
         }
-        .background(Color.white)
+    }
+
+    private func stepButton(_ icon: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.dashBlue)
+                .frame(width: 44, height: 44)
+                .background(Color.dashBlueTint)
+                .clipShape(Circle())
+        }
     }
 }

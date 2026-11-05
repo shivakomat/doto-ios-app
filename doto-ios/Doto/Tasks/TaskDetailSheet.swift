@@ -25,7 +25,7 @@ struct TaskDetailSheet: View {
                             Text(task.timeOfDayLabel ?? "—")
                                 .font(.system(size: 13))
                         }
-                        .foregroundColor(.textPrimary)
+                        .foregroundColor(.dashNavy)
                     } else {
                         detailRow(label: "Due", value: task.dueDate?.relativeDue ?? "No due date")
                     }
@@ -65,6 +65,7 @@ struct TaskDetailSheet: View {
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle(task.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -122,7 +123,7 @@ struct TaskDetailSheet: View {
             Spacer()
             Text(value)
                 .font(.system(size: 13))
-                .foregroundColor(.textPrimary)
+                .foregroundColor(.dashNavy)
         }
     }
 }

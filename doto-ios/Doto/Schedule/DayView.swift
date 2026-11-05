@@ -14,16 +14,6 @@ struct DayView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text(vm.selectedDate.fullDayLabel)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(Color.textPrimary)
-                Spacer()
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 6)
-            .background(Color.screenBg)
-
             ScrollViewReader { proxy in
                 ScrollView(.vertical, showsIndicators: false) {
                     TimeGridView(

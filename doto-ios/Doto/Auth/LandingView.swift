@@ -6,58 +6,53 @@ struct LandingView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                Spacer()
+            ZStack {
+                DotoLogoMark.cream.ignoresSafeArea()
 
-                VStack(spacing: 6) {
-                    Text("Doto")
-                        .font(.system(size: 42, weight: .bold))
-                        .foregroundColor(.textPrimary)
-                    Text("Family life. Done.")
-                        .font(.system(size: 16).italic())
-                        .foregroundColor(.textSecondary)
-                }
+                VStack(spacing: 0) {
+                    Spacer()
 
-                Spacer()
-
-                VStack(spacing: 12) {
-                    NavigationLink(destination: RegisterView(path: .createFamily)) {
-                        Text("Create a family")
-                            .frame(maxWidth: .infinity)
+                    VStack(spacing: 14) {
+                        DotoLogoMark(size: 220, framed: false)
+                        Text("Doto")
+                            .font(.system(size: 44, weight: .bold))
+                            .foregroundColor(.dashNavy)
+                        Text("Family life. Done.")
+                            .font(.system(size: 17).italic())
+                            .foregroundColor(.dashSubtle)
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .offset(y: 24)
 
-                    NavigationLink(destination: FamilyCodeEntryView()) {
-                        Text("Join a family")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
+                    Spacer()
 
-                    Button {
-                        showClaimSheet = true
-                    } label: {
-                        Text("I was added as a child →")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.memberBlue)
-                    }
-                    .padding(.top, 2)
-
-                    HStack(spacing: 4) {
-                        Text("Already have an account?")
-                            .font(.system(size: 14))
-                            .foregroundColor(.textMuted)
-                        NavigationLink(destination: SignInView()) {
-                            Text("Sign in →")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.memberBlue)
+                    VStack(spacing: 12) {
+                        NavigationLink(destination: RegisterView(path: .createFamily)) {
+                            Text("Create a family")
+                                .frame(maxWidth: .infinity)
                         }
+                        .buttonStyle(PrimaryButtonStyle())
+
+                        NavigationLink(destination: SignInView()) {
+                            Text("Sign in")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+
+                        HStack(spacing: 18) {
+                            NavigationLink(destination: FamilyCodeEntryView()) {
+                                Text("Join a family")
+                            }
+                            Circle().fill(Color.dashSubtle.opacity(0.4)).frame(width: 4, height: 4)
+                            Button("I was added as a child") { showClaimSheet = true }
+                        }
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.dashBlue)
+                        .padding(.top, 8)
                     }
-                    .padding(.top, 4)
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 40)
                 }
-                .padding(.horizontal, 28)
-                .padding(.bottom, 48)
             }
-            .background(Color.white.ignoresSafeArea())
             .sheet(isPresented: $showClaimSheet) {
                 ClaimStep1View()
             }
@@ -65,5 +60,6 @@ struct LandingView: View {
                 PrivacyNoticeView()
             }
         }
+        .tint(.dashBlue)
     }
 }

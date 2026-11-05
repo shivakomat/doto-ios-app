@@ -111,6 +111,7 @@ struct AddItemSheet: View {
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle("Add Item")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(

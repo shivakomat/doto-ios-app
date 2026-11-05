@@ -6,9 +6,8 @@ struct FiveDayStripView: View {
     let members: [FamilyMemberSummary]
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Day selector header
-            HStack(spacing: 0) {
+        VStack(spacing: 10) {
+            HStack(spacing: 6) {
                 ForEach(Array(days.enumerated()), id: \.offset) { index, day in
                     DayColumn(
                         day: day,
@@ -19,54 +18,30 @@ struct FiveDayStripView: View {
                             }
                         }
                     )
-                    if index < days.count - 1 {
-                        Divider().frame(height: 50)
-                    }
                 }
             }
-            .background(Color.white)
 
-            // Expanded events for selected day
-            if selectedIndex >= 0, let day = days[safe: selectedIndex] {
-                Divider()
-                VStack(alignment: .leading, spacing: 6) {
+            // Events for the selected day (only when there is something to show)
+            if selectedIndex >= 0, let day = days[safe: selectedIndex], !day.events.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
                     Text(fullDayLabel(day))
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.textMuted)
-                        .padding(.horizontal, 10)
-                        .padding(.top, 8)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.dashSubtle)
 
-                    if day.events.isEmpty {
-                        Text("No events")
-                            .font(.system(size: 11))
-                            .foregroundColor(.textMuted)
-                            .padding(.horizontal, 10)
-                            .padding(.bottom, 8)
-                    } else {
-                        ForEach(day.events.prefix(3)) { event in
-                            DashboardEventRow(event: event, members: members)
-                                .padding(.horizontal, 10)
-                        }
-                        if day.events.count > 3 {
-                            HStack {
-                                Spacer()
-                                NavigationLink("+ \(day.events.count - 3) more → See all") {
-                                    // Navigate to Schedule tab with this day selected
-                                }
-                                .font(.system(size: 11))
-                                .foregroundColor(.memberBlue)
-                            }
-                            .padding(.horizontal, 10)
-                        }
-                        Spacer().frame(height: 8)
+                    ForEach(day.events.prefix(3)) { event in
+                        DashboardEventRow(event: event, members: members)
+                    }
+                    if day.events.count > 3 {
+                        Text("+ \(day.events.count - 3) more")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.dashBlue)
                     }
                 }
-                .background(Color.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(14)
+                .dashboardCard()
             }
         }
-        .background(Color.white)
-        .cornerRadius(10)
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cardBorder, lineWidth: 1))
     }
 
     private func fullDayLabel(_ day: DashboardDay) -> String {
@@ -85,34 +60,43 @@ struct DayColumn: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 3) {
+            VStack(spacing: 4) {
                 Text(day.isToday ? "Today" : day.dayLabel)
-                    .font(.system(size: 8, weight: isSelected ? .bold : .regular))
-                    .foregroundColor(day.isToday ? .memberBlue : .textMuted)
+                    .font(.system(size: 11, weight: day.isToday ? .bold : .medium))
+                    .foregroundColor(day.isToday ? .dashBlue : .dashSubtle)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
 
-                // Date circle
                 ZStack {
                     Circle()
-                        .fill(day.isToday ? Color.memberBlue : Color.clear)
-                        .frame(width: 22, height: 22)
+                        .fill(day.isToday ? Color.dashBlue : Color.clear)
+                        .frame(width: 28, height: 28)
                     Text(day.dayNumber)
-                        .font(.system(size: 11, weight: day.isToday ? .bold : .regular))
-                        .foregroundColor(day.isToday ? .white : .textSecondary)
+                        .font(.system(size: 15, weight: day.isToday ? .bold : .semibold))
+                        .foregroundColor(day.isToday ? .white : .dashNavy)
                 }
 
-                // Event dots
-                HStack(spacing: 2) {
-                    ForEach(day.memberColors.prefix(3), id: \.self) { hex in
+                HStack(spacing: 3) {
+                    ForEach(Array(day.memberColors.prefix(3).enumerated()), id: \.offset) { _, hex in
                         Circle()
                             .fill(Color(hex: hex))
-                            .frame(width: 5, height: 5)
+                            .frame(width: 4, height: 4)
                     }
                 }
-                .frame(height: 5)
+                .frame(height: 4)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
-            .background(isSelected ? Color.selectedDayBg : Color.clear)
+            .background(day.isToday ? Color.dashBlueTint : Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(
+                        day.isToday || isSelected ? Color.dashBlueBorder : Color.dashCardBorder,
+                        lineWidth: 1
+                    )
+            )
+            .shadow(color: Color.dashNavy.opacity(0.04), radius: 6, x: 0, y: 2)
         }
         .buttonStyle(.plain)
     }

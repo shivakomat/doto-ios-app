@@ -15,25 +15,29 @@ struct CodeInputView: View {
             .textInputAutocapitalization(.characters)
             .focused($isFocused)
             .opacity(0.001)
-            .frame(height: 52)
+            .frame(height: 56)
 
             HStack(spacing: 8) {
                 ForEach(0..<6, id: \.self) { i in
                     let char = code.count > i
                         ? String(code[code.index(code.startIndex, offsetBy: i)])
                         : ""
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(
-                            isFocused && code.count == i
-                                ? Color.memberBlue : Color(hex: "#D1D5DB"),
-                            lineWidth: 1.5
+                    let active = isFocused && code.count == i
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(active || !char.isEmpty ? Color.dashBlue : Color.dashCardBorder,
+                                        lineWidth: active ? 2 : 1.5)
                         )
-                        .frame(width: 44, height: 52)
+                        .frame(maxWidth: 52)
+                        .frame(height: 56)
                         .overlay(
                             Text(char)
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.textPrimary)
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.dashNavy)
                         )
+                        .shadow(color: Color.dashNavy.opacity(0.04), radius: 6, x: 0, y: 2)
                 }
             }
             .contentShape(Rectangle())

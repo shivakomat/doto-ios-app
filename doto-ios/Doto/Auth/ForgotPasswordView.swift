@@ -11,54 +11,36 @@ struct ForgotPasswordView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                Image(systemName: "lock.rotation")
-                    .font(.system(size: 50))
-                    .foregroundColor(.memberBlue)
-                    .padding(.top, 40)
-
-                Text("Reset your password")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.textPrimary)
-
-                Text("Enter the email address associated with your account and we'll send you a 6-digit code.")
-                    .font(.system(size: 14))
-                    .foregroundColor(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-
-                VStack(alignment: .leading, spacing: 4) {
+            AuthScreen(
+                title: "Reset your password",
+                subtitle: "Enter the email address associated with your account and we'll send you a 6-digit code.",
+                systemImage: "lock.rotation",
+                centered: true,
+                footer: {
+                    AnyView(
+                        PrimaryButton(
+                            title: isLoading ? "Sending..." : "Send reset code",
+                            isLoading: isLoading
+                        ) {
+                            requestReset()
+                        }
+                        .disabled(email.isEmpty || isLoading)
+                    )
+                }
+            ) {
+                VStack(spacing: 14) {
                     AuthTextField(
                         label: "Email",
                         text: $email,
                         autocapitalization: .never,
                         keyboardType: .emailAddress
                     )
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 12)
 
-                if let error = errorMessage {
-                    Text(error)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color(hex: "#E24B4A"))
-                        .padding(.horizontal, 24)
+                    if let error = errorMessage {
+                        AuthMessage(text: error)
+                    }
                 }
-
-                Spacer()
-
-                PrimaryButton(
-                    title: isLoading ? "Sending..." : "Send reset code",
-                    isLoading: isLoading
-                ) {
-                    requestReset()
-                }
-                .disabled(email.isEmpty || isLoading)
-                .opacity(email.isEmpty ? 0.6 : 1.0)
-                .padding(.horizontal, 24)
-                .padding(.bottom, 32)
             }
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -74,6 +56,7 @@ struct ForgotPasswordView: View {
                 PasswordResetSuccessView()
             }
         }
+        .tint(.dashBlue)
     }
 
     private func requestReset() {

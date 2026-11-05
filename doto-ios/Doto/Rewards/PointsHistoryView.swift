@@ -42,6 +42,7 @@ struct PointsHistoryView: View {
                     .listStyle(.plain)
                 }
             }
+            .dashboardForm()
             .navigationTitle("\(displayName)'s history")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -51,7 +52,7 @@ struct PointsHistoryView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Text("\(vm.history?.pointsTotal ?? 0) pts")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                 }
             }
             .task { await vm.load(memberId: memberId) }
@@ -77,7 +78,7 @@ struct PointsHistoryRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(entry.note ?? entry.eventType.capitalized)
                         .font(.system(size: 13))
-                        .foregroundColor(.textPrimary)
+                        .foregroundColor(.dashNavy)
                     if entry.eventType == "bonus" {
                         Text("Bonus from parent")
                             .font(.system(size: 11))
@@ -106,12 +107,12 @@ struct MilestoneHistoryCard: View {
             Text("🏅").font(.system(size: 20))
             Text(note)
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.memberBlue)
+                .foregroundColor(.dashBlue)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(hex: "#EFF6FF"))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.memberBlue.opacity(0.3), lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.dashBlue.opacity(0.3), lineWidth: 1))
         .cornerRadius(8)
     }
 }

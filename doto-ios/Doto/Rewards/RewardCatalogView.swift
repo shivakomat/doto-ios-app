@@ -48,7 +48,7 @@ struct RewardCatalogView: View {
                                         } label: {
                                             Label("Edit", systemImage: "pencil")
                                         }
-                                        .tint(Color.memberBlue)
+                                        .tint(Color.dashBlue)
                                     }
                             }
                         }
@@ -62,6 +62,7 @@ struct RewardCatalogView: View {
                     .listStyle(.insetGrouped)
                 }
             }
+            .dashboardForm()
             .navigationTitle("Reward catalog")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -108,7 +109,7 @@ struct RewardCatalogView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.title)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.textPrimary)
+                    .foregroundColor(.dashNavy)
                 Text("\(item.pointsCost) pts")
                     .font(.system(size: 11))
                     .foregroundColor(.textMuted)
@@ -130,7 +131,7 @@ struct RewardCatalogView: View {
                             .foregroundColor(s.category.color)
                         Text(s.title)
                             .font(.system(size: 11, weight: .medium))
-                            .foregroundColor(alreadyAdded ? .textMuted : .memberBlue)
+                            .foregroundColor(alreadyAdded ? .textMuted : .dashBlue)
                         Spacer()
                         Text("\(s.cost)")
                             .font(.system(size: 10))

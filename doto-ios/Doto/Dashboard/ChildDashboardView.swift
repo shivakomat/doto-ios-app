@@ -8,9 +8,18 @@ struct ChildDashboardView: View {
     var data: ChildDashboardResponse? { vm.childData }
 
     var body: some View {
+        ZStack {
+            DashboardBackground()
+            content
+        }
+        .sheet(isPresented: $showSettings) {
+            ChildSettingsView()
+        }
+    }
+
+    private var content: some View {
         VStack(spacing: 0) {
-            // Child header — points shown in header
-            ChildDashboardHeader(
+            DashboardHeader(
                 profile: data?.profile,
                 onAvatarTap: { showSettings = true }
             )
@@ -56,14 +65,12 @@ struct ChildDashboardView: View {
                         // 5. Family members — always shown
                         FamilyMembersRow(members: d.familyMembers)
                     }
-                    .padding(14)
+                    .padding(.horizontal, 18)
+                    .padding(.bottom, 24)
                 }
                 .refreshable { await vm.load(role: "child") }
             }
         }
         // No FAB for children
-        .sheet(isPresented: $showSettings) {
-            ChildSettingsView()
-        }
     }
 }

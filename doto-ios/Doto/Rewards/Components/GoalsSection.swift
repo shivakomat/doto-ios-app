@@ -1,6 +1,9 @@
 import SwiftUI
 
+/// "Family Goals" section: the active family goal (if any) followed by member and shared goals.
 struct GoalsSection: View {
+    var title: String = "Family Goals"
+    var familyGoal: FamilyGoal? = nil
     let rewards: [Reward]
     let leaderboard: Leaderboard?
     let isParent: Bool
@@ -8,55 +11,70 @@ struct GoalsSection: View {
     let onRequest: (Reward) -> Void
     var onEdit: ((Reward) -> Void)? = nil
     var onDelete: ((Reward) -> Void)? = nil
+    var limit: Int = 3
+
+    @State private var showAll = false
+
+    private enum Row: Identifiable {
+        case family(FamilyGoal)
+        case reward(Reward, balance: Int, isOwner: Bool, ownerName: String?)
+
+        var id: String {
+            switch self {
+            case .family(let g):         return "family-\(g.id)"
+            case .reward(let r, _, _, _): return "reward-\(r.id)"
+            }
+        }
+    }
+
+    private var rows: [Row] {
+        var result: [Row] = []
+        if let familyGoal { result.append(.family(familyGoal)) }
+        let childEntries = leaderboard?.entries.filter { $0.role == "child" } ?? []
+        for entry in childEntries {
+            for reward in rewards where reward.memberId == entry.memberId {
+                result.append(.reward(reward, balance: entry.totalPoints,
+                                      isOwner: reward.memberId == currentProfileId,
+                                      ownerName: entry.displayName))
+            }
+        }
+        for reward in rewards where reward.memberId == nil {
+            result.append(.reward(reward, balance: reward.currentProgress ?? 0, isOwner: false, ownerName: "Shared"))
+        }
+        return result
+    }
 
     var body: some View {
+        let all = rows
+        let visible = showAll ? all : Array(all.prefix(limit))
+
         VStack(alignment: .leading, spacing: 10) {
-            Text("Goals")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.textPrimary)
-
-            let childEntries = leaderboard?.entries.filter { $0.role == "child" } ?? []
-            ForEach(childEntries) { entry in
-                let memberRewards = rewards.filter { $0.memberId == entry.memberId }
-                if !memberRewards.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 6) {
-                            AvatarView(name: entry.displayName, color: entry.color, size: 20)
-                            Text(entry.displayName)
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundColor(.textPrimary)
-                        }
-
-                        ForEach(memberRewards) { reward in
-                            GoalCard(
-                                reward: reward,
-                                balance: entry.totalPoints,
-                                memberColor: entry.color,
-                                isOwner: reward.memberId == currentProfileId,
-                                isParent: isParent,
-                                onRequest: { onRequest(reward) },
-                                onEdit: onEdit != nil ? { onEdit?(reward) } : nil,
-                                onDelete: onDelete != nil ? { onDelete?(reward) } : nil
-                            )
-                        }
-                    }
-                }
+            DashboardSectionHeader(
+                title: title,
+                actionTitle: all.count > limit ? (showAll ? "Show less" : "See all") : nil
+            ) {
+                withAnimation(.easeInOut(duration: 0.2)) { showAll.toggle() }
             }
 
-            // Goals with no member — any child can work toward them via linked tasks
-            let sharedRewards = rewards.filter { $0.memberId == nil }
-            if !sharedRewards.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Shared goals")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.textMuted)
-
-                    ForEach(sharedRewards) { reward in
+            if all.isEmpty {
+                Text("No goals yet")
+                    .font(.system(size: 14))
+                    .foregroundColor(.dashSubtle)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+                    .dashboardCard()
+            } else {
+                ForEach(Array(visible.enumerated()), id: \.element.id) { idx, row in
+                    switch row {
+                    case .family(let goal):
+                        FamilyGoalCard(goal: goal, accentIndex: idx)
+                    case .reward(let reward, let balance, let isOwner, let ownerName):
                         GoalCard(
                             reward: reward,
-                            balance: reward.currentProgress ?? 0,
-                            memberColor: "#1E2761",
-                            isOwner: false,
+                            balance: balance,
+                            accentIndex: idx,
+                            ownerName: ownerName,
+                            isOwner: isOwner,
                             isParent: isParent,
                             onRequest: { onRequest(reward) },
                             onEdit: onEdit != nil ? { onEdit?(reward) } : nil,
@@ -72,7 +90,8 @@ struct GoalsSection: View {
 struct GoalCard: View {
     let reward: Reward
     let balance: Int
-    let memberColor: String
+    var accentIndex: Int = 0
+    var ownerName: String? = nil
     let isOwner: Bool
     let isParent: Bool
     let onRequest: () -> Void
@@ -86,79 +105,78 @@ struct GoalCard: View {
     private var toGo: Int { max(0, reward.pointsCost - effectiveProgress) }
     private var canClaim: Bool { balance >= reward.pointsCost && reward.status == "active" }
     private var isPending: Bool { reward.status == "pending_approval" }
+    private var accent: Color { canClaim ? .dashGreen : DashboardPalette.accent(accentIndex) }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(reward.titleWithEmoji)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(.textPrimary)
-                Spacer()
-                Text("\(reward.pointsCost) pts")
-                    .font(.system(size: 11))
-                    .foregroundColor(.conflictText)
-            }
-
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color(hex: "#FAC775").opacity(0.4))
-                        .frame(height: 8)
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(canClaim ? Color.doneText : Color(hex: memberColor))
-                        .frame(width: geo.size.width * progress, height: 8)
+        HStack(alignment: .top, spacing: 12) {
+            Group {
+                if let emoji = reward.emoji, !emoji.isEmpty {
+                    Text(emoji).font(.system(size: 22))
+                } else {
+                    Image(systemName: "gift.fill")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(accent)
                 }
             }
-            .frame(height: 8)
+            .frame(width: 40, height: 40)
+            .background(accent.opacity(0.16))
+            .clipShape(Circle())
 
-            HStack {
-                Text("\(effectiveProgress) / \(reward.pointsCost) pts · \(toGo) to go")
-                    .font(.system(size: 11))
-                    .foregroundColor(.conflictText)
-                Spacer()
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(reward.title)
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.dashNavy)
+                            .lineLimit(1)
+                        if let ownerName {
+                            Text(ownerName)
+                                .font(.system(size: 11))
+                                .foregroundColor(.dashSubtle)
+                        }
+                    }
+                    Spacer(minLength: 6)
+                    Text("\(reward.pointsCost) pts")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(accent)
+                }
 
-                if isPending {
-                    Text("Pending ⏳")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.conflictText)
-                } else if canClaim && isOwner {
-                    Button(action: onRequest) {
-                        Text("Claim! 🎉")
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(accent.opacity(0.18))
+                        Capsule()
+                            .fill(accent)
+                            .frame(width: max(geo.size.width * progress, progress > 0 ? 8 : 0))
+                    }
+                }
+                .frame(height: 8)
+
+                HStack {
+                    Text("\(effectiveProgress) / \(reward.pointsCost) pts · \(toGo) to go")
+                        .font(.system(size: 11))
+                        .foregroundColor(.dashSubtle)
+                    Spacer()
+
+                    if isPending {
+                        Text("Pending ⏳")
                             .font(.system(size: 11, weight: .semibold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 5)
-                            .background(Color.doneText)
-                            .cornerRadius(6)
+                            .foregroundColor(.conflictText)
+                    } else if canClaim && isOwner {
+                        Button(action: onRequest) {
+                            Text("Claim! 🎉")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 6)
+                                .background(Color.dashGreen)
+                                .clipShape(Capsule())
+                        }
                     }
                 }
             }
         }
-        .padding(12)
-        .background(Color(hex: "#FAEEDA"))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#FAC775"), lineWidth: 1))
-        .cornerRadius(8)
-        .swipeActions(edge: .leading, allowsFullSwipe: false) {
-            // Edit (parent only)
-            if isParent, let onEdit = onEdit {
-                Button {
-                    onEdit()
-                } label: {
-                    Label("Edit", systemImage: "pencil")
-                }
-                .tint(Color.memberBlue)
-            }
-        }
-        .swipeActions(edge: .trailing) {
-            // Delete (parent only)
-            if isParent, let onDelete = onDelete {
-                Button(role: .destructive) {
-                    onDelete()
-                } label: {
-                    Label("Delete", systemImage: "trash")
-                }
-            }
-        }
+        .padding(10)
+        .dashboardCard(radius: 16, fill: accent.opacity(0.08), border: accent.opacity(0.25))
         .contextMenu {
             if isParent {
                 if let onEdit = onEdit {

@@ -30,7 +30,7 @@ struct ResetChildPasswordSheet: View {
                 Section {
                     Text("Reset password for \(memberName)")
                         .font(.system(size: 15))
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.dashSubtle)
                 }
 
                 Section(header: Text("New Password")) {
@@ -103,6 +103,7 @@ struct ResetChildPasswordSheet: View {
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle("Reset Password")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

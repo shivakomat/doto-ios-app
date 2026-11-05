@@ -7,7 +7,7 @@ struct MonthGridView: View {
     let onDoubleTap:  (Date) -> Void
 
     private let columns   = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
-    private let dayLabels = ["S", "M", "T", "W", "T", "F", "S"]
+    private let dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     var gridDays: [Date?] {
         let cal      = Calendar.current
@@ -24,19 +24,17 @@ struct MonthGridView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 6) {
             HStack(spacing: 0) {
                 ForEach(dayLabels, id: \.self) { l in
                     Text(l)
-                        .font(.system(size: 10))
-                        .foregroundColor(Color.textMuted)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.dashSubtle)
                         .frame(maxWidth: .infinity)
                 }
             }
-            .padding(.vertical, 4)
-            .overlay(Divider(), alignment: .bottom)
 
-            LazyVGrid(columns: columns, spacing: 0) {
+            LazyVGrid(columns: columns, spacing: 2) {
                 ForEach(Array(gridDays.enumerated()), id: \.offset) { _, day in
                     if let day = day {
                         MonthDayCell(
@@ -48,7 +46,7 @@ struct MonthGridView: View {
                             onDoubleTap: { onDoubleTap(day) }
                         )
                     } else {
-                        Color.clear.frame(height: 44)
+                        Color.clear.frame(height: 46)
                     }
                 }
             }
@@ -73,21 +71,21 @@ struct MonthDayCell: View {
     var body: some View {
         VStack(spacing: 2) {
             ZStack {
-                if isToday {
+                if isSelected {
                     Circle()
-                        .fill(Color.memberBlue)
-                        .frame(width: 24, height: 24)
-                } else if isSelected {
+                        .fill(Color.dashBlue)
+                        .frame(width: 30, height: 30)
+                } else if isToday {
                     Circle()
-                        .fill(Color.cardBorder)
-                        .frame(width: 24, height: 24)
+                        .fill(Color.dashBlueTint)
+                        .frame(width: 30, height: 30)
                 }
                 Text("\(Calendar.current.component(.day, from: day))")
-                    .font(.system(size: 11, weight: isToday ? .bold : .regular))
+                    .font(.system(size: 15, weight: isSelected || isToday ? .bold : .medium))
                     .foregroundColor(
-                        isToday    ? .white :
-                        isSelected ? Color.textPrimary :
-                        Color.textSecondary
+                        isSelected ? .white :
+                        isToday    ? .dashBlue :
+                        .dashNavy
                     )
             }
 
@@ -102,7 +100,7 @@ struct MonthDayCell: View {
             }
             .frame(height: 6)
         }
-        .frame(height: 44)
+        .frame(height: 46)
         .contentShape(Rectangle())
         .onTapGesture(count: 2) { onDoubleTap() }
         .onTapGesture(count: 1) { onTap() }

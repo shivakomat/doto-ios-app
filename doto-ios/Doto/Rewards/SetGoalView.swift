@@ -12,13 +12,16 @@ struct SetGoalView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+            AuthScreen(
+                title: "Set a goal",
+                subtitle: "You have \(memberBalance) pts to work with."
+            ) {
+                VStack(alignment: .leading, spacing: 22) {
 
                     // Tier 1 — Previous goals
                     if !previousGoals.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            sectionHeader("Your previous goals")
+                        VStack(alignment: .leading, spacing: 10) {
+                            DashboardSectionHeader(title: "Your previous goals")
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 10) {
                                     ForEach(previousGoals) { goal in
@@ -35,17 +38,17 @@ struct SetGoalView: View {
                                         }
                                     }
                                 }
+                                .padding(.vertical, 2)
                             }
                         }
-                        .padding(.horizontal, 16)
                     }
 
                     // Tier 2 — Family catalog
                     if !vm.catalog.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            sectionHeader("Family catalog")
-                            VStack(spacing: 1) {
-                                ForEach(vm.catalog) { item in
+                        VStack(alignment: .leading, spacing: 10) {
+                            DashboardSectionHeader(title: "Family catalog")
+                            VStack(spacing: 0) {
+                                ForEach(Array(vm.catalog.enumerated()), id: \.element.id) { idx, item in
                                     CatalogItemRow(item: item, memberBalance: memberBalance) {
                                         Task {
                                             await vm.createReward(
@@ -57,97 +60,65 @@ struct SetGoalView: View {
                                             dismiss()
                                         }
                                     }
+                                    .overlay(alignment: .bottom) {
+                                        if idx < vm.catalog.count - 1 {
+                                            Rectangle().fill(Color.dashCardBorder).frame(height: 1).padding(.horizontal, 14)
+                                        }
+                                    }
                                 }
                             }
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cardBorder))
+                            .dashboardCard()
                         }
-                        .padding(.horizontal, 16)
                     }
 
                     // Tier 3 — Custom
-                    VStack(alignment: .leading, spacing: 10) {
-                        sectionHeader("Or create your own")
-                        VStack(spacing: 10) {
-                            TextField("What do you want to earn?", text: $customTitle)
-                                .font(.system(size: 14))
-                                .padding(12)
-                                .background(Color.white)
-                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.cardBorder))
+                    VStack(alignment: .leading, spacing: 12) {
+                        DashboardSectionHeader(title: "Or create your own")
 
-                            HStack {
-                                Text("Points needed:")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.textSecondary)
-                                Spacer()
-                                Stepper("\(customCost)", value: $customCost, in: 5...500, step: 5)
-                                    .font(.system(size: 14, weight: .semibold))
-                            }
-                            .padding(12)
-                            .background(Color.white)
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.cardBorder))
+                        AuthTextField(label: "What do you want to earn?", text: $customTitle)
 
-                            if let error = vm.errorMessage {
-                                Text(error)
-                                    .font(.system(size: 12))
-                                    .foregroundColor(Color(hex: "#E24B4A"))
-                                    .multilineTextAlignment(.center)
-                                    .frame(maxWidth: .infinity)
-                            }
-
-                            Button {
-                                guard !customTitle.isEmpty else { return }
-                                isSubmitting = true
-                                Task {
-                                    await vm.createReward(
-                                        title: customTitle,
-                                        emoji: nil,
-                                        pointsCost: customCost,
-                                        catalogItemId: nil
-                                    )
-                                    isSubmitting = false
-                                    if vm.errorMessage == nil {
-                                        dismiss()
-                                    }
-                                }
-                            } label: {
-                                Text(isSubmitting ? "Setting goal..." : "Set this as my goal")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 14)
-                                    .background(Color.memberBlue)
-                                    .cornerRadius(10)
-                            }
-                            .disabled(customTitle.isEmpty || isSubmitting || vm.isLoading)
+                        HStack {
+                            Text("Points needed")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.dashNavy)
+                            Spacer()
+                            Stepper("\(customCost)", value: $customCost, in: 5...500, step: 5)
+                                .font(.system(size: 15, weight: .semibold))
+                                .fixedSize()
                         }
+                        .padding(14)
+                        .dashboardCard(radius: 14)
+
+                        if let error = vm.errorMessage {
+                            AuthMessage(text: error)
+                        }
+
+                        PrimaryButton(title: isSubmitting ? "Setting goal..." : "Set this as my goal", isLoading: isSubmitting) {
+                            guard !customTitle.isEmpty else { return }
+                            isSubmitting = true
+                            Task {
+                                await vm.createReward(
+                                    title: customTitle,
+                                    emoji: nil,
+                                    pointsCost: customCost,
+                                    catalogItemId: nil
+                                )
+                                isSubmitting = false
+                                if vm.errorMessage == nil {
+                                    dismiss()
+                                }
+                            }
+                        }
+                        .disabled(customTitle.isEmpty || isSubmitting || vm.isLoading)
                     }
-                    .padding(.horizontal, 16)
                 }
-                .padding(.top, 16)
-                .padding(.bottom, 32)
             }
-            .background(Color.screenBg)
-            .navigationTitle("Set a goal")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .primaryAction) {
-                    Text("\(memberBalance) pts")
-                        .font(.system(size: 11))
-                        .foregroundColor(.textMuted)
-                }
             }
         }
-    }
-
-    private func sectionHeader(_ title: String) -> some View {
-        Text(title)
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundColor(.textMuted)
-            .textCase(.uppercase)
+        .tint(.dashBlue)
     }
 }

@@ -21,7 +21,7 @@ struct RepeatPickerSheet: View {
         VStack(spacing: 0) {
             Text("Repeat")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundColor(.textPrimary)
+                .foregroundColor(.dashNavy)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
 
@@ -31,13 +31,13 @@ struct RepeatPickerSheet: View {
                 recurrence.endDate = nil
             }
             .disabled(!frequencyEditable)
-            Divider().background(Color.cardBorder)
+            Divider().background(Color.dashCardBorder)
             optionRow(label: "Daily", selected: recurrence.frequency == .daily) {
                 recurrence.frequency = .daily
                 recurrence.weekdays = []
             }
             .disabled(!frequencyEditable)
-            Divider().background(Color.cardBorder)
+            Divider().background(Color.dashCardBorder)
             optionRow(
                 label: "Weekly on \(TaskRecurrence.weekdayShortNames[dueWeekday - 1])",
                 selected: recurrence.frequency == .weekly
@@ -46,7 +46,7 @@ struct RepeatPickerSheet: View {
                 recurrence.weekdays = []
             }
             .disabled(!frequencyEditable)
-            Divider().background(Color.cardBorder)
+            Divider().background(Color.dashCardBorder)
             optionRow(label: "Custom days…", selected: recurrence.frequency == .custom) {
                 recurrence.frequency = .custom
                 if recurrence.weekdays.isEmpty {
@@ -60,7 +60,7 @@ struct RepeatPickerSheet: View {
             }
 
             if recurrence.isRecurring {
-                Divider().background(Color.cardBorder)
+                Divider().background(Color.dashCardBorder)
                 endsSection
             }
 
@@ -77,12 +77,12 @@ struct RepeatPickerSheet: View {
             HStack {
                 Text(label)
                     .font(.system(size: 16, weight: selected ? .bold : .regular))
-                    .foregroundColor(selected ? .memberBlue : .textPrimary)
+                    .foregroundColor(selected ? .dashBlue : .dashNavy)
                 Spacer()
                 if selected {
                     Image(systemName: "checkmark")
                         .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                 }
             }
             .padding(.horizontal, 20)
@@ -107,9 +107,9 @@ struct RepeatPickerSheet: View {
                 } label: {
                     Text(TaskRecurrence.weekdayLetters[weekday - 1])
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(isSelected ? .white : .textSecondary)
+                        .foregroundColor(isSelected ? .white : .dashSubtle)
                         .frame(width: 34, height: 34)
-                        .background(isSelected ? Color.memberBlue : Color.screenBg)
+                        .background(isSelected ? Color.dashBlue : Color.dashBlueTint)
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
@@ -129,11 +129,11 @@ struct RepeatPickerSheet: View {
                 HStack {
                     Text("Ends")
                         .font(.system(size: 16))
-                        .foregroundColor(.textPrimary)
+                        .foregroundColor(.dashNavy)
                     Spacer()
                     Text(recurrence.endDate.map { $0.shortDate } ?? "Never")
                         .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                     Image(systemName: endsExpanded ? "chevron.up" : "chevron.down")
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundColor(.textMuted)
@@ -175,12 +175,12 @@ struct RepeatPickerSheet: View {
             HStack {
                 Text(label)
                     .font(.system(size: 15))
-                    .foregroundColor(selected ? .memberBlue : .textSecondary)
+                    .foregroundColor(selected ? .dashBlue : .dashSubtle)
                 Spacer()
                 if selected {
                     Image(systemName: "checkmark")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                 }
             }
             .padding(.horizontal, 28)

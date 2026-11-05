@@ -30,7 +30,7 @@ struct PaywallView: View {
                 .padding(.horizontal, 24)
                 .padding(.vertical, 32)
             }
-            .background(Color.white.ignoresSafeArea())
+            .background(DashboardBackground(showLandscape: false))
             .navigationTitle("Doto Premium")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -72,12 +72,12 @@ struct PaywallView: View {
             VStack(spacing: 6) {
                 Text("Unlock the full Doto experience")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.textPrimary)
+                    .foregroundColor(.dashNavy)
                     .multilineTextAlignment(.center)
 
                 Text("Keep your family organised with premium features.")
                     .font(.system(size: 16))
-                    .foregroundColor(.textSecondary)
+                    .foregroundColor(.dashSubtle)
                     .multilineTextAlignment(.center)
             }
         }
@@ -89,18 +89,18 @@ struct PaywallView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("What you get")
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(.textPrimary)
+                .foregroundColor(.dashNavy)
 
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(benefits, id: \.self) { benefit in
                     HStack(spacing: 10) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(Color(hex: "#1D9E75"))
+                            .foregroundColor(Color.dashGreen)
                             .font(.system(size: 18))
 
                         Text(benefit)
                             .font(.system(size: 15))
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.dashNavy)
 
                         Spacer()
                     }
@@ -147,7 +147,7 @@ struct PaywallView: View {
                     Task { await subscriptionManager.loadOfferings() }
                 }
                 .font(.system(size: 15, weight: .medium))
-                .foregroundColor(.memberBlue)
+                .foregroundColor(.dashBlue)
             }
             .padding(.vertical, 20)
         }
@@ -173,7 +173,7 @@ struct PaywallView: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 15, weight: isSelected ? .semibold : .medium))
-                .foregroundColor(isSelected ? .textPrimary : .textSecondary)
+                .foregroundColor(isSelected ? .dashNavy : .dashSubtle)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
                 .background(isSelected ? Color.white : Color.clear)
@@ -204,8 +204,8 @@ struct PaywallView: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(selectedPackage == nil ? Color.textMuted : Color.memberBlue)
-            .cornerRadius(12)
+            .background(selectedPackage == nil ? Color.textMuted : Color.dashBlue)
+            .clipShape(Capsule())
         }
         .disabled(selectedPackage == nil || subscriptionManager.isLoading)
     }
@@ -219,7 +219,7 @@ struct PaywallView: View {
             } label: {
                 Text("Restore purchases")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.memberBlue)
+                    .foregroundColor(.dashBlue)
             }
 
             HStack(spacing: 4) {
@@ -232,7 +232,7 @@ struct PaywallView: View {
                 } label: {
                     Text("Terms")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                 }
 
                 Text("and")
@@ -246,7 +246,7 @@ struct PaywallView: View {
                 } label: {
                     Text("Privacy Policy")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.memberBlue)
+                        .foregroundColor(.dashBlue)
                 }
             }
             .multilineTextAlignment(.center)
@@ -314,7 +314,7 @@ private struct PackageCard: View {
                     HStack(spacing: 6) {
                         Text(package.storeProduct.localizedTitle)
                             .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(isSelected ? .textPrimary : .textSecondary)
+                            .foregroundColor(isSelected ? .dashNavy : .dashSubtle)
 
                         if isPopular {
                             Text("Most Popular")
@@ -322,7 +322,7 @@ private struct PackageCard: View {
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(Color(hex: "#1D9E75"))
+                                .background(Color.dashGreen)
                                 .clipShape(Capsule())
                         }
                     }
@@ -330,33 +330,33 @@ private struct PackageCard: View {
                     if let trial = trialText {
                         Text(trial)
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(Color(hex: "#1D9E75"))
+                            .foregroundColor(Color.dashGreen)
                     }
 
                     Text(package.localizedPriceString + subscriptionPeriodSuffix)
                         .font(.system(size: 15))
-                        .foregroundColor(.textSecondary)
+                        .foregroundColor(.dashSubtle)
                 }
 
                 Spacer()
 
                 ZStack {
                     Circle()
-                        .stroke(isSelected ? Color.memberBlue : Color(hex: "#D1D1D6"), lineWidth: 2)
+                        .stroke(isSelected ? Color.dashBlue : Color(hex: "#D1D1D6"), lineWidth: 2)
                         .frame(width: 24, height: 24)
 
                     if isSelected {
                         Circle()
-                            .fill(Color.memberBlue)
+                            .fill(Color.dashBlue)
                             .frame(width: 16, height: 16)
                     }
                 }
             }
             .padding()
-            .background(isSelected ? Color.memberBlue.opacity(0.08) : Color(hex: "#F9F9FB"))
+            .background(isSelected ? Color.dashBlue.opacity(0.08) : Color(hex: "#F9F9FB"))
             .overlay(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isSelected ? Color.memberBlue : Color.clear, lineWidth: 2)
+                    .stroke(isSelected ? Color.dashBlue : Color.clear, lineWidth: 2)
             )
             .cornerRadius(12)
         }

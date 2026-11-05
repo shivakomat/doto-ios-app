@@ -128,51 +128,39 @@ struct ClaimStep2View: View {
                 Section {
                     Text(err)
                         .font(.system(size: 13))
-                        .foregroundColor(.red)
+                        .foregroundColor(.dashRedText)
                 }
             }
         }
+        .dashboardForm()
     }
 
     private func successView(profile: Profile) -> some View {
-        VStack(spacing: 32) {
-            Spacer()
-
-            AvatarView(name: profile.displayName, color: profile.color, size: 72, isActive: true)
-
-            VStack(spacing: 8) {
-                Text("Welcome, \(profile.displayName)! 🎉")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.textPrimary)
-                    .multilineTextAlignment(.center)
-                Text("Your profile is all set.")
-                    .font(.system(size: 15))
-                    .foregroundColor(.textSecondary)
+        AuthScreen(
+            title: "Welcome, \(profile.displayName)! 🎉",
+            subtitle: "Your profile is all set.",
+            centered: true,
+            showLandscape: true,
+            footer: {
+                AnyView(
+                    PrimaryButton(title: "Let's go! →") {
+                        vm.completeTransition(authVM: authVM)
+                    }
+                    .padding(.bottom, 4)
+                )
             }
+        ) {
+            VStack(spacing: 20) {
+                AvatarView(name: profile.displayName, color: profile.color, size: 80, isActive: true)
 
-            HStack(spacing: 24) {
-                statPill(value: "\(profile.pointsTotal)", label: "Points", color: .memberBlue)
-                if let streak = profile.streak, streak > 0 {
-                    statPill(value: "\(streak)", label: "Day streak 🔥", color: .memberAmber)
+                HStack(spacing: 12) {
+                    statPill(value: "\(profile.pointsTotal)", label: "Points", color: .dashBlue)
+                    if let streak = profile.streak, streak > 0 {
+                        statPill(value: "\(streak)", label: "Day streak 🔥", color: Color(hex: "#F2711C"))
+                    }
                 }
             }
-
-            Button {
-                vm.completeTransition(authVM: authVM)
-            } label: {
-                Text("Let's go! →")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(Color.memberBlue)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal, 40)
-
-            Spacer()
         }
-        .background(Color.screenBg.ignoresSafeArea())
     }
 
     private func statPill(value: String, label: String, color: Color) -> some View {
@@ -182,13 +170,11 @@ struct ClaimStep2View: View {
                 .foregroundColor(color)
             Text(label)
                 .font(.system(size: 12))
-                .foregroundColor(.textSecondary)
+                .foregroundColor(.dashSubtle)
         }
-        .frame(minWidth: 90)
+        .frame(minWidth: 100)
         .padding(.vertical, 14)
         .padding(.horizontal, 8)
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .dashboardCard(radius: 16)
     }
 }

@@ -96,7 +96,7 @@ struct AddEditTaskView: View {
                                 )
                                 .opacity(assignedToId == member.id ? 1 : 0.3)
                                 Text(member.displayName)
-                                    .foregroundColor(.textPrimary)
+                                    .foregroundColor(.dashNavy)
                                 if member.id == authVM.currentProfile?.id {
                                     Text("(you)")
                                         .font(.system(size: 11))
@@ -104,7 +104,7 @@ struct AddEditTaskView: View {
                                 }
                                 Spacer()
                                 if assignedToId == member.id {
-                                    Image(systemName: "checkmark").foregroundColor(.memberBlue)
+                                    Image(systemName: "checkmark").foregroundColor(.dashBlue)
                                 }
                             }
                         }
@@ -173,7 +173,7 @@ struct AddEditTaskView: View {
                 Section(header: Text("Points")) {
                     HStack {
                         Image(systemName: "minus.circle.fill")
-                            .foregroundColor(points > 1 ? .memberBlue : .textMuted)
+                            .foregroundColor(points > 1 ? .dashBlue : .textMuted)
                             .font(.system(size: 22))
                             .onTapGesture {
                                 if points > 1 { points = max(1, points - 5) }
@@ -182,11 +182,11 @@ struct AddEditTaskView: View {
                         Spacer()
                         Text("\(points) pts")
                             .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.textPrimary)
+                            .foregroundColor(.dashNavy)
                         Spacer()
 
                         Image(systemName: "plus.circle.fill")
-                            .foregroundColor(points < 500 ? .memberBlue : .textMuted)
+                            .foregroundColor(points < 500 ? .dashBlue : .textMuted)
                             .font(.system(size: 22))
                             .onTapGesture {
                                 if points < 500 { points = min(500, points + 5) }
@@ -219,10 +219,10 @@ struct AddEditTaskView: View {
                         } label: {
                             HStack {
                                 Text("None")
-                                    .foregroundColor(.textPrimary)
+                                    .foregroundColor(.dashNavy)
                                 Spacer()
                                 if rewardGoalId == nil {
-                                    Image(systemName: "checkmark").foregroundColor(.memberBlue)
+                                    Image(systemName: "checkmark").foregroundColor(.dashBlue)
                                 }
                             }
                         }
@@ -232,13 +232,13 @@ struct AddEditTaskView: View {
                             } label: {
                                 HStack {
                                     Text(goal.titleWithEmoji)
-                                        .foregroundColor(.textPrimary)
+                                        .foregroundColor(.dashNavy)
                                     Spacer()
                                     Text("\(goal.pointsCost) pts")
                                         .font(.system(size: 11))
                                         .foregroundColor(.textMuted)
                                     if rewardGoalId == goal.id {
-                                        Image(systemName: "checkmark").foregroundColor(.memberBlue)
+                                        Image(systemName: "checkmark").foregroundColor(.dashBlue)
                                     }
                                 }
                             }
@@ -252,11 +252,11 @@ struct AddEditTaskView: View {
                     } label: {
                         HStack {
                             Text("Repeat")
-                                .foregroundColor(.textPrimary)
+                                .foregroundColor(.dashNavy)
                             Spacer()
                             Text(recurrence.summary(dueWeekday: dueWeekday))
                                 .font(.system(size: 15, weight: .bold))
-                                .foregroundColor(.memberBlue)
+                                .foregroundColor(.dashBlue)
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundColor(.textMuted)
@@ -266,10 +266,11 @@ struct AddEditTaskView: View {
 
                 if let err = errorMessage {
                     Section {
-                        Text(err).foregroundColor(.red).font(.caption)
+                        Text(err).foregroundColor(.dashRedText).font(.caption)
                     }
                 }
             }
+            .dashboardForm()
             .navigationTitle(isEdit ? "Edit task" : "Add task")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -339,7 +340,7 @@ struct AddEditTaskView: View {
         } label: {
             ZStack(alignment: .bottomTrailing) {
                 if let symbol = selectedIcon {
-                    let color = TaskIconCatalog.color(for: symbol) ?? .memberBlue
+                    let color = TaskIconCatalog.color(for: symbol) ?? .dashBlue
                     Image(systemName: TaskIconCatalog.resolve(symbol))
                         .font(.system(size: 24))
                         .foregroundColor(color)

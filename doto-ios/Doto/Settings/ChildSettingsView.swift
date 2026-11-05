@@ -18,6 +18,7 @@ struct ChildSettingsView: View {
                 notificationsSection
                 dangerSection
             }
+            .dashboardForm()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -67,7 +68,7 @@ struct ChildSettingsView: View {
             HStack {
                 Text("Display name")
                     .font(.system(size: 14))
-                    .foregroundColor(Color.textSecondary)
+                    .foregroundColor(Color.dashSubtle)
                 Spacer()
                 TextField("Name", text: $displayName)
                     .multilineTextAlignment(.trailing)
@@ -84,7 +85,7 @@ struct ChildSettingsView: View {
             HStack {
                 Text("Color")
                     .font(.system(size: 14))
-                    .foregroundColor(Color.textSecondary)
+                    .foregroundColor(Color.dashSubtle)
                 Spacer()
                 HStack(spacing: 8) {
                     ForEach(colorPalette, id: \.self) { hex in
