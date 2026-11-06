@@ -126,10 +126,14 @@ struct TasksView: View {
                     }
                     .refreshable { await vm.load() }
                 }
+            }
 
-                if isParent && vm.hasCompletedTasks {
-                    clearDoneButton
-                }
+            if isParent && vm.hasCompletedTasks {
+                FloatingClearButton(count: vm.tasks.filter { $0.isDone }.count,
+                                    label: "Clear completed tasks") { showClearConfirm = true }
+                    .padding(.trailing, 25)
+                    .padding(.bottom, 84)
+                    .transition(.scale.combined(with: .opacity))
             }
 
             // FAB for adding tasks (parent only)
@@ -258,24 +262,6 @@ struct TasksView: View {
             .padding(.horizontal, 18)
             .padding(.vertical, 2)
         }
-        .padding(.bottom, 12)
-    }
-
-    private var clearDoneButton: some View {
-        Button {
-            showClearConfirm = true
-        } label: {
-            Text("Clear completed tasks")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.dashRedText)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 11)
-                .background(Color.dashRedTint)
-                .clipShape(Capsule())
-                .overlay(Capsule().stroke(Color.dashRedBorder, lineWidth: 1))
-        }
-        .padding(.leading, 18)
-        .padding(.trailing, 88)
         .padding(.bottom, 12)
     }
 

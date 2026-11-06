@@ -202,3 +202,35 @@ struct DashboardBackground: View {
         }
     }
 }
+
+/// Small icon-only destructive chip that floats above the blue add button.
+/// The count badge shows how many items it will clear.
+struct FloatingClearButton: View {
+    let count: Int
+    let label: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "trash")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundColor(.dashRedText)
+                .frame(width: 46, height: 46)
+                .background(Color.white)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.dashRedBorder, lineWidth: 1.5))
+                .shadow(color: Color.dashRed.opacity(0.2), radius: 8, x: 0, y: 4)
+                .overlay(alignment: .topTrailing) {
+                    Text("\(count)")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 5)
+                        .frame(minWidth: 18, minHeight: 18)
+                        .background(Color.dashRed)
+                        .clipShape(Capsule())
+                        .offset(x: 4, y: -4)
+                }
+        }
+        .accessibilityLabel(label)
+    }
+}

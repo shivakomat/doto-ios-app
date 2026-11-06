@@ -58,10 +58,15 @@ struct ShoppingView: View {
                 if !vm.lists.isEmpty { listChips }
 
                 mainContent
+            }
 
-                if canManageLists && vm.checkedCount > 0 {
-                    clearCheckedButton
+            if canManageLists && vm.checkedCount > 0 {
+                FloatingClearButton(count: vm.checkedCount, label: "Clear checked items") {
+                    Task { await vm.clearChecked() }
                 }
+                .padding(.trailing, 25)
+                .padding(.bottom, 84)
+                .transition(.scale.combined(with: .opacity))
             }
 
             if canManageLists {
@@ -373,25 +378,5 @@ struct ShoppingView: View {
                 }
             }
         }
-    }
-
-    // MARK: - Clear checked
-
-    private var clearCheckedButton: some View {
-        Button {
-            Task { await vm.clearChecked() }
-        } label: {
-            Text("Clear \(vm.checkedCount) checked item\(vm.checkedCount == 1 ? "" : "s")")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 11)
-                .background(Color.dashRed)
-                .clipShape(Capsule())
-                .shadow(color: Color.dashRed.opacity(0.25), radius: 6, x: 0, y: 3)
-        }
-        .padding(.leading, 18)
-        .padding(.trailing, 88)
-        .padding(.bottom, 12)
     }
 }
